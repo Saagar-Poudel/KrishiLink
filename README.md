@@ -63,8 +63,8 @@ Include dashboard, marketplace, and ML insights UI once UI is developed.
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/yourusername/agriconnect.git
-   cd agriconnect
+   git clone https://github.com/ritikjoshi22/KrishiLink.git
+   cd KrishiLink
 
 2. **Backend Setup**
     ```bash
