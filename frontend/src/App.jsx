@@ -1,10 +1,12 @@
-import React from 'react'
+import './App.css'
 
-const App = () => {
+function App() {
+
+
   return (
-    <div><h1 class="text-3xl font-bold underline bg-red-700">
-    Hello world!
-  </h1></div>
+    <>
+  
+    </>
   )
 }
 
