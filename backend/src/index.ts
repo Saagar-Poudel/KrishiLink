@@ -11,6 +11,11 @@ app.use(express.json());
 //create user routes
 app.use('/api/users', userRouter);
 
+app.use((req, res, next) => {
+  res.status(404).json({ message: 'Not Found' });
+  next();
+});
+
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
