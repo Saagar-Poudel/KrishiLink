@@ -1,6 +1,6 @@
 # 🌾 KrishiLink
 
-**KrishiLink** is a smart digital platform designed to empower Nepali farmers by directly connecting them with local buyers such as restaurants, cooperatives, and wholesalers. By providing real-time demand forecasting and logistical assistance, AgriConnect helps ensure fair pricing and streamlined distribution.
+**KrishiLink** is a smart digital platform designed to empower Nepali farmers by directly connecting them with local buyers such as restaurants, cooperatives, and wholesalers. By providing real-time demand forecasting and logistical assistance, Krishi Link helps ensure fair pricing and streamlined distribution.
 
 ---
 
