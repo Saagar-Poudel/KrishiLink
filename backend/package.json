@@ -23,7 +23,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.2",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.33",
     "dotenv": "^16.5.0",
     "drizzle-kit": "^0.31.1",
     "nodemon": "^3.1.10",
