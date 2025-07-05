@@ -38,11 +38,10 @@ const Categories = () => {
   ];
 
   return (
-    <section className="my-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">CATEGORY</h2>
-      
+    <section className="my-8 dark:text-white">
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">CATEGORY</h2>
       <div className="relative">
-        <div className="flex space-x-8 overflow-x-auto pb-4 scrollbar-hide">
+        <div className="flex space-x-8 overflow-x-auto pb-4 scrollbar-hide dark:text-white ">
           {categories.map((category, index) => (
             <CategoryItem 
               key={index} 
