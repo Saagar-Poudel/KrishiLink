@@ -24,8 +24,8 @@ const SearchBar = () => {
   />
   <button
     type="submit"
-    className="absolute right-0 top-0 h-full bg-green-600 hover:bg-green-700 px-4 flex items-center justify-center p-3 text-white rounded-r-md border border-green-500 hover:cursor-pointer"
-    aria-label="Submit search"
+    className="absolute right-0 top-0 h-full bg-green-600 hover:bg-green-700 px-4 flex items-center justify-center p-3 text-white rounded-r-md border border-green-500 hover:cursor-pointer "
+    aria-label="Submit search" 
   >
     <Search className="h-5 w-5" />
   </button>
