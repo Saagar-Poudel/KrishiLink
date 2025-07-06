@@ -2,7 +2,7 @@ import React from "react";
 import { Search } from "lucide-react";
 import SearchBar from "./SearchBar";
 import BenefitTag from "./BenefitTag";
-import Categories from "./categories";
+import Categories from "./Categories";
 
 const Hero = () => {
   const benefits = [

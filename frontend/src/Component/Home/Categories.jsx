@@ -23,17 +23,17 @@ const Categories = () => {
     {
       name: 'Fresh Nuts',
       image: '/Images/vegatables.jpeg',
-      active: false
+      active: true
     },
     {
       name: 'Fresh Fish',
       image: '/Images/Fruits.jpg',
-      active: false
+      active: true
     },
     {
       name: 'Meat',
       image: '/Images/Drinks.jpg',
-      active: false
+      active: true
     },
   ];
 
