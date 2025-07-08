@@ -143,10 +143,12 @@ const AuthForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-600 via-green-400 to-yellow-200">
       <div className="w-full max-w-4xl bg-white/90 backdrop-blur-sm shadow-2xl rounded-3xl overflow-hidden">
-        <div className="p-0">
+        <div className="relative">
           <div className="flex flex-col md:flex-row min-h-[600px]">
             {/* Welcome Section */}
-            <div className={`flex-1 bg-gradient-to-br from-green-600 to-green-800 text-white p-8 md:p-12 flex flex-col justify-center items-center text-center transition-all duration-700 ease-in-out transform ${isLogin ? 'md:order-1 md:translate-x-0' : 'md:order-2 md:translate-x-0'}`}>
+            <div className={`absolute inset-y-0 w-1/2 bg-gradient-to-br from-green-600 to-green-800 text-white p-8 md:p-12 flex flex-col justify-center items-center text-center transition-all duration-700 ease-in-out z-10 ${
+              isLogin ? 'left-0 transform translate-x-0' : 'left-1/2 transform translate-x-0'
+            }`}>
               <div className="space-y-6">
                 <div className="transition-all duration-500 ease-in-out">
                   <h2 className="text-3xl md:text-4xl font-bold transition-all duration-500">
@@ -170,7 +172,10 @@ const AuthForm = () => {
             </div>
 
             {/* Form Section */}
-            <div className={`flex-1 p-8 md:p-12 flex flex-col justify-center transition-all duration-700 ease-in-out ${isLogin ? 'md:order-2' : 'md:order-1'}`}>
+           
+              <div className={`absolute inset-y-0 w-1/2 p-8 md:p-12 flex flex-col justify-center transition-all duration-700 ease-in-out ${
+              isLogin ? 'right-0 transform translate-x-0' : 'left-0 transform translate-x-0'
+            }`}>
               <div className="w-full max-w-sm mx-auto space-y-6">
                 <div className="transition-all duration-500 ease-in-out">
                   <h3 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">
