@@ -35,11 +35,11 @@ function Footer() {
             <div className="space-y-2 text-sm text-gray-300">
               <div className="flex items-center group hover:text-yellow-300 transition duration-300">
                 <Phone className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                <span>+91 98765 43210</span>
+                <span>+977-1-1234567</span>
               </div>
               <div className="flex items-center group hover:text-yellow-300 transition duration-300">
                 <Mail className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                <span>info@krishilink.com</span>
+                <span>krishilink@agromoments.com</span>
               </div>
               <div className="flex items-center group hover:text-yellow-300 transition duration-300">
                 <MapPin className="h-4 w-4 mr-2 group-hover:bounce transition-all duration-300" />
