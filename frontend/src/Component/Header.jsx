@@ -1,105 +1,128 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import { User, Leaf , Sparkles} from "lucide-react";
+import React from 'react';
+import { useState } from 'react';
+import { Menu, X, ShoppingCart, User, Bell, Languages } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 import Thems from "./Thems";
 
-function Header() {
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { language, toggleLanguage, t } = useLanguage();
+
+  const navItems = [
+    { name: t('Home'), href: '#', active: true },
+    { name: t('Marketplace'), href: '#marketplace' },
+    { name: t('Weather'), href: '#weather' },
+    { name: t('News'), href: '#news' },
+    { name: t('Training'), href: '#training' },
+    { name: t('Storage'), href: '#storage' },
+  ];
+
   return (
-    <header className="shadow sticky z-50 top-0 dark:text-white">
-      <nav className=" border-green-700 my-5 px-4 lg:px-6 py-3 bg-gradient-to-br from-green-600 to-green-600">
-        <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-           <Link to="/" className="flex items-center mb-4 group">
-                       <div className="relative">
-                         <Sparkles className="h-8 w-8 text-yellow-300 animate-pulse" />
-                       </div>
-                       <span className="ml-2 text-3xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-100 bg-clip-text text-transparent">
-                         KrishiLink
-                       </span>
-                     </Link>
-          <div className="flex items-center lg:order-2">
-            <Link
-              to="/Login"
-               className="text-white text-base lg:text-lg bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:ring-lime-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
-            >
-              Log in
-            </Link>
-            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <User className="w-6 h-6 text-white" />
-            </div>
-            <Thems />
-          </div>
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
           
-          <div
-            className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1"
-            id="mobile-menu-2"
-          >
-            <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 text-base lg:text-lg font-medium">
-              <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-lime-300" : "text-white"
-                    } border-b border-green-700 hover:bg-green-700 lg:hover:bg-transparent lg:border-0 hover:text-lime-300 lg:p-0`
-                  }
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/about"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-lime-300" : "text-white"
-                    } border-b border-green-700 hover:bg-green-700 lg:hover:bg-transparent lg:border-0 hover:text-lime-300 lg:p-0`
-                  }
-                >
-                  About
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/contact"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-lime-300" : "text-white"
-                    } border-b border-green-700 hover:bg-green-700 lg:hover:bg-transparent lg:border-0 hover:text-lime-300 lg:p-0`
-                  }
-                >
-                  Contact
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/dashboard"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-lime-300" : "text-white"
-                    } border-b border-green-700 hover:bg-green-700 lg:hover:bg-transparent lg:border-0 hover:text-lime-300 lg:p-0`
-                  }
-                >
-                  Dashboard
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/products"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-lime-300" : "text-white"
-                    } border-b border-green-700 hover:bg-green-700 lg:hover:bg-transparent lg:border-0 hover:text-lime-300 lg:p-0`
-                  }
-                >
-                  Products
-                </NavLink>
-              </li>
-            </ul>
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <div className="bg-white border border-green-600 rounded px-2 py-1 text-green-600 font-bold text-lg shadow-sm">
+              कृषि
+            </div>
+            <span className="text-xl font-semibold text-gray-800">Krishi Link</span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-6 text-[16px] font-medium text-gray-700">
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className={`px-3 py-2 rounded-md transition-all ${
+                  item.active
+                    ? 'bg-green-100 text-green-700'
+                    : 'hover:text-green-600 hover:bg-gray-100'
+                }`}
+              >
+                {item.name}
+              </a>
+            ))}
+          </nav>
+
+          {/* Right Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            <button 
+              onClick={toggleLanguage}
+              className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex items-center"
+            >
+              <Languages className="h-4 w-4 mr-1" />
+              {language === 'en' ? 'नेपाली' : 'English'}
+            </button>
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full"></span>
+            </button>
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+              <ShoppingCart className="h-5 w-5" />
+            </button>
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+              <User className="h-5 w-5" />
+            </button>
+            <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all">
+              {t('login')}
+            </button>
+            <Thems/>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
-      </nav>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-2">
+            <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200">
+              {navItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                    item.active
+                      ? 'bg-green-100 text-green-700'
+                      : 'hover:text-green-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.name}
+                </a>
+              ))}
+              <div className="flex flex-col space-y-2 pt-4">
+                <button 
+                  onClick={toggleLanguage}
+                  className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
+                >
+                  <Languages className="h-4 w-4 mr-1" />
+                  {language === 'en' ? 'नेपाली' : 'English'}
+                </button>
+                <div className="flex space-x-2">
+                  <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all flex-1">
+                    {t('login')}
+                  </button>
+                  <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex-1">
+                    {t('signup')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
-}
+};
 
 export default Header;

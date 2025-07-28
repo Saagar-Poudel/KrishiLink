@@ -1,161 +1,80 @@
-import React from "react";
-import { Search } from "lucide-react";
-import SearchBar from "./SearchBar";
-import BenefitTag from "./BenefitTag";
-import Categories from "./Categories";
+
+import { ArrowRight, Users, TrendingUp, MapPin, Bot } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Hero = () => {
-  const benefits = [
-    "Fresh Vegetables",
-    "100% Guarantee",
-    "Cash on Delivery",
-    "Fast Delivery",
-  ];
+  const { t } = useLanguage();
+
   return (
-    <div className="w-full bg-white dark:bg-gray-900 py-16 px-4 md:px-8 lg:px-16">
-      <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
-        {/* Left Content */}
-        <div className="lg:w-1/2 space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-left text-black dark:text-white">
-            KrishiLink Nepal <span className="text-[#008000]">No.1</span> <br />
-            Digital Agriculture
-          </h1>
-          <p className="text-green-500 text-lg md:text-xl max-w-lg text-left">
-            Connect farmer to the consumer/Buyers directly.
-          </p>
-          <p className="text-gray-500 dark:text-gray-300 text-lg md:text-xl max-w-lg text-left">
-            Get fresh groceries online without stepping out to make delicious
-            food with the freshest natural ingredients.
-          </p>
-
-          <SearchBar />
-
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-6">
-            {benefits.map((benefit, index) => (
-              <BenefitTag key={index} text={benefit} />
-            ))}
-          </div>
-        </div>
-
-        {/* Right Content - Delivery Person Image */}
-        <div className="lg:w-1/2 relative">
-          <div className="relative">
-            <img
-              src="https://th.bing.com/th/id/OIP.n7hhdXs1GPOLHGXM54gxHwAAAA?cb=iwc2&rs=1&pid=ImgDetMain"
-              alt="Grocery Delivery Person"
-              className="max-w-full h-auto object-contain rounded-xl"
-            />
-
-            {/* Product Cards */}
-            <div className="flex flex-inline">
-              <div className="absolute top-10 right-0 bg-gray-300 dark:bg-gray-800 rounded-xl p-3 shadow-lg border border-gray-100 dark:border-gray-700">
-                <div className="text-center">
-                  <img
-                    src="https://t3.ftcdn.net/jpg/05/99/17/38/360_F_599173818_kPdvAOH3vCp3ckyAy8bfu2mpfQtsB1QO.jpg"
-                    alt="Fresh Spinach"
-                    className="w-28 h-28 object-cover rounded-lg mb-2"
-                  />
-                  <p className="font-medium text-black dark:text-white">Fresh Spinach</p>
-                  <p className="text-[#ff7d5e]">$12.00</p>
-                </div>
-              </div>
-
-              <div className="absolute bottom-10 right-0 bg-gray-300 dark:bg-gray-800 rounded-xl p-3 shadow-lg border border-gray-100 dark:border-gray-700">
-                <div className="text-center">
-                  <img
-                    src="https://t3.ftcdn.net/jpg/05/99/17/38/360_F_599173818_kPdvAOH3vCp3ckyAy8bfu2mpfQtsB1QO.jpg"
-                    alt="Fresh Carrot"
-                    className="w-28 h-28 object-cover rounded-lg mb-2"
-                  />
-                  <p className="font-medium text-black dark:text-white">Fresh Carrot</p>
-                  <p className="text-[#ff7d5e]">$8.00</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden ">
+      {/* Background Image + Overlay */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/public/images/land.jpg"
+          alt="Smart Agriculture"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/80 via-green-800/60 to-transparent"></div>
       </div>
 
-      <div className="text-center mb-8 px-4 mt-18">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-black dark:text-white">
-          Fresh Grocery Delivery
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300">
-          Order fresh groceries online and get them delivered to your doorstep
-        </p>
-      </div>
-
-      <Categories />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-          <h2 className="font-bold text-xl mb-2 text-green-800 dark:text-green-400">
-            Fresh Fruits
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">Explore our range of fresh fruits</p>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-          <h2 className="font-bold text-xl mb-2 text-green-800 dark:text-green-400">
-            Vegetables
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Farm fresh vegetables delivered daily
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-          <h2 className="font-bold text-xl mb-2 text-green-800 dark:text-green-400">
-            Dairy Products
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Quality dairy products from local farms
-          </p>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center text-black dark:text-white mb-12">
-          Why Choose KrishiLink?
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-6">
-            <div className="bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🌱</span>
-            </div>
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
-              Modern Technology
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Access cutting-edge agricultural technology and smart farming solutions.
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          
+          {/* Left Text Content */}
+          <div className="text-center lg:text-left">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              {t('heroTitle')}
+            </h1>
+            <p className="text-xl text-white/90 mb-8 max-w-xl mx-auto lg:mx-0">
+              {t('heroSubtitle')}
             </p>
-          </div>
-          <div className="text-center p-6">
-            <div className="bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🤝</span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-md hover:bg-yellow-500 transition-colors flex items-center justify-center">
+                {t('getStarted')}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </button>
+              <button className="px-6 py-3 bg-transparent border border-white text-white rounded-md hover:bg-white hover:text-green-700 transition-colors">
+                {t('learnMore')}
+              </button>
             </div>
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
-              Expert Support
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Get guidance from agricultural experts and experienced farmers.
-            </p>
           </div>
-          <div className="text-center p-6">
-            <div className="bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">📈</span>
+
+          {/* Right Side Stat Cards */}
+          <div className="grid grid-cols-2 gap-4 lg:gap-6">
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
+              <Users className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
+              <div className="text-2xl font-bold">५०००+</div>
+              <div className="text-sm text-white/80">दर्ता भएका किसान</div>
             </div>
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
-              Increased Productivity
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Maximize your farm's potential with data-driven insights and tools.
-            </p>
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
+              <TrendingUp className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
+              <div className="text-2xl font-bold">२०००+</div>
+              <div className="text-sm text-white/80">दैनिक कारोबार</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
+              <MapPin className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
+              <div className="text-2xl font-bold">७७</div>
+              <div className="text-sm text-white/80">जिल्लामा सेवा</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
+              <Bot className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
+              <div className="text-2xl font-bold">२४/७</div>
+              <div className="text-sm text-white/80">AI सहायता</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Floating Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-white/50 rounded-full mt-2"></div>
+        </div>
+      </div>
+    </section>
   );
 };
 
 export default Hero;
+
