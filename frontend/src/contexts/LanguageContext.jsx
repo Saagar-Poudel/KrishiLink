@@ -57,6 +57,12 @@ const translations = {
     contact: 'Contact',
     followUs: 'Follow Us',
     rightsReserved: 'All rights reserved.',
+    PriceAlerts: 'Price Alerts',
+    DeliveryService: 'Delivery Service',
+    HelpCenter: 'Help Center',
+    Contact: 'Contact',
+    PrivacyPolicy: 'Privacy Policy',
+    TermsOfService: 'Terms of Service',
   },
   ne: {
     // Header
@@ -114,6 +120,12 @@ const translations = {
     contact: 'सम्पर्क',
     followUs: 'हामीलाई फलो गर्नुहोस्',
     rightsReserved: 'सबै अधिकार सुरक्षित।',
+    PriceAlerts: 'मूल्य अलर्ट',
+    DeliveryService: 'डिलिभरी सेवा',
+    HelpCenter: 'सहायता केन्द्र',
+    Contact: 'सम्पर्क',
+    PrivacyPolicy: 'गोपनीयता नीति',
+    TermsOfService: 'सेवाका सर्तहरू',
   },
 };
 

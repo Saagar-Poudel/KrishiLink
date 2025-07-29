@@ -52,7 +52,7 @@ const router = createBrowserRouter(
       </Route>
 
       <Route element={<AuthLayout />}>
-        <Route path="Login" element={<Login />} />
+        <Route path="login" element={<Login />} />
       </Route>
     </>
   )

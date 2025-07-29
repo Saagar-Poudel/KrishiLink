@@ -11,27 +11,27 @@ const Footer = () => {
   };
 
   const quickLinks = [
-    { name: 'मार्केटप्लेस', href: '#marketplace' },
-    { name: 'मौसम जानकारी', href: '#weather' },
-    { name: 'समाचार', href: '#news' },
-    { name: 'प्रशिक्षण', href: '#training' },
-    { name: 'स्टोरेज', href: '#storage' },
+    { name: t('Marketplace'), href: '#marketplace' },
+    { name: t('Weather'), href: '#weather' },
+    { name: t('News'), href: '#news' },
+    { name: t('Training'), href: '#training' },
+    { name: t('Storage'), href: '#storage' },
   ];
 
   const services = [
-    { name: 'AI सहायता', href: '#' },
-    { name: 'किसान समूह', href: '#' },
-    { name: 'बल्क अर्डर', href: '#' },
-    { name: 'मूल्य अलर्ट', href: '#' },
-    { name: 'डिलिभरी सेवा', href: '#' },
+    { name: t('aiSupport'), href: '#' }, 
+    { name: t('coldStorage'), href: '#' },
+    { name: t('bulkTrading'), href: '#' },
+    { name: t('PriceAlerts'), href: '#' },
+    { name: t('DeliveryService'), href: '#' },
   ];
 
   const support = [
-    { name: 'सहायता केन्द्र', href: '#' },
-    { name: 'सम्पर्क', href: '#' },
-    { name: 'गोपनीयता नीति', href: '#' },
-    { name: 'सेवाका सर्तहरू', href: '#' },
-    { name: 'FAQ', href: '#' },
+    { name: t('HelpCenter'), href: '#' },
+    { name: t('Contact'), href: '#' },
+    { name: t('PrivacyPolicy'), href: '#' },
+    { name: t('TermsOfService'), href: '#' },
+    { name: t('FAQ'), href: '#' },
   ];
 
   return (
@@ -76,7 +76,7 @@ const Footer = () => {
                       href={link.href}
                       className="text-white/80 hover:text-white transition-colors"
                     >
-                      {link.name}
+                     {t(link.name)}
                     </a>
                   </li>
                 ))}
@@ -91,7 +91,7 @@ const Footer = () => {
                       href={service.href}
                       className="text-white/80 hover:text-white transition-colors"
                     >
-                      {service.name}
+                     {t(service.name)}
                     </a>
                   </li>
                 ))}
@@ -106,7 +106,7 @@ const Footer = () => {
                       href={item.href}
                       className="text-white/80 hover:text-white transition-colors"
                     >
-                      {item.name}
+                      {t(item.name)}
                     </a>
                   </li>
                 ))}
