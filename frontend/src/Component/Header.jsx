@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Menu, X, ShoppingCart, User, Bell, Languages } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Thems from "./Thems";
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -66,9 +67,19 @@ const Header = () => {
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
               <User className="h-5 w-5" />
             </button>
-            <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all">
-              {t('login')}
-            </button>
+               <div className="flex items-center lg:order-2">
+          </div>
+             <div className="flex items-center lg:order-2">
+            <Link
+              to="/Login"
+               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all"
+            >
+             {t('login')} 
+            </Link>
+          </div>
+            {/* <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all">
+              {t('login')} 
+            </button> */}
             <Thems/>
           </div>
 
