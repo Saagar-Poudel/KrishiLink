@@ -6,7 +6,7 @@ import Thems from "./Thems";
 function Header() {
   return (
     <header className="shadow sticky z-50 top-0 dark:text-white">
-      <nav className=" border-green-700 my-5 px-4 lg:px-6 py-3 bg-gradient-to-br from-green-600 to-green-600">
+      <nav className=" border-green-700 px-4 lg:px-6 py-3 bg-gradient-to-br from-green-600 to-green-600">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
            <Link to="/" className="flex items-center mb-4 group">
                        <div className="relative">

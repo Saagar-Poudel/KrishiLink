@@ -15,6 +15,7 @@ import Contact from "./Component/Contact";
 import Login from "./Component/Auth/Login";
 import Dashboard from "./Component/Dashboard";
 import AuthLayout from "./Authlayout";
+import Chatbot from "./Component/Chatbot"; // Import the Chatbot component
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
         <Route path="about" element={<About />} />
         <Route path="products" element={<Product />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="chatbot" element={<Chatbot />} /> {/* Add Chatbot route */}
         {/* <Route path='login' element={<Login/>} /> */}
         <Route path="dashboard" element={<Dashboard />} />
       </Route>
