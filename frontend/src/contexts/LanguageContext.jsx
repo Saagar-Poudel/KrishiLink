@@ -1,0 +1,146 @@
+import { createContext, useContext, useState } from 'react';
+
+const translations = {
+  en: {
+    // Header
+    Home: 'Home',
+    Marketplace: 'Marketplace',
+    Weather: 'Weather',
+    News: 'News',
+    Training: 'Training',
+    Storage: 'Storage',
+    login: 'Login',
+    signup: 'Sign Up',
+
+    // Hero
+    heroTitle: 'Smart Agriculture for Modern Nepal',
+    heroSubtitle: "Connect, Trade, and Grow with Nepal's Premier Agricultural Platform",
+    getStarted: 'Get Started',
+    learnMore: 'Learn More',
+
+    // Marketplace
+    marketplaceTitle: 'Agricultural Marketplace',
+    marketplaceSubtitle: 'Buy and sell agricultural products in bulk with trusted farmers and distributors',
+    rice: 'Rice',
+    wheat: 'Wheat',
+    maize: 'Maize',
+    viewAll: 'View All Products',
+    perKg: 'per kg',
+
+    // Weather & Prices
+    weatherPricesTitle: 'Weather & Market Prices',
+    weatherPricesSubtitle: 'Stay updated with real-time weather forecasts and market prices',
+    todayWeather: "Today's Weather",
+    marketPrices: 'Market Prices',
+    kathmandu: 'Kathmandu',
+    sunny: 'Sunny',
+
+    // News
+    newsTitle: 'Agricultural News & Updates',
+    newsSubtitle: 'Latest government policies, subsidies, and agricultural developments',
+
+    // Footer
+    quickLinks: 'Quick Links',
+    aboutUs: 'About Us',
+    contactUs: 'Contact Us',
+    privacyPolicy: 'Privacy Policy',
+    termsService: 'Terms of Service',
+    services: 'Services',
+    bulkTrading: 'Bulk Trading',
+    weatherForecast: 'Weather Forecast',
+    aiSupport: 'AI Support',
+    coldStorage: 'Cold Storage',
+    support: 'Support',
+    helpCenter: 'Help Center',
+    documentation: 'Documentation',
+    community: 'Community',
+    contact: 'Contact',
+    followUs: 'Follow Us',
+    rightsReserved: 'All rights reserved.',
+  },
+  ne: {
+    // Header
+    Home: 'होम',
+    Marketplace: 'मार्केटप्लेस',
+    Weather: 'मौसम',
+    News: 'समाचार',
+    Training: 'प्रशिक्षण',
+    Storage: 'स्टोरेज',
+    login: 'लगइन',
+    signup: 'साइन अप',
+
+    // Hero
+    heroTitle: 'आधुनिक नेपालको लागि स्मार्ट कृषि',
+    heroSubtitle: 'नेपालको प्रमुख कृषि प्लेटफर्मसँग जोड्नुहोस्, व्यापार गर्नुहोस्, र बढ्नुहोस्',
+    getStarted: 'सुरु गर्नुहोस्',
+    learnMore: 'थप जान्नुहोस्',
+
+    // Marketplace
+    marketplaceTitle: 'कृषि बजार',
+    marketplaceSubtitle: 'विश्वसनीय किसान र वितरकहरूसँग थोक मात्रामा कृषि उत्पादनहरू किन्नुहोस् र बेच्नुहोस्',
+    rice: 'चामल',
+    wheat: 'गहुँ',
+    maize: 'मकै',
+    viewAll: 'सबै उत्पादनहरू हेर्नुहोस्',
+    perKg: 'प्रति केजी',
+
+    // Weather & Prices
+    weatherPricesTitle: 'मौसम र बजार भाउ',
+    weatherPricesSubtitle: 'वास्तविक समयमा मौसम पूर्वानुमान र बजार भाउसँग अद्यावधिक रहनुहोस्',
+    todayWeather: 'आजको मौसम',
+    marketPrices: 'बजार भाउ',
+    kathmandu: 'काठमाडौं',
+    sunny: 'घमाइलो',
+
+    // News
+    newsTitle: 'कृषि समाचार र अपडेट',
+    newsSubtitle: 'नवीनतम सरकारी नीतिहरू, अनुदानहरू, र कृषि विकासहरू',
+
+    // Footer
+    quickLinks: 'द्रुत लिङ्कहरू',
+    aboutUs: 'हाम्रो बारेमा',
+    contactUs: 'सम्पर्क गर्नुहोस्',
+    privacyPolicy: 'गोपनीयता नीति',
+    termsService: 'सेवाका सर्तहरू',
+    services: 'सेवाहरू',
+    bulkTrading: 'थोक व्यापार',
+    weatherForecast: 'मौसम पूर्वानुमान',
+    aiSupport: 'एआई सहायता',
+    coldStorage: 'कोल्ड स्टोरेज',
+    support: 'सहायता',
+    helpCenter: 'सहायता केन्द्र',
+    documentation: 'दस्तावेजीकरण',
+    community: 'समुदाय',
+    contact: 'सम्पर्क',
+    followUs: 'हामीलाई फलो गर्नुहोस्',
+    rightsReserved: 'सबै अधिकार सुरक्षित।',
+  },
+};
+
+const LanguageContext = createContext(undefined);
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState('ne');
+
+  const toggleLanguage = () => {
+    setLanguage(prev => (prev === 'en' ? 'ne' : 'en'));
+  };
+
+  const t = (key) => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+};
