@@ -1,10 +1,18 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import userRouter from './routes/userRoute';
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-import userRouter from './routes/userRoute';
+
+
+app.use(cors({
+    origin: [process.env.FRONTEND_URL || ""],
+    methods: ["POST"],
+    credentials: true,
+}));
 
 app.use(express.json());
 

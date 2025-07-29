@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { User, Lock, Mail } from 'lucide-react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const AuthForm = () => {
   const navigate = useNavigate();
@@ -98,22 +100,48 @@ const AuthForm = () => {
           email: formData.email,
           password: formData.password
         };
+
+        console.log('Login data:', submitData);
+        const {data} = await axios.post('http://localhost:3000/api/users/login', submitData, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true,
+        });
+        toast.success('Login successful!');
+        setFormData({
+          email: '',
+          password: ''
+        });
+        console.log('Login response:', data);
       } else {
         submitData = {
           username: formData.username,
           email: formData.email,
           password: formData.password
         };
+
+        console.log('Registration data:', submitData);
+        const {data} = await axios.post('http://localhost:3000/api/users/register', submitData, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true,
+        });
+        toast.success('Registration successful!');
+        setFormData({
+          username: '',
+          email: '',
+          password: ''
+        });
+        console.log('Registration response:', data);
       }
 
       
       if (isLogin) {
         // Navigate to homepage
-        alert('Login successful!');
         navigate('/');
-      } else {
-        // Switch to login mode after successful registration
-        alert('Registration successful! Please login with your credentials.');
+      } else {  
         setIsLogin(true);
         
         // Keep email and password for convenience, clear username
@@ -124,7 +152,7 @@ const AuthForm = () => {
       }
     } catch (error) {
       console.error('Submission error:', error);
-      alert('An error occurred. Please try again.');
+      toast.error('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

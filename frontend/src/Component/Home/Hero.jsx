@@ -1,6 +1,11 @@
 
 import { ArrowRight, Users, TrendingUp, MapPin, Bot } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import React from "react";
+import { Search } from "lucide-react";
+import SearchBar from "./SearchBar";
+import BenefitTag from "./BenefitTag";
+import Categories from "./Categories";
 
 const Hero = () => {
   const { t } = useLanguage();
