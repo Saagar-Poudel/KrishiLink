@@ -1,5 +1,7 @@
 import { defineConfig } from 'drizzle-kit';
-
+import dotenv from 'dotenv';
+dotenv.config();
+// This configuration file is used to define the settings for Drizzle ORM
 export default defineConfig({
   schema: './src/models/userModel.ts',
   out: './drizzle',

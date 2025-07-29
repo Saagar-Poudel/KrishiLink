@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
 export class UserController {
   // Register a new user
   static async register(req: Request, res: Response) {
-    const { username, email, password, age } = req.body;
+    const { username, email, password } = req.body;
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -16,7 +16,6 @@ export class UserController {
         username,
         email,
         password: hashedPassword,
-        age,
       }).returning();
 
       res.status(201).json({ message: 'User registered successfully', user: newUser });
