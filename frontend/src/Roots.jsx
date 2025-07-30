@@ -5,16 +5,17 @@ import WeatherAndPrices from './Component/WeatherAndPrices'
 import Marketplace from './Component/Marketplace'
 import NewsSection from './Component/NewsSection'
 import Footer from './Component/Footer'
-//import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 function Roots() {
   return (
    <>
    <div className=''>
    <Header/>
-   <Home/>
+   <Outlet/>
+   {/* <Home/>
    <WeatherAndPrices/>
    <Marketplace/>
-   <NewsSection/>
+   <NewsSection/> */}
    <Footer/>
    </div>
    </>
