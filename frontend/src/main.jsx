@@ -11,6 +11,7 @@ import { LanguageProvider } from './contexts/LanguageContext'
 import Contact from './Component/Contact'
 import Login from './Component/Auth/Login'
 import AuthLayout from './Authlayout'
+import Market from './Component/Markets/Market'
 
 
 const router = createBrowserRouter(
@@ -18,7 +19,7 @@ const router = createBrowserRouter(
     <>
    <Route path='/' element={<Roots/>}>
 <Route path='' element={<Home/>} />
-<Route path='/marketplace' element={<Marketplace/>} />
+<Route path='Markets/market' element={<Market/>} />
 <Route path='/news' element={<NewsSection/>} />
 <Route path='/weather' element={<WeatherAndPrices/>} />
 <Route path='contact' element={<Contact/>} />
