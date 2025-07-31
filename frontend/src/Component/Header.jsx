@@ -5,13 +5,15 @@ import { useLanguage } from '../contexts/LanguageContext';
 import Thems from "./Thems";
 import { Link, NavLink } from 'react-router-dom';
 
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
 
  const navItems = [
   { name: t('Home'), path: '/' },
-  { name: t('Marketplace'), path: '/marketplace' },
+  { name: t('Market'), path: '/Markets/market' },
+  // { name: t('Market'), path: '/market' },
   { name: t('Weather'), path: '/weather' },
   { name: t('News'), path: '/news' },
   { name: t('Training'), path: '/training' },
