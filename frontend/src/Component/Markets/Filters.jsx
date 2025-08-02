@@ -35,14 +35,14 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
   };
 
   return (
-    <div className="border rounded-lg shadow-sm">
+    <div className=" rounded-lg shadow-lg bg-white dark:bg-gray-800  dark:text-gray-100">
       <div className="p-4 border-b">
         <h3 className="flex items-center gap-2 text-lg font-semibold">
           <Filter className="w-5 h-5" />
           {t("Filters")}
         </h3>
       </div>
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 ">
         {/* Search */}
         <div className="space-y-2">
           <label htmlFor="search" className="text-sm font-medium">{t("Search Products")}</label>
@@ -62,15 +62,15 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
         </div>
 
         {/* Category */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">{t("Category")}</label>
+        <div className="space-y-2   ">
+          <label className="text-sm font-medium ">{t("Category")}</label>
           <select
             value={category}
             onChange={(e) => {
               setCategory(e.target.value);
               handleFiltersChange();
             }}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800  dark:text-gray-100"
           >
             <option value="all">{t("All Categories")}</option>
             {categories.map((cat) => (
@@ -110,7 +110,7 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
               setLocation(e.target.value);
               handleFiltersChange();
             }}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500  dark:bg-gray-800  dark:text-gray-100"
           >
             <option value="all">{t("All Locations")}</option>
             {locations.map((loc) => (

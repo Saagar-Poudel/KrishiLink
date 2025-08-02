@@ -13,7 +13,7 @@ const ProductCard = ({
  const { t } = useLanguage();
   return (
     <div 
-      className="border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+      className=" rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer group  dark:bg-gray-800  dark:text-gray-100"
       onClick={() => onProductClick(product)}
     >
       <div className="relative">
@@ -35,7 +35,7 @@ const ProductCard = ({
             </span>
           )}
           {product.isBulkAvailable && (
-            <span className="bg-white bg-opacity-90 px-2 py-1 rounded text-sm border">
+            <span className="bg-white bg-opacity-90 px-2 py-1 rounded text-sm border dark:bg-gray-800  dark:text-gray-100">
               {t("Bulk Available")}
             </span>
           )}
@@ -66,7 +66,7 @@ const ProductCard = ({
           <p className="text-sm text-gray-500">{t(product.category)}</p>
           
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-blue-600">
+            <div className="text-xl font-bold text-green-600">
               {t("Rs.")} {product.price}
               <span className="text-sm font-normal">/{t(product.unit)}</span>
             </div>
@@ -109,7 +109,7 @@ const ProductCard = ({
       <div className="p-4 pt-0">
         <div className="w-full space-y-2">
           <button 
-            className={`w-full bg-blue-600 text-white px-4 py-2 rounded-md flex items-center justify-center ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
+            className={`w-full bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
             onClick={(e) => {
               e.stopPropagation();
               onAddToCart(product);
@@ -121,7 +121,7 @@ const ProductCard = ({
           </button>
           
           {product.isBulkAvailable && (
-            <button className="w-full border rounded-md px-4 py-2 text-sm">
+            <button className="w-full border rounded-md px-4 py-2 text-sm hover:bg-yellow-300 transition-colors flex items-center justify-center">
               {t("Contact for Bulk Order")}
             </button>
           )}

@@ -186,7 +186,7 @@ const Market = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background  dark:bg-gray-900 dark:text-gray-100">
       {/* Hero Section */}
       <div className="relative h-96 overflow-hidden">
         <img
