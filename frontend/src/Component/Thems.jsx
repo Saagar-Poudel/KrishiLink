@@ -22,7 +22,7 @@ function Thems() {
   return (
     <button
       onClick={toggleTheme}
-      className=" p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg text-black dark:text-white"
+      className=" p-2 hover:bg-yellow-200 dark:hover:bg-zinc-700 rounded-lg text-black dark:text-black bg-yellow-200"
     >
       {darkMode ? <LucideSun size={20} /> : <LucideMoon size={20} />}
     </button>

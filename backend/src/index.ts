@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import userRouter from './routes/userRoute';
+import productRouter from './routes/productRoutes';
 import cors from 'cors';
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 //create user routes
 app.use('/api/users', userRouter);
+app.use('/api/products', productRouter);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Not Found' });

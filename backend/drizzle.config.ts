@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 // This configuration file is used to define the settings for Drizzle ORM
 export default defineConfig({
-  schema: './src/models/userModel.ts',
+  schema: './src/models/schema.ts',
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
