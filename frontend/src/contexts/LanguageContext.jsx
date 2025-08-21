@@ -26,6 +26,20 @@ const translations = {
     maize: 'Maize',
     viewAll: 'View All Products',
     perKg: 'per kg',
+    'Organic Rice': 'Organic Rice',
+    'Fresh Tomato': 'Fresh Tomato',
+    'Per Quintal': 'Per Quintal',
+    Quintal: 'Quintal',
+    Available: 'Available',
+    'Out of Stock': 'Out of Stock',
+    Dozen: 'Dozen',
+    'Fast Delivery': 'Fast Delivery',
+    'Quality Assured': 'Quality Assured',
+    'Best Prices': 'Best Prices',
+    'Quick and reliable delivery to your doorstep': 'Quick and reliable delivery to your doorstep',
+    'Verified sellers and quality-checked products': 'Verified sellers and quality-checked products',
+    'Competitive pricing directly from farmers': 'Competitive pricing directly from farmers',
+    'All available products': 'All available products',
 
     // Weather & Prices
     weatherPricesTitle: 'Weather & Market Prices',
@@ -89,6 +103,22 @@ const translations = {
     maize: 'मकै',
     viewAll: 'सबै उत्पादनहरू हेर्नुहोस्',
     perKg: 'प्रति केजी',
+    'Organic Rice': 'जैविक धान',
+    'Fresh Tomato': 'ताजा टमाटर',
+    'Per Quintal': 'प्रति क्विन्टल',
+    Quintal: 'क्विन्टल',
+    Available: 'उपलब्ध',
+    'Out of Stock': 'स्टकमा छैन',
+    Dozen: 'दर्जन',
+    'Fast Delivery': 'छिटो डेलिभरी',
+    'Quality Assured': 'गुणस्तर सुनिश्चित',
+    'Best Prices': 'उत्तम मूल्य',
+    'Quick and reliable delivery to your doorstep': 'तपाईंको ढोका सम्म छिटो र भरपर्दो डेलिभरी',
+    'Verified sellers and quality-checked products': 'प्रमाणित विक्रेता र गुणस्तरीय उत्पादनहरू',
+    'Competitive pricing directly from farmers': 'किसानहरूबाट सिधा प्रतिस्पर्धात्मक मूल्यमा',
+    'All available products': 'सबै उपलव्ध उत्पादनहरू',
+    
+  
 
     // Weather & Prices
     weatherPricesTitle: 'मौसम र बजार भाउ',
