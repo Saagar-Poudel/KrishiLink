@@ -5,7 +5,7 @@ import { Route, RouterProvider,createBrowserRouter, createRoutesFromElements } f
 import Roots from './Roots'
 import Home from './Component/Home/Home'
 import WeatherAndPrices from './Component/WeatherAndPrices'
-import Marketplace from './Component/Marketplace'
+
 import NewsSection from './Component/NewsSection'
 import { LanguageProvider } from './contexts/LanguageContext'
 import Contact from './Component/Contact'

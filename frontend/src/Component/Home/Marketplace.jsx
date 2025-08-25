@@ -1,6 +1,6 @@
 
 import { MapPin, Star, ShoppingCart, Filter, ArrowRight,Truck, Shield } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Marketplace = () => {
   const { t } = useLanguage();

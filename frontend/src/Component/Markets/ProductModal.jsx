@@ -36,7 +36,7 @@ const ProductModal = ({
           className="absolute top-4 right-4 text-gray-600 hover:text-black"
           onClick={onClose}
         >
-          <X size={24} />
+          <X size={30} />
         </button>
 
         {/* Title */}
