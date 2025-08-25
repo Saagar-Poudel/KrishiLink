@@ -1,5 +1,5 @@
 
-import { MapPin, Star, ShoppingCart, Filter, ArrowRight } from 'lucide-react';
+import { MapPin, Star, ShoppingCart, Filter, ArrowRight,Truck, Shield } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Marketplace = () => {
@@ -130,28 +130,24 @@ return (
             <div className="p-4">
               <h3 className="text-lg font-semibold mb-2 text-gray-900">{product.name}</h3>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-lg font-bold text-green-600">
+                <div className="text-xl lg:text-3xl font-bold text-green-600">
                   रू {product.price}
                   <span className="text-sm text-gray-500 ml-1">{product.unit}</span>
                 </div>
                 <div className="flex items-center">
-                  <svg className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" viewBox="0 0 24 24">
-                    <path d="M12 .587l3.668 7.431 8.332 1.151-6.001 5.822 1.416 8.262L12 19.445l-7.415 3.808 1.416-8.262-6.001-5.822 8.332-1.151z" />
-                  </svg>
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
                   <span className="text-sm text-gray-500">
                     {product.rating} ({product.reviews})
                   </span>
                 </div>
               </div>
-              <div className="flex items-center text-sm text-gray-500 mb-2">
-                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {product.location} • {product.seller}
+              <div className="flex items-center text-lg text-gray-500 mb-2">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span>{product.location}</span>
+                <span> • {product.seller}</span>
               </div>
               <div className="text-sm text-gray-500">
-                उपलब्ध: {product.quantity}
+                {t('Available')} {product.quantity}
               </div>
             </div>
             
@@ -165,20 +161,36 @@ return (
                 }`}
                 disabled={!product.inStock}
               >
-                <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h18M3 7h18M3 12h18m-7 5h7" />
-                </svg>
+                <ShoppingCart className="h-4 w-4 mr-2" />
                 {product.inStock ? 'कार्टमा थप्नुहोस्' : 'स्टकमा छैन'}
               </button>
             </div>
           </div>
         ))}
       </div>
+      {/* Features Section */}
+      <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="text-center p-6 bg-gray-200 rounded-lg">
+            <Truck className="w-8 h-8 text-green-600 mx-auto mb-3" />
+            <h4 className="font-semibold mb-2">{t('Fast Delivery')}</h4>
+            <p className="text-sm text-green-600">{t('Quick and reliable delivery to your doorstep')}</p>
+          </div>
+          <div className="text-center p-6 bg-gray-200 rounded-lg">
+            <Shield className="w-8 h-8 text-green-600 mx-auto mb-3" />
+            <h4 className="font-semibold mb-2">{t('Quality Assured')}</h4>
+            <p className="text-sm text-green-600">{t('Verified sellers and quality-checked products')}</p>
+          </div>
+          <div className="text-center p-6 bg-gray-200 rounded-lg">
+            <Star className="w-8 h-8 text-green-600 mx-auto mb-3" />
+            <h4 className="font-semibold mb-2">{t('Best Prices')}</h4>
+            <p className="text-sm text-green-600">{t('Competitive pricing directly from farmers')}</p>
+          </div>
+        </div>
 
       {/* CTA */}
       <div className="text-center">
         <button className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-opacity flex items-center mx-auto">
-          सबै उपलव्ध उत्पादनहरू
+          {t('All available products')}
           <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
           </svg>
