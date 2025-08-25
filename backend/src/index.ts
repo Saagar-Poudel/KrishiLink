@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import userRouter from './routes/userRoute';
 import productRouter from './routes/productRoutes';
 import orderRouter from './routes/orderRoutes';
+import newsRouter from './routes/newsRoutes';
 import cors from 'cors';
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
+app.use("/api/news", newsRouter);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Not Found' });
