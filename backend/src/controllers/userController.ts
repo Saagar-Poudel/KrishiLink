@@ -1,6 +1,6 @@
 //Controllers to use the usermodel to handle login and registration database work
 import { Request, Response } from 'express';
-import { users } from '../models/userModel';
+import { users } from '../models/schema';
 import { db } from '../dbConnection/dbConnection';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
