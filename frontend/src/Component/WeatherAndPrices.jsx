@@ -1,22 +1,55 @@
-import { Cloud, Sun, CloudRain, Thermometer, TrendingUp, TrendingDown } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Thermometer, TrendingUp, TrendingDown, Search } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useState } from 'react';
+import Weather from './Wether';
 
 const WeatherAndPrices = () => {
   const { t } = useLanguage();
+  const [location, setLocation] = useState('');
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   
+  const apikey = "2a57e1e4c13eb0579d5b5f223462a126";
+  const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+  const fetchWeather = async (location) => {
+    try {
+      const response = await fetch(`${apiUrl}${location}&appid=${apikey}`);
+      if (!response.ok) throw new Error("Weather data not found");
+      const data = await response.json();
+      setWeather(data); 
+      return {
+        location: data.name,
+        temperature: data.main.temp,
+        condition: data.weather[0].description,
+      };
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
   const weatherData = {
     location: 'काठमाडौं',
     temperature: '२४°C',
     condition: 'आंशिक बादल',
     humidity: '६४%',
     windSpeed: '१२ किमी/घण्टा',
-    forecast: [
-      { day: 'आज', temp: '२४°C', condition: 'cloudy' },
-      { day: 'भोलि', temp: '२६°C', condition: 'sunny' },
-      { day: 'पर्सि', temp: '२३°C', condition: 'rainy' },
-      { day: 'बिहीबार', temp: '२५°C', condition: 'sunny' },
-    ]
+    Forecast: [
+      { day: t('today'), temp: '२४°C', tempEn: '24°C', condition: 'cloudy' },
+      { day: t('tomorrow'), temp: '२६°C', tempEn: '26°C', condition: 'sunny' },
+      { day: t('dayAfter'), temp: '२३°C', tempEn: '23°C', condition: 'rainy' },
+      { day: t('thursday'), temp: '२५°C', tempEn: '25°C', condition: 'sunny' },
+    ],
   };
+
+  // const Forecast = [
+  //   { day: t('today'), temp: '२४°C', tempEn: '24°C', condition: 'cloudy' },
+  //   { day: t('tomorrow'), temp: '२६°C', tempEn: '26°C', condition: 'sunny' },
+  //   { day: t('dayAfter'), temp: '२३°C', tempEn: '23°C', condition: 'rainy' },
+  //   { day: t('thursday'), temp: '२५°C', tempEn: '25°C', condition: 'sunny' },
+  // ];
 
   const marketPrices = [
     { name: 'धान', price: '४००', unit: 'प्रति क्विन्टल', change: '+४%', trend: 'up' },
@@ -55,44 +88,8 @@ const WeatherAndPrices = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Weather Section */}
           <div className="bg-white border border-gray-200 rounded-lg shadow-md">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold flex items-center gap-2 text-green-700">
-                <Thermometer className="h-5 w-5 text-green-700" />
-                {t('todayWeather')}
-              </h3>
-            </div>
-            <div className="p-6">
-              <div className="text-center mb-6">
-                <div className="text-5xl font-bold text-green-700 mb-1">{weatherData.temperature}</div>
-                <div className="text-gray-500 mb-2">{weatherData.location}</div>
-                <div className="text-sm text-gray-500">{weatherData.condition}</div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="text-center p-3 bg-gray-100 rounded-lg">
-                  <div className="text-sm text-gray-500">आर्द्रता</div>
-                  <div className="font-semibold">{weatherData.humidity}</div>
-                </div>
-                <div className="text-center p-3 bg-gray-100 rounded-lg">
-                  <div className="text-sm text-gray-500">हावाको गति</div>
-                  <div className="font-semibold">{weatherData.windSpeed}</div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="text-sm font-medium text-gray-500 mb-2">४ दिनको पूर्वानुमान</div>
-                {weatherData.forecast.map((day, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gray-100 rounded">
-                    <span className="font-medium">{day.day}</span>
-                    <div className="flex items-center gap-2">
-                      {getWeatherIcon(day.condition)}
-                      <span>{day.temp}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+            <Weather />
+          </div> 
 
           {/* Market Prices Section */}
           <div className="bg-white border border-gray-200 rounded-lg shadow-md">
