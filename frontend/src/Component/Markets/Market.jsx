@@ -101,29 +101,35 @@ const Market = () => {
 
   useEffect(() => {
     filterProducts();
-  }, [filters]);
+  }, [filters, products]);
+
+  useEffect(() => {
+  setFilteredProducts(products);
+}, []);
 
   const filterProducts = () => {
-    let filtered = products;
+    let filtered = [...products];
 
     if (filters.searchTerm) {
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
         product.category.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        product.sellerName.toLowerCase().includes(filters.searchTerm.toLowerCase())
+        product.sellerName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        product.nameNepali?.toLowerCase().includes(filters.searchTerm.toLowerCase())
       );
-    }
+    } 
+
 
     if (filters.category && filters.category !== "all") {
-      filtered = filtered.filter(product => product.category === filters.category);
+      filtered = filtered.filter((product) => product.category === filters.category);
     }
 
     if (filters.location && filters.location !== "all") {
-      filtered = filtered.filter(product => product.location.includes(filters.location));
+      filtered = filtered.filter((product) => product.location.includes(filters.location));
     }
 
     if (filters.priceRange) {
-      filtered = filtered.filter(product => 
+      filtered = filtered.filter((product) =>
         product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1]
       );
     }
@@ -226,7 +232,12 @@ const Market = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <div className="lg:w-1/4">
-            <Filters onFiltersChange={setFilters} />      {/* market place filter change garako yeha */}
+            {/* <Filters onFiltersChange={setFilters} />  */}
+            <Filters
+              onFiltersChange={(newFilter) =>
+                setFilters((prev) => ({ ...prev, ...newFilter }))
+              }
+            />       {/* market place filter change garako yeha */}
           </div>
 
           {/* Main Content */}
