@@ -11,7 +11,7 @@ const Weather = () => {
 
   const apikey = "2a57e1e4c13eb0579d5b5f223462a126";
   const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-  const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
+   const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
 
   const fetchWeather = async (city) => {
     setLoading(true);
