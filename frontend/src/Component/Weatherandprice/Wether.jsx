@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, TrendingUp } from "lucide-react";
-import { useToast } from "../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
