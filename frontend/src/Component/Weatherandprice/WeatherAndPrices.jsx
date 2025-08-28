@@ -1,6 +1,5 @@
-import { Cloud, Sun, CloudRain, Thermometer, TrendingUp, TrendingDown, Search } from 'lucide-react';
+import { TrendingUp, TrendingDown, Search } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useState } from 'react';
 import Weather from './Wether';
 
 const WeatherAndPrices = () => {
