@@ -1,55 +1,9 @@
-import { Cloud, Sun, CloudRain, Thermometer, TrendingUp, TrendingDown, Search } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useState } from 'react';
+import { TrendingUp, TrendingDown, Search } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import Weather from './Wether';
 
 const WeatherAndPrices = () => {
   const { t } = useLanguage();
-  const [location, setLocation] = useState('');
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  
-  const apikey = "2a57e1e4c13eb0579d5b5f223462a126";
-  const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-
-  const fetchWeather = async (location) => {
-    try {
-      const response = await fetch(`${apiUrl}${location}&appid=${apikey}`);
-      if (!response.ok) throw new Error("Weather data not found");
-      const data = await response.json();
-      setWeather(data); 
-      return {
-        location: data.name,
-        temperature: data.main.temp,
-        condition: data.weather[0].description,
-      };
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
-  const weatherData = {
-    location: 'काठमाडौं',
-    temperature: '२४°C',
-    condition: 'आंशिक बादल',
-    humidity: '६४%',
-    windSpeed: '१२ किमी/घण्टा',
-    Forecast: [
-      { day: t('today'), temp: '२४°C', tempEn: '24°C', condition: 'cloudy' },
-      { day: t('tomorrow'), temp: '२६°C', tempEn: '26°C', condition: 'sunny' },
-      { day: t('dayAfter'), temp: '२३°C', tempEn: '23°C', condition: 'rainy' },
-      { day: t('thursday'), temp: '२५°C', tempEn: '25°C', condition: 'sunny' },
-    ],
-  };
-
-  // const Forecast = [
-  //   { day: t('today'), temp: '२४°C', tempEn: '24°C', condition: 'cloudy' },
-  //   { day: t('tomorrow'), temp: '२६°C', tempEn: '26°C', condition: 'sunny' },
-  //   { day: t('dayAfter'), temp: '२३°C', tempEn: '23°C', condition: 'rainy' },
-  //   { day: t('thursday'), temp: '२५°C', tempEn: '25°C', condition: 'sunny' },
-  // ];
 
   const marketPrices = [
     { name: 'धान', price: '४००', unit: 'प्रति क्विन्टल', change: '+४%', trend: 'up' },
@@ -60,18 +14,6 @@ const WeatherAndPrices = () => {
     { name: 'केरा', price: '१२०', unit: 'प्रति दर्जन', change: '+३%', trend: 'up' },
   ];
 
-  const getWeatherIcon = (condition) => {
-    switch (condition) {
-      case 'sunny':
-        return <Sun className="h-6 w-6 text-yellow-500" />;
-      case 'cloudy':
-        return <Cloud className="h-6 w-6 text-gray-500" />;
-      case 'rainy':
-        return <CloudRain className="h-6 w-6 text-blue-500" />;
-      default:
-        return <Cloud className="h-6 w-6 text-gray-500" />;
-    }
-  };
 
   return (
     <section id="weather" className="py-16 bg-gray-50">

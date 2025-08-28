@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, TrendingUp } from "lucide-react";
-import { useToast } from "../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -11,7 +11,7 @@ const Weather = () => {
 
   const apikey = "2a57e1e4c13eb0579d5b5f223462a126";
   const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-  const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
+   const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
 
   const fetchWeather = async (city) => {
     setLoading(true);
