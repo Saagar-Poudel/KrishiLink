@@ -33,8 +33,8 @@ const Weather = () => {
       setForecastData(forecastResult);
 
       toast({
-        title: "Weather Updated",
-        description: `Weather data for ${city} loaded successfully`,
+        title: "",
+        description: ``, 
       });
     } catch (error) {
       toast({

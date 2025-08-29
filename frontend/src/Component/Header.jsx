@@ -6,6 +6,7 @@ import Thems from "./Thems";
 import { Link, NavLink } from 'react-router-dom';
 
 
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
@@ -79,9 +80,6 @@ const Header = () => {
              {t('login')} 
             </Link>
           </div>
-            {/* <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all">
-              {t('login')} 
-            </button> */}
             <Thems/>
           </div>
 

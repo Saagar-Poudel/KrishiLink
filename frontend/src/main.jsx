@@ -12,7 +12,7 @@ import Login from './Component/Auth/Login';
 import AuthLayout from './Authlayout';
 import Market from './Component/Markets/Market';
 
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast'; 
 
 
 
@@ -40,7 +40,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
      <LanguageProvider>
     <RouterProvider router={router}/>
-     <Toaster position="top-right" />   {/* settings toast */}
+     <Toaster position="bottom-right" />   {/* settings toast */}
     </LanguageProvider>
   </StrictMode>
 );

@@ -4,7 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import Filters from './Filters';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
-
+import { useToast } from "../../hooks/use-toast";
 
 const Market = () => {
  const { t } = useLanguage();
@@ -14,6 +14,7 @@ const Market = () => {
   const [cartItems, setCartItems] = useState([]);
   const [filters, setFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
+   const { toast } = useToast(); 
 
   // Sample products data
   const products = [
