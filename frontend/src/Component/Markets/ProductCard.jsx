@@ -109,7 +109,7 @@ const ProductCard = ({
       <div className="p-4 pt-0">
         <div className="w-full space-y-2">
           <button 
-            className={`w-full bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
+            className={`w-full bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center cursor-pointer hover:text-yellow-300 ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
             onClick={(e) => {
               e.stopPropagation();
               onAddToCart(product);
@@ -119,9 +119,10 @@ const ProductCard = ({
             <ShoppingCart className="w-4 h-4 mr-2" />
             {product.isAvailable ? t("Add to Cart") : t("Out of Stock")}
           </button>
+         
           
           {product.isBulkAvailable && (
-            <button className="w-full border rounded-md px-4 py-2 text-sm hover:bg-yellow-300 transition-colors flex items-center justify-center">
+            <button className="w-full border rounded-md px-4 py-2 text-sm hover:bg-yellow-300 transition-colors flex items-center justify-center cursor-pointer">
               {t("Contact for Bulk Order")}
             </button>
           )}

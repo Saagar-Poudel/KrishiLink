@@ -28,7 +28,7 @@ const ProductModal = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto ">
+    <div  className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm bg-opacity-40 overflow-y-auto ">
       <div className="relative bg-white max-w-4xl w-full max-h-[90vh] rounded-lg shadow-lg overflow-y-auto p-6 dark:bg-gray-800  dark:text-gray-100">
 
         {/* Close Button */}
@@ -130,7 +130,7 @@ const ProductModal = ({
 
             <div className="flex gap-2">
               <button
-                className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
+                className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:text-yellow-300"
                 onClick={() => onAddToCart(product, quantity)}
                 disabled={!product.isAvailable}
               >
@@ -138,19 +138,19 @@ const ProductModal = ({
                 Add to Cart
               </button>
               <button
-                className={`border rounded px-3 py-2 ${isWishlisted ? 'text-red-600 fill-red-600' : 'text-gray-600'}`}
+                className={`border rounded px-3 py-2`}
                 onClick={() => onToggleWishlist(product.id)}
               >
-                <Heart className="h-4 w-4" />
+                <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-red-600 text-red-600' : 'text-gray-600'}`} />
               </button>
             </div>
 
             {product.isBulkAvailable && (
               <div className="space-y-2">
-                <button className="w-full border rounded px-4 py-2 flex items-center justify-center">
+                <button className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 transition">
                   <Phone className="w-4 h-4 mr-2" /> Contact for Bulk Order
                 </button>
-                <button className="w-full border rounded px-4 py-2 flex items-center justify-center">
+                <button className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 transition">
                   <MessageCircle className="w-4 h-4 mr-2" /> Chat with Seller
                 </button>
               </div>
