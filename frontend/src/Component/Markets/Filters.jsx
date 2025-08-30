@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Search, Filter } from "lucide-react";
-import { useLanguage } from '../../contexts/LanguageContext';
+import { useLanguage } from "../../contexts/LanguageContext";
 
 const MarketplaceFilters = ({ onFiltersChange }) => {
- const { t } = useLanguage();
+  const { t } = useLanguage();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
@@ -11,9 +11,28 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
   const [location, setLocation] = useState("");
   const [certifications, setCertifications] = useState([]);
 
-  const categories = [t("Vegetables"), t("Fruits"), t("Grains"), t("Livestock"), t("Seeds"), t("Tools")];
-  const locations = [t("Kathmandu"), t("Chitwan"), t("Pokhara"), t("Dhangadhi"), t("Biratnagar"), t("Butwal")];
-  const certificationOptions = [t("Organic"), t("Government Approved"), t("Fair Trade"), t("Non-GMO")];
+  const categories = [
+    t("Vegetables"),
+    t("Fruits"),
+    t("Grains"),
+    t("Livestock"),
+    t("Seeds"),
+    t("Tools"),
+  ];
+  const locations = [
+    t("Kathmandu"),
+    t("Chitwan"),
+    t("Pokhara"),
+    t("Dhangadhi"),
+    t("Biratnagar"),
+    t("Butwal"),
+  ];
+  const certificationOptions = [
+    t("Organic"),
+    t("Government Approved"),
+    t("Fair Trade"),
+    t("Non-GMO"),
+  ];
 
   const handleFiltersChange = () => {
     onFiltersChange({
@@ -21,7 +40,7 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
       category,
       priceRange,
       location,
-      certifications
+      certifications,
     });
   };
 
@@ -29,7 +48,7 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
     if (checked) {
       setCertifications([...certifications, cert]);
     } else {
-      setCertifications(certifications.filter(c => c !== cert));
+      setCertifications(certifications.filter((c) => c !== cert));
     }
     handleFiltersChange();
   };
@@ -45,7 +64,9 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
       <div className="p-4 space-y-6 ">
         {/* Search */}
         <div className="space-y-2">
-          <label htmlFor="search" className="text-sm font-medium">{t("Search Products")}</label>
+          <label htmlFor="search" className="text-sm font-medium">
+            {t("Search Products")}
+          </label>
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
             <input
@@ -81,14 +102,18 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
           >
             <option value="all">{t("All Categories")}</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
             ))}
           </select>
         </div>
 
         {/* Price Range */}
         <div className="space-y-3">
-          <label className="text-sm font-medium">{t("Price Range (Rs.)")}</label>
+          <label className="text-sm font-medium">
+            {t("Price Range (Rs.)")}
+          </label>
           <input
             type="range"
             min="0"
@@ -103,8 +128,12 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
             className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-500">
-            <span>{t("Rs.")} {priceRange[0]}</span>
-            <span>{t("Rs.")} {priceRange[1]}</span>
+            <span>
+              {t("Rs.")} {priceRange[0]}
+            </span>
+            <span>
+              {t("Rs.")} {priceRange[1]}
+            </span>
           </div>
         </div>
 
@@ -121,7 +150,9 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
           >
             <option value="all">{t("All Locations")}</option>
             {locations.map((loc) => (
-              <option key={loc} value={loc}>{loc}</option>
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
             ))}
           </select>
         </div>
@@ -136,10 +167,14 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
                   type="checkbox"
                   id={cert}
                   checked={certifications.includes(cert)}
-                  onChange={(e) => handleCertificationChange(cert, e.target.checked)}
+                  onChange={(e) =>
+                    handleCertificationChange(cert, e.target.checked)
+                  }
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor={cert} className="text-sm">{cert}</label>
+                <label htmlFor={cert} className="text-sm">
+                  {cert}
+                </label>
               </div>
             ))}
           </div>
