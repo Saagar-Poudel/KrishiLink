@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Cart() {
+function Cart({ cartItems, onRemoveFromCart }) {
   return (
      <div className="absolute right-0 mt-2 w-72 bg-white text-black shadow-lg rounded-lg p-4 z-50">
             <h3 className="font-semibold mb-2">Your Cart</h3>
