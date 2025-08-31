@@ -77,6 +77,21 @@ const translations = {
     Contact: 'Contact',
     PrivacyPolicy: 'Privacy Policy',
     TermsOfService: 'Terms of Service',
+
+    //cart
+    cartTitle: "Your Cart",
+    cartEmpty: "Your cart is empty",
+    cartItems: (count) => `${count} item${count > 1 ? "s" : ""} in your cart`,
+    continueShopping: "Continue Shopping",
+    addProductsMessage: "Add some products to start shopping",
+    itemRemoved: "Item Removed",
+    cartCleared: "Cart Cleared",
+    allItemsRemoved: "All items removed from cart",
+    checkoutStarted: "Checkout Initiated",
+    checkoutSoon: "This feature will be available soon",
+    total: "Total:",
+    proceedCheckout: "Proceed to Checkout",
+    clearCart: "Clear Cart",
   },
   ne: {
     // Header
@@ -156,7 +171,22 @@ const translations = {
     Contact: 'सम्पर्क',
     PrivacyPolicy: 'गोपनीयता नीति',
     TermsOfService: 'सेवाका सर्तहरू',
-  },
+
+    //cart np
+     cartTitle: "तपाईंको कार्ट",
+    cartEmpty: "तपाईंको कार्ट खाली छ",
+    cartItems: (count) => `${count} वटा वस्तुहरू कार्टमा छन्`,
+    continueShopping: "किनमेल जारी राख्नुहोस्",
+    addProductsMessage: "किनमेल सुरु गर्न केही उत्पादनहरू थप्नुहोस्",
+    itemRemoved: "वस्तु हटाइयो",
+    cartCleared: "कार्ट खाली गरियो",
+    allItemsRemoved: "सबै वस्तुहरू कार्टबाट हटाइयो",
+    checkoutStarted: "चेकआउट सुरु गरियो",
+    checkoutSoon: "यो सुविधा छिट्टै उपलब्ध हुनेछ",
+    total: "कुल:",
+    proceedCheckout: "चेकआउट गर्नुहोस्",
+    clearCart: "खाली गर्नुहोस्",
+},
 };
 
 const LanguageContext = createContext(undefined);

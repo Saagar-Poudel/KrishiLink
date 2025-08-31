@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Heart, MapPin, Star, ShoppingCart, User, Package, Truck } from "lucide-react";
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useCart } from "../../contexts/CartContex";
 
 const ProductCard = ({ 
   product, 
@@ -11,6 +12,7 @@ const ProductCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
  const { t } = useLanguage();
+ const { addToCart } = useCart();
   return (
     <div 
       className=" rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer group  dark:bg-gray-800  dark:text-gray-100"
@@ -112,7 +114,7 @@ const ProductCard = ({
             className={`w-full bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center cursor-pointer hover:text-yellow-300 ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
             onClick={(e) => {
               e.stopPropagation();
-              onAddToCart(product);
+              addToCart(product);
             }}
             disabled={!product.isAvailable}
           >

@@ -5,6 +5,7 @@ import Filters from './Filters';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import { useToast } from "../../hooks/use-toast";
+import { useCart } from "../../contexts/CartContex";
 
 const Market = () => {
  const { t } = useLanguage();
@@ -15,6 +16,7 @@ const Market = () => {
   const [filters, setFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
    const { toast } = useToast(); 
+   const { addToCart } = useCart();
 
   // Sample products data
   const products = [
@@ -150,24 +152,24 @@ const Market = () => {
     setSelectedProduct(product);
   };
 
-  const handleAddToCart = (product, quantity = 1) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
+  // const handleAddToCart = (product, quantity = 1) => {
+  //   const existingItem = cartItems.find(item => item.id === product.id);
     
-    if (existingItem) {
-      setCartItems(cartItems.map(item => 
-        item.id === product.id 
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
-      ));
-    } else {
-      setCartItems([...cartItems, { ...product, quantity }]);
-    }
+  //   if (existingItem) {
+  //     setCartItems(cartItems.map(item => 
+  //       item.id === product.id 
+  //         ? { ...item, quantity: item.quantity + quantity }
+  //         : item
+  //     ));
+  //   } else {
+  //     setCartItems([...cartItems, { ...product, quantity }]);
+  //   }
 
-    toast({
-      title: t("Added to Cart"),
-      description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`),
-    });
-  };
+  //   toast({
+  //     title: t("Added to Cart"),
+  //     description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`),
+  //   });
+  // };
 
   const handleToggleWishlist = (productId) => {
     if (wishlistedProducts.includes(productId)) {
@@ -183,6 +185,14 @@ const Market = () => {
         description: t("Product added to your wishlist."),
       });
     }
+  };
+
+  const handleAddToCart = (product, quantity = 1) => {
+    addToCart(product, quantity);
+    toast({
+      title: t("Added to Cart"),
+      description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`),
+    });
   };
 
   const stats = [

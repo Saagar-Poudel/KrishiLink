@@ -4,12 +4,16 @@ import { Menu, X, ShoppingCart, User, Bell, Languages } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Thems from "./Thems";
 import { Link, NavLink } from 'react-router-dom';
-
+import  {Cart}  from "./Cart";
+import { useCart } from '../contexts/CartContex';
 
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
+ const { getTotalItems } = useCart();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const totalItems = getTotalItems();
 
  const navItems = [
   { name: t('Home'), path: '/' },
@@ -64,9 +68,21 @@ const Header = () => {
               <Bell className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full"></span>
             </button>
-            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+            {/* <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
               <ShoppingCart className="h-5 w-5" />
-            </button>
+            </button> */}
+             <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative flex items-center px-3 py-1 border rounded text-sm"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span className="hidden sm:inline ml-2">{t("cart")}</span>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
               <User className="h-5 w-5" />
             </button>
@@ -132,7 +148,15 @@ const Header = () => {
           </div>
         )}
       </div>
+      {isCartOpen && (
+  <Cart
+    isOpen={isCartOpen}
+    onClose={() => setIsCartOpen(false)}
+  />
+)}
+
     </header>
+     
   );
 };
 

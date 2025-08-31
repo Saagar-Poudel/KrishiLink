@@ -7,6 +7,7 @@ import Home from './Component/Home/Home';
 import WeatherAndPrices from './Component/Weatherandprice/WeatherAndPrices';
 import NewsSection from './Component/NewsSection';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { CartProvider } from './contexts/CartContex';
 import Contact from './Component/Contact';
 import Login from './Component/Auth/Login';
 import AuthLayout from './Authlayout';
@@ -39,8 +40,10 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")).render(
   <StrictMode>
      <LanguageProvider>
+      <CartProvider>
     <RouterProvider router={router}/>
      <Toaster position="bottom-right" />   {/* settings toast */}
+     </CartProvider>
     </LanguageProvider>
   </StrictMode>
 );
