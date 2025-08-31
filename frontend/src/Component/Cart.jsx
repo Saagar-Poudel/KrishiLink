@@ -1,13 +1,37 @@
-import React from "react";
+import React, {useState} from "react";
 import { Minus, Plus, Trash2, ShoppingBag, X } from "lucide-react";
 import { useCart } from "../contexts/CartContex";
 import { useToast } from "../hooks/use-toast";
 import { useLanguage } from "../contexts/LanguageContext";
+import Bill from "./Bill";
 
 export const Cart = ({  onClose,isOpen }) => {
   const { cartItems, updateCartQuantity, removeFromCart, clearCart, getTotalPrice } = useCart();
   const { t } = useLanguage(); 
    const { toast } = useToast(); 
+   const [showBill, setShowBill] = useState(false);
+
+   if (showBill) {
+    return (
+      <Bill 
+        isOpen={true}
+        onClose={() => {
+          setShowBill(false);
+          onClose();
+        }}
+        cartItems={cartItems}
+        onOrderComplete={() => {
+          clearCart();
+          setShowBill(false);
+          onClose();
+        }}
+      />
+    );
+  }
+
+   const handleCheckout = () => {
+   setShowBill(true);
+  };
 
   const handleRemoveItem = (productId, productName) => {
     removeFromCart(productId);
@@ -25,11 +49,10 @@ export const Cart = ({  onClose,isOpen }) => {
     });
   };
 
-  const handleCheckout = () => {
-    toast({
-      title: t("checkoutStarted"),
-      description: t("checkoutSoon"),
-    });
+ 
+  const handleQuantityChange = (productId, newQuantity) => {
+    updateCartQuantity(productId, newQuantity);
+    
   };
 
   if (!isOpen) return null; // hide cart if not open
@@ -183,73 +206,3 @@ export const Cart = ({  onClose,isOpen }) => {
     </div>
   );
 };
-
-// New file: src/components/Cart.jsx (create this file)
-// This is a simple sidebar cart component. You can style it further as needed.
-// import React from "react";
-// import { X, Minus, Plus, ShoppingCart } from "lucide-react";
-// import { useCart } from "../contexts/CartContex";
-// import { useLanguage } from '../contexts/LanguageContext';
-
-
-// const Cart = ({ onClose }) => {
-//   const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart();
-//   const { t } = useLanguage();
-
-//   if (cartItems.length === 0) {
-//     return (
-//       <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg p-6 flex flex-col items-center justify-center dark:bg-gray-800 dark:text-gray-100">
-//         <button onClick={onClose} className="absolute top-4 right-4">
-//           <X className="h-6 w-6" />
-//         </button>
-//         <ShoppingCart className="h-16 w-16 text-gray-400 mb-4" />
-//         <p className="text-lg font-semibold">{t("Your cart is empty")}</p>
-//         <p className="text-sm text-gray-500 mt-2">{t("Add some products to get started")}</p>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg p-6 overflow-y-auto dark:bg-gray-800 dark:text-gray-100">
-//       <button onClick={onClose} className="absolute top-4 right-4">
-//         <X className="h-6 w-6" />
-//       </button>
-//       <h2 className="text-xl font-bold mb-6">{t("Your Cart")}</h2>
-//       <div className="space-y-4">
-//         {cartItems.map((item) => (
-//           <div key={item.id} className="flex items-center justify-between border-b pb-4">
-//             <div className="flex-1">
-//               <h3 className="font-semibold">{item.name}</h3>
-//               <p className="text-sm text-gray-500">
-//                 Rs. {item.price} / {item.unit} × {item.quantity}
-//               </p>
-//             </div>
-//             <div className="flex items-center gap-2">
-//               <button onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>
-//                 <Minus className="h-4 w-4" />
-//               </button>
-//               <span>{item.quantity}</span>
-//               <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-//                 <Plus className="h-4 w-4" />
-//               </button>
-//               <button onClick={() => removeFromCart(item.id)} className="text-red-600">
-//                 {t("Remove")}
-//               </button>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//       <div className="mt-6">
-//         <div className="flex justify-between text-lg font-bold">
-//           <span>{t("Total")}</span>
-//           <span>Rs. {getTotalPrice().toLocaleString()}</span>
-//         </div>
-//         <button className="w-full bg-green-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-green-700">
-//           {t("Checkout")}
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Cart; 

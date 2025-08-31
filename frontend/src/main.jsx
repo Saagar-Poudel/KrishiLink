@@ -26,7 +26,6 @@ const router = createBrowserRouter(
 <Route path='/news' element={<NewsSection/>} />
 <Route path='/weather' element={<WeatherAndPrices/>} />
 <Route path='/contact' element={<Contact/>} />
-
    </Route>
      
 

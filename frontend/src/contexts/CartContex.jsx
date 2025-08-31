@@ -12,18 +12,23 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [initialized, setInitialized] = useState(false);
 
   //loadcart to localstorage
 useEffect (()=>{
-  const savedCart = localStorage.getItem("cart");
+  const savedCart = localStorage.getItem("cartItems");
   if(savedCart){
     setCartItems(JSON.parse(savedCart));
   }
+  setInitialized(true);
 },[]);
 //save cart to localstorage
+
 useEffect(()=>{
-  localStorage.setItem("cart",JSON.stringify(cartItems));
-},[cartItems]);
+  if(initialized){
+    localStorage.setItem("cartItems",JSON.stringify(cartItems));
+  }
+},[cartItems,initialized]);
 
 
   const addToCart = (product, quantity = 1) => {

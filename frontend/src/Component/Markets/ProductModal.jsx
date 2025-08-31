@@ -11,14 +11,13 @@ const ProductModal = ({
   onClose,
   onAddToCart,
   onToggleWishlist,
-  isWishlisted,
-  showInNepali = false
+  isWishlisted = false
 }) => {
   const [quantity, setQuantity] = useState(1);
 
   if (!product || !isOpen) return null;
 
-  const displayName = showInNepali && product.nameNepali ? product.nameNepali : product.name;
+  const displayName =  product.name;
   const totalPrice = product.price * quantity;
 
   const reviews = [
