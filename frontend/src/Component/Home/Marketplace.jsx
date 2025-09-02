@@ -48,7 +48,7 @@ const categories = [
   const maxIndex = Math.max(0, categories.length - itemsPerView);
 
    useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || maxIndex === 0 ) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
@@ -60,6 +60,7 @@ const categories = [
   }, [isAutoPlaying]);
 
   const handlePrevious = () => {
+    // if (maxIndex === 0) return;
     setIsAutoPlaying(false);
     setCurrentIndex((prevIndex) =>
       prevIndex <= 0 ? categories.length - 4 : prevIndex - 1
@@ -68,6 +69,7 @@ const categories = [
   };
 
   const handleNext = () => {
+   //  if (maxIndex === 0) return;
     setIsAutoPlaying(false);
     setCurrentIndex((prevIndex) =>
       prevIndex >= categories.length - 4 ? 0 : prevIndex + 1
@@ -78,8 +80,8 @@ const categories = [
 
   const CategoryCard = ({ category }) => {
   return (
-    <div className="group cursor-pointer transition-all duration-300 hover:scale-105 text-center">
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="group cursor-pointer transition-all duration-300 hover:scale-102 text-center  h-54 w-65 ">
+      <div className="bg-white rounded-lg overflow-hidden shadow-sm aspect-round hover:shadow-lg h-44 w-55">
         <div className="aspect-square overflow-hidden">
           <img
             src={category.image}
