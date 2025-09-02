@@ -12,7 +12,7 @@ const Market = () => {
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [wishlistedProducts, setWishlistedProducts] = useState([]);
-  const [cartItems, setCartItems] = useState([]);
+  // const [cartItems, setCartItems] = useState([]);
   const [filters, setFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
    const { toast } = useToast(); 
@@ -147,29 +147,10 @@ const Market = () => {
 
     setFilteredProducts(filtered);
   };
-
+  
   const handleProductClick = (product) => {
     setSelectedProduct(product);
   };
-
-  // const handleAddToCart = (product, quantity = 1) => {
-  //   const existingItem = cartItems.find(item => item.id === product.id);
-    
-  //   if (existingItem) {
-  //     setCartItems(cartItems.map(item => 
-  //       item.id === product.id 
-  //         ? { ...item, quantity: item.quantity + quantity }
-  //         : item
-  //     ));
-  //   } else {
-  //     setCartItems([...cartItems, { ...product, quantity }]);
-  //   }
-
-  //   toast({
-  //     title: t("Added to Cart"),
-  //     description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`),
-  //   });
-  // };
 
   const handleToggleWishlist = (productId) => {
     if (wishlistedProducts.includes(productId)) {
@@ -203,9 +184,9 @@ const Market = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background  dark:bg-gray-900 dark:text-gray-100">
+    <div className=" container mx-auto px-4 sm:px-6 lg:px-8">
       {/* Hero Section */}
-      <div className="relative h-96 overflow-hidden">
+      {/* <div className="relative h-96 overflow-hidden">
         <img
           src="public/images/Drinks.jpg"
           alt={t("Smart Agriculture Marketplace")}
@@ -222,22 +203,11 @@ const Market = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
+      
+  
 
-      {/* Stats Section */}
-      <div className="bg-primary text-primary-foreground py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <stat.icon className="w-8 h-8 mx-auto mb-2" />
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <div className="text-sm opacity-90">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+     
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -304,7 +274,24 @@ const Market = () => {
         onToggleWishlist={handleToggleWishlist}
         isWishlisted={selectedProduct ? wishlistedProducts.includes(selectedProduct.id) : false}
       />
+
+       {/* Stats Section */}
+      <div className="bg-primary text-primary-foreground py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <stat.icon className="w-8 h-8 mx-auto mb-2" />
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-sm opacity-90">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
+
+    
   );
 };
 

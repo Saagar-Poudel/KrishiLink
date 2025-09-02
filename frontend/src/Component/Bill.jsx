@@ -1,7 +1,7 @@
 import React from "react";
 import { useToast } from "../hooks/use-toast";
 import { useLanguage } from "../contexts/LanguageContext";
-import {User, X} from "lucide-react";
+import {User, X,CheckCircle, Download} from "lucide-react";
 import { useState } from "react";
 
 const Bill=  ({isOpen, onClose, cartItems,onOrderComplete})=>{
@@ -18,7 +18,7 @@ const Bill=  ({isOpen, onClose, cartItems,onOrderComplete})=>{
 
     if (!isOpen) return null;
 const subtotal= cartItems.reduce(
-    (total, item)=>total +item.price * item.quantity,0
+    (total, item)=>total +item.price * item.cartQuantity,0
 );
 const deliveryFee= 100;
 const taxRate = 0.13;
@@ -63,11 +63,77 @@ const grandTotal = subtotal + deliveryFee + tax;
             title: t("Order Placed Successfully"),
             description: t("Your order has been placed successfully."),
         });
-        setTimeout(()=>{
-            onOrderComplete();
-        }, 3000);
-    }, 2000);
+    }, 1000);
     };
+
+    const downloadBill = () => {
+    const billContent = `
+KRISHI LINK - INVOICE
+=====================
+
+Customer Information:
+Name: ${customerInfo.name}
+Phone: ${customerInfo.phone}
+Address: ${customerInfo.address}
+${customerInfo.email ? `Email: ${customerInfo.email}` : ""}
+
+Order Summary:
+${cartItems
+  .map(
+    (item) =>
+      `${item.name} - ${item.quantity} ${item.unit} @ Rs.${item.price} = Rs.${
+        item.price * item.quantity
+      }`
+  )
+  .join("\n")}
+
+Subtotal: Rs.${subtotal.toLocaleString()}
+Delivery Fee: Rs.${deliveryFee}
+Tax (13%): Rs.${tax.toFixed(2)}
+Grand Total: Rs.${grandTotal.toFixed(2)}
+
+Thank you for shopping with Krishi Link!
+    `;
+
+    const blob = new Blob([billContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `krishi-link-invoice-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (isOrderPlaced) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-lg w-full max-w-md mx-4 p-6 text-center">
+        <div className="flex justify-between items-center p-4 ">
+          <h2 className="text-2xl font-bold text-green-600"> Krishi Link</h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+          <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />
+          <h3 className="text-xl font-semibold text-green-600 mt-4">
+            {t("Order Placed Successfully")}
+          </h3>
+          <p className="text-gray-500 mt-2">{t("Thank you for your order")}</p>
+          <button
+            onClick={downloadBill}
+            className="mt-6 flex items-center justify-center gap-2 w-full rounded-lg border px-4 py-2 hover:bg-gray-100"
+          >
+            <Download className="w-4 h-4" />
+            {t("Download Bill")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
 
    return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto p-4">
@@ -143,6 +209,13 @@ const grandTotal = subtotal + deliveryFee + tax;
             </div>
           </div>
 
+           <div>
+                <label htmlFor="address">{t("Address")}</label>
+                <textarea id="address" placeholder="Street, City, Province" />
+              </div>
+
+             
+
           {/* Order Summary */}
           <div>
             <h3 className="text-lg font-semibold mb-4">{t("Order Summary")}</h3>
@@ -161,12 +234,12 @@ const grandTotal = subtotal + deliveryFee + tax;
                     <div>
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-gray-500">
-                        {item.quantity} {item.unit} × {t("Rs.")} {item.price}
+                        {item.cartQuantity} {item.unit} × {t("Rs.")} {item.price}
                       </p>
                     </div>
                   </div>
                   <p className="font-semibold">
-                    {t("Rs.")} {(item.price * item.quantity).toLocaleString()}
+                    {t("Rs.")} {(item.price * item.cartQuantity).toLocaleString()}
                   </p>
                 </div>
               ))}
@@ -194,6 +267,28 @@ const grandTotal = subtotal + deliveryFee + tax;
               </span>
             </div>
           </div>
+
+           <div className="space-y-3">
+                <h4 className="font-medium">
+                   {t("Payment Method")}
+                </h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="radio" id="cod" name="payment" defaultChecked />
+                    <label htmlFor="cod">
+                     {t( 'Cash on Delivery (COD)')}
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="radio" id="esewa" name="payment" />
+                    <label htmlFor="esewa">{t('eSewa')}</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="radio" id="khalti" name="payment" />
+                    <label htmlFor="khalti">{t('Khalti')}</label>
+                  </div>
+                </div>
+              </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">

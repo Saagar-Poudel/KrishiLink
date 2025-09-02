@@ -12,7 +12,7 @@ const ProductCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
  const { t } = useLanguage();
- const { addToCart } = useCart();
+//  const { addToCart } = useCart();
   return (
     <div 
       className=" rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer group  dark:bg-gray-800  dark:text-gray-100"
@@ -111,10 +111,10 @@ const ProductCard = ({
       <div className="p-4 pt-0">
         <div className="w-full space-y-2">
           <button 
-            className={`w-full bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center cursor-pointer hover:text-yellow-300 ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
+            className={`w-full bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center  ${!product.isAvailable && 'bg-gray-400 cursor-not-allowed'}`}
             onClick={(e) => {
               e.stopPropagation();
-              addToCart(product);
+              onAddToCart(product);
             }}
             disabled={!product.isAvailable}
           >

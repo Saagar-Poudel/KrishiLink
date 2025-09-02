@@ -92,6 +92,26 @@ const translations = {
     total: "Total:",
     proceedCheckout: "Proceed to Checkout",
     clearCart: "Clear Cart",
+
+     // Bill
+    'Invoice': 'Invoice',
+    'Bill Details': 'Bill Details',
+    'Customer Information': 'Customer Information',
+    'Order Summary': 'Order Summary',
+    'Subtotal': 'Subtotal',
+    'Delivery Fee': 'Delivery Fee',
+    'Tax (13%)': 'Tax (13%)',
+    'Grand Total': 'Grand Total',
+    'Place Order': 'Place Order',
+    'Order Placed Successfully': 'Order Placed Successfully',
+    'Thank you for your order': 'Thank you for your order',
+    'Your order has been placed successfully': 'Your order has been placed successfully',
+
+     // Generic
+    'Government Approved': 'सरकारी स्वीकृत',
+    'kg': 'केजी',
+    'pieces': 'थान',
+    'liter': 'लिटर'
   },
   ne: {
     // Header
@@ -186,16 +206,36 @@ const translations = {
     total: "कुल:",
     proceedCheckout: "चेकआउट गर्नुहोस्",
     clearCart: "खाली गर्नुहोस्",
+
+    // Bill
+    'Invoice': 'बिल',
+    'Bill Details': 'बिल विवरण',
+    'Customer Information': 'ग्राहक जानकारी',
+    'Order Summary': 'अर्डर सारांश',
+    'Subtotal': 'उप-जम्मा',
+    'Delivery Fee': 'डेलिभरी शुल्क',
+    'Tax (13%)': 'कर (१३%)',
+    'Grand Total': 'कुल जम्मा',
+    'Place Order': 'अर्डर दिनुहोस्',
+    'Order Placed Successfully': 'अर्डर सफलतापूर्वक राखियो',
+    'Thank you for your order': 'तपाईंको अर्डरको लागि धन्यवाद',
+    'Your order has been placed successfully': 'तपाईंको अर्डर सफलतापूर्वक राखिएको छ',
+    
+    // Generic
+    'Government Approved': 'सरकारी स्वीकृत',
+    'kg': 'केजी',
+    'pieces': 'थान',
+    'liter': 'लिटर'
 },
 };
 
 const LanguageContext = createContext(undefined);
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState('ne');
+  const [language, setLanguage] = useState('en');
 
   const toggleLanguage = () => {
-    setLanguage(prev => (prev === 'en' ? 'ne' : 'en'));
+    setLanguage(prev => (prev === 'ne' ? 'en' : 'ne'));
   };
 
   const t = (key) => {
