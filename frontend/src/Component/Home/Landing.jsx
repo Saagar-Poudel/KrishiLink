@@ -2,7 +2,7 @@
 import { ArrowRight, Users, TrendingUp, MapPin, Bot } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-const Hero = () => {
+const Landing = () => {
   const { t } = useLanguage();
 
   return (
@@ -76,5 +76,5 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default Landing;
 
