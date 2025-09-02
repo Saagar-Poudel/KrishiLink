@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, boolean, numeric, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, boolean, numeric, timestamp, varchar, real } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 //Create user credentials model for login and registration
@@ -14,10 +14,35 @@ export const users = pgTable("users", {
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
+
+  // Basic details
   name: text("name").notNull(),
-  description: text("description"),
+  nameNepali: text("name_nepali"),
+  category: text("category"),
+
+  // Pricing & stock
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
-  stock: integer("stock").default(0),
+  unit: text("unit"), // e.g., kg, liter, dozen
+  quantity: integer("quantity").default(0), // available quantity
+
+  // Location & seller
+  location: text("location"),
+  sellerName: text("seller_name"),
+
+  // Media
+  image: text("image"),
+
+  // Status flags
+  isVerified: boolean("is_verified").default(false),
+  isAvailable: boolean("is_available").default(true),
+  hasDelivery: boolean("has_delivery").default(false),
+  rating: real("rating").default(0), // FLOAT (to store 4.8 etc.)
+  reviewCount: integer("review_count").default(0),
+  isOrganic: boolean("is_organic").default(false),
+  isBulkAvailable: boolean("is_bulk_available").default(false),
+  estimatedDelivery: text("estimated_delivery"),
+
+  // Metadata
   createdAt: timestamp("created_at").defaultNow(),
 });
 

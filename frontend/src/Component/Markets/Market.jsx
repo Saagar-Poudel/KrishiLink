@@ -4,9 +4,10 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import Filters from './Filters';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
+import axios from "axios";
 
 
-const Market = () => {
+const Market =  () => {
  const { t } = useLanguage();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -14,9 +15,10 @@ const Market = () => {
   const [cartItems, setCartItems] = useState([]);
   const [filters, setFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
   // Sample products data
-  const products = [
+  const products1 = [
    {
       id: "1",
       name: "Organic Tomatoes",
@@ -98,6 +100,18 @@ const Market = () => {
       estimatedDelivery: "Pickup only"
     }
   ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:3000/api/products/");
+        setProducts(data);
+        setFilteredProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     filterProducts();
