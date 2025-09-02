@@ -12,8 +12,9 @@ import Contact from './Component/Contact';
 import Login from './Component/Auth/Login';
 import AuthLayout from './Authlayout';
 import Market from './Component/Markets/Market';
-
 import { Toaster } from 'react-hot-toast'; 
+import Training from './Component/Training/Training';
+
 
 
 
@@ -26,6 +27,8 @@ const router = createBrowserRouter(
 <Route path='/news' element={<NewsSection/>} />
 <Route path='/weather' element={<WeatherAndPrices/>} />
 <Route path='/contact' element={<Contact/>} />
+<Route path='/training' element={<Training/>} />
+
    </Route>
      
 
