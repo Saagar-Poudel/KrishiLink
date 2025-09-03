@@ -7,13 +7,14 @@ import Home from './Component/Home/Home';
 import WeatherAndPrices from './Component/Weatherandprice/WeatherAndPrices';
 import NewsSection from './Component/NewsSection';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { CartProvider } from './contexts/CartContex';
 import Contact from './Component/Contact';
 import Login from './Component/Auth/Login';
 import AuthLayout from './Authlayout';
 import Market from './Component/Markets/Market';
 import SellerProductForm from './Component/SellerProductForm';
 
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast'; 
 
 
 
@@ -41,8 +42,10 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")).render(
   <StrictMode>
      <LanguageProvider>
+      <CartProvider>
     <RouterProvider router={router}/>
-     <Toaster position="top-right" />   {/* settings toast */}
+     <Toaster position="bottom-right" />   {/* settings toast */}
+     </CartProvider>
     </LanguageProvider>
   </StrictMode>
 );

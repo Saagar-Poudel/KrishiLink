@@ -88,14 +88,14 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
           <select
             value={category}
             onChange={(e) => {
-              const newCategory = e.target.value;
+              const newCategory= e.target.value;
               setCategory(newCategory);
               onFiltersChange({
                 searchTerm,
-                category: newCategory, // ✅ use new value
+                category: newCategory,
                 priceRange,
                 location,
-                certifications,
+                certifications
               });
             }}
             className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800  dark:text-gray-100"
@@ -143,8 +143,15 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
           <select
             value={location}
             onChange={(e) => {
-              setLocation(e.target.value);
-              handleFiltersChange();
+              const newLocation = e.target.value;
+              setLocation(newLocation);
+              onFiltersChange({
+                searchTerm,
+                category,
+                priceRange,
+                location: e.target.value,
+                certifications
+              });
             }}
             className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500  dark:bg-gray-800  dark:text-gray-100"
           >

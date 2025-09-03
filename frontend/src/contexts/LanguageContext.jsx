@@ -77,6 +77,41 @@ const translations = {
     Contact: 'Contact',
     PrivacyPolicy: 'Privacy Policy',
     TermsOfService: 'Terms of Service',
+
+    //cart
+    cartTitle: "Your Cart",
+    cartEmpty: "Your cart is empty",
+    cartItems: (count) => `${count} item${count > 1 ? "s" : ""} in your cart`,
+    continueShopping: "Continue Shopping",
+    addProductsMessage: "Add some products to start shopping",
+    itemRemoved: "Item Removed",
+    cartCleared: "Cart Cleared",
+    allItemsRemoved: "All items removed from cart",
+    checkoutStarted: "Checkout Initiated",
+    checkoutSoon: "This feature will be available soon",
+    total: "Total:",
+    proceedCheckout: "Proceed to Checkout",
+    clearCart: "Clear Cart",
+
+     // Bill
+    'Invoice': 'Invoice',
+    'Bill Details': 'Bill Details',
+    'Customer Information': 'Customer Information',
+    'Order Summary': 'Order Summary',
+    'Subtotal': 'Subtotal',
+    'Delivery Fee': 'Delivery Fee',
+    'Tax (13%)': 'Tax (13%)',
+    'Grand Total': 'Grand Total',
+    'Place Order': 'Place Order',
+    'Order Placed Successfully': 'Order Placed Successfully',
+    'Thank you for your order': 'Thank you for your order',
+    'Your order has been placed successfully': 'Your order has been placed successfully',
+
+     // Generic
+    'Government Approved': 'सरकारी स्वीकृत',
+    'kg': 'केजी',
+    'pieces': 'थान',
+    'liter': 'लिटर'
   },
   ne: {
     // Header
@@ -156,16 +191,51 @@ const translations = {
     Contact: 'सम्पर्क',
     PrivacyPolicy: 'गोपनीयता नीति',
     TermsOfService: 'सेवाका सर्तहरू',
-  },
+
+    //cart np
+     cartTitle: "तपाईंको कार्ट",
+    cartEmpty: "तपाईंको कार्ट खाली छ",
+    cartItems: (count) => `${count} वटा वस्तुहरू कार्टमा छन्`,
+    continueShopping: "किनमेल जारी राख्नुहोस्",
+    addProductsMessage: "किनमेल सुरु गर्न केही उत्पादनहरू थप्नुहोस्",
+    itemRemoved: "वस्तु हटाइयो",
+    cartCleared: "कार्ट खाली गरियो",
+    allItemsRemoved: "सबै वस्तुहरू कार्टबाट हटाइयो",
+    checkoutStarted: "चेकआउट सुरु गरियो",
+    checkoutSoon: "यो सुविधा छिट्टै उपलब्ध हुनेछ",
+    total: "कुल:",
+    proceedCheckout: "चेकआउट गर्नुहोस्",
+    clearCart: "खाली गर्नुहोस्",
+
+    // Bill
+    'Invoice': 'बिल',
+    'Bill Details': 'बिल विवरण',
+    'Customer Information': 'ग्राहक जानकारी',
+    'Order Summary': 'अर्डर सारांश',
+    'Subtotal': 'उप-जम्मा',
+    'Delivery Fee': 'डेलिभरी शुल्क',
+    'Tax (13%)': 'कर (१३%)',
+    'Grand Total': 'कुल जम्मा',
+    'Place Order': 'अर्डर दिनुहोस्',
+    'Order Placed Successfully': 'अर्डर सफलतापूर्वक राखियो',
+    'Thank you for your order': 'तपाईंको अर्डरको लागि धन्यवाद',
+    'Your order has been placed successfully': 'तपाईंको अर्डर सफलतापूर्वक राखिएको छ',
+    
+    // Generic
+    'Government Approved': 'सरकारी स्वीकृत',
+    'kg': 'केजी',
+    'pieces': 'थान',
+    'liter': 'लिटर'
+},
 };
 
 const LanguageContext = createContext(undefined);
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState('ne');
+  const [language, setLanguage] = useState('en');
 
   const toggleLanguage = () => {
-    setLanguage(prev => (prev === 'en' ? 'ne' : 'en'));
+    setLanguage(prev => (prev === 'ne' ? 'en' : 'ne'));
   };
 
   const t = (key) => {
