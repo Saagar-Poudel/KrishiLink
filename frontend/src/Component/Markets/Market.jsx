@@ -6,8 +6,9 @@ import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
+import axios from "axios";
 
-const Market = () => {
+const Market =  () => {
  const { t } = useLanguage();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -15,92 +16,22 @@ const Market = () => {
   // const [cartItems, setCartItems] = useState([]);
   const [filters, setFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
-   const { toast } = useToast(); 
-   const { addToCart } = useCart();
+  const { toast } = useToast(); 
+  const { addToCart } = useCart();
+  const [products, setProducts] = useState([]);
 
-  // Sample products data
-  const products = [
-   {
-      id: "1",
-      name: "Organic Tomatoes",
-      nameNepali: "जैविक गोलभेडा",
-      category: "Vegetables",
-      price: 120,
-      unit: "kg",
-      quantity: 500,
-      location: "Chitwan, Nepal",
-      sellerName: "Ram Prasad Farmer",
-      image: "/Images/land.jpg",
-      isVerified: true,
-      isAvailable: true,
-      hasDelivery: true,
-      rating: 4.8,
-      reviewCount: 24,
-      isOrganic: true,
-      isBulkAvailable: true,
-      estimatedDelivery: "2-3 days"
-    },
-    {
-      id: "2",
-      name: "Fresh Vegetables Mix",
-      nameNepali: "ताजा तरकारी मिक्स",
-      category: "Vegetables",
-      price: 80,
-      unit: "kg",
-      quantity: 200,
-      location: "Kathmandu, Nepal",
-      sellerName: "Sita Cooperative",
-      image: '/Images/vegatables.jpeg',
-      isVerified: true,
-      isAvailable: true,
-      hasDelivery: true,
-      rating: 4.6,
-      reviewCount: 18,
-      isOrganic: false,
-      isBulkAvailable: true,
-      estimatedDelivery: "1-2 days"
-    },
-    {
-      id: "3",
-      name: "Golden Wheat",
-      nameNepali: "सुनौलो गहुँ",
-      category: "Grains",
-      price: 45,
-      unit: "kg",
-      quantity: 1000,
-      location: "Rupandehi, Nepal",
-      sellerName: "Krishna Agro Farm",
-      image: "/Images/land.jpg",
-      isVerified: true,
-      isAvailable: true,
-      hasDelivery: true,
-      rating: 4.9,
-      reviewCount: 35,
-      isOrganic: false,
-      isBulkAvailable: true,
-      estimatedDelivery: "3-5 days"
-    },
-    {
-      id: "4",
-      name: "Premium Tomatoes",
-      nameNepali: "प्रिमियम गोलभेडा",
-      category: "Vegetables",
-      price: 150,
-      unit: "kg",
-      quantity: 0,
-      location: "Pokhara, Nepal",
-      sellerName: "Himalaya Farmers",
-      image: "/Images/Drinks.jpg",
-      isVerified: false,
-      isAvailable: false,
-      hasDelivery: false,
-      rating: 4.2,
-      reviewCount: 12,
-      isOrganic: true,
-      isBulkAvailable: false,
-      estimatedDelivery: "Pickup only"
-    }
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:3000/api/products/");
+        setProducts(data);
+        setFilteredProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     filterProducts();
@@ -147,9 +78,17 @@ const Market = () => {
 
     setFilteredProducts(filtered);
   };
-  
+
   const handleProductClick = (product) => {
     setSelectedProduct(product);
+  };
+
+  const handleAddToCart = (product, quantity = 1) => {
+    addToCart(product, quantity);
+    toast({
+      title: t("Added to Cart"),
+      description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`),
+    });
   };
 
   const handleToggleWishlist = (productId) => {
@@ -168,14 +107,6 @@ const Market = () => {
     }
   };
 
-  const handleAddToCart = (product, quantity = 1) => {
-    addToCart(product, quantity);
-    toast({
-      title: t("Added to Cart"),
-      description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`),
-    });
-  };
-
   const stats = [
     { icon: Store, label: t("Active Sellers"), value: "2,500+", color: "text-primary" },
     { icon: Leaf, label: t("Organic Products"), value: "1,200+", color: "text-success" },
@@ -185,30 +116,6 @@ const Market = () => {
 
   return (
     <div className=" container mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Hero Section */}
-      {/* <div className="relative h-96 overflow-hidden">
-        <img
-          src="public/images/Drinks.jpg"
-          alt={t("Smart Agriculture Marketplace")}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold">
-              {t("Smart Agriculture Marketplace")}
-            </h1>
-            <p className="text-xl md:text-2xl opacity-90">
-              {t("Connecting Farmers Directly to Consumers")}
-            </p>
-          </div>
-        </div>
-      </div> */}
-      
-  
-
-     
-
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
@@ -290,8 +197,6 @@ const Market = () => {
         </div>
       </div>
     </div>
-
-    
   );
 };
 

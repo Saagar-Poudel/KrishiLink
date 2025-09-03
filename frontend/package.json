@@ -11,8 +11,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.56.1",
     "@tailwindcss/vite": "^4.1.5",
     "axios": "^1.10.0",
+    "dotenv": "^17.2.1",
     "heroicons": "^2.2.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.511.0",
@@ -21,8 +23,13 @@
     "react-hot-toast": "^2.6.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.6.1",
+<<<<<<< HEAD
     "swiper": "^11.2.10",
     "tailwindcss": "^4.1.5"
+=======
+    "tailwindcss": "^4.1.5",
+    "uuid": "^11.1.0"
+>>>>>>> 2b30e645e5e600257120e39aeecae1730a881682
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

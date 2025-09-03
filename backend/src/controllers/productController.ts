@@ -28,12 +28,9 @@ export const getProductById = async (req: Request, res: Response):Promise<any> =
 // ✅ Create product
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, stock } = req.body;
+    const { name, nameNepali, category, price, unit, quantity, location, sellerName, image, isVerified, isAvailable, hasDelivery, rating, reviewCount, isOrganic, isBulkAvailable, estimatedDelivery } = req.body;
     const [newProduct] = await db.insert(products).values({
-      name,
-      description,
-      price,
-      stock,
+      name, nameNepali, category, price, unit, quantity, location, sellerName, image, isVerified, isAvailable, hasDelivery, rating, reviewCount, isOrganic, isBulkAvailable, estimatedDelivery
     }).returning();
     res.status(201).json(newProduct);
   } catch (error) {
@@ -45,9 +42,9 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response):Promise<any> => {
   try {
     const id = Number(req.params.id);
-    const { name, description, price, stock } = req.body;
+    const { name, price } = req.body;
     const [updatedProduct] = await db.update(products)
-      .set({ name, description, price, stock })
+      .set({ name, price })
       .where(eq(products.id, id))
       .returning();
     if (!updatedProduct) return res.status(404).json({ error: "Product not found" });
