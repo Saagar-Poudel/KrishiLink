@@ -105,16 +105,16 @@ const Storage = () => {
 
       {/* Map */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-green-900 mb-4 text-center">Nearby Cold Storage & Marketplaces</h2>
+        <h2 className="text-2xl font-bold text-black-900 mb-4 text-center">Nearby Cold Storage & Marketplaces</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           {locations.map((loc, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-xl shadow border border-green-200 bg-green-50 flex flex-col gap-2 hover:scale-105 hover:shadow-2xl transition-transform cursor-pointer"
+              className="p-4 rounded-xl shadow  bg-white-50 flex flex-col gap-2 hover:scale-105 hover:shadow-2xl transition-transform cursor-pointer"
             >
-              <h3 className="text-lg font-bold text-green-800">{loc.name}</h3>
-              <p className="text-sm text-green-700">Address: {loc.address}</p>
-              <p className="text-sm text-green-700">Distance: {loc.distance}</p>
+              <h3 className="text-lg font-bold text-black-800">{loc.name}</h3>
+              <p className="text-sm text-black-700">Address: {loc.address}</p>
+              <p className="text-sm text-black-700">Distance: {loc.distance}</p>
             </div>
           ))}
         </div>
@@ -122,8 +122,8 @@ const Storage = () => {
       </section>
 
       {/* Proper Methods */}
-      <section className="mb-8 bg-green-100 rounded-xl shadow p-6 border border-green-200">
-        <h2 className="text-2xl font-bold text-green-900 text-center mb-4">Proper Storage Methods</h2>
+      <section className="mb-8 bg-white-100 rounded-xl shadow p-6 ">
+        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Proper Storage Methods</h2>
         <Swiper
           ref={properSwiperRef}
           modules={[Pagination]}
@@ -138,8 +138,8 @@ const Storage = () => {
                 className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl border border-green-200 hover:border-green-400"
               >
                 <div className="text-4xl mb-2">{m.icon}</div>
-                <h3 className="text-xl font-bold text-green-800 mb-1 text-center">{m.title}</h3>
-                <p className="mt-2 text-green-700 text-center text-base font-medium">{m.desc}</p>
+                <h3 className="text-xl font-bold text-black-800 mb-1 text-center">{m.title}</h3>
+                <p className="mt-2 text-black-700 text-center text-base font-medium">{m.desc}</p>
               </div>
             </SwiperSlide>
           ))}
@@ -147,8 +147,8 @@ const Storage = () => {
       </section>
 
       {/* Traditional Methods */}
-      <section className="mb-8 bg-green-50 rounded-xl shadow p-6 border border-green-200">
-        <h2 className="text-2xl font-bold text-green-900 text-center mb-4">Traditional Storage Methods</h2>
+      <section className="mb-8 bg-white-50 rounded-xl shadow p-6 ">
+        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Traditional Storage Methods</h2>
         <Swiper
           ref={traditionalSwiperRef}
           modules={[Pagination]}
@@ -161,8 +161,8 @@ const Storage = () => {
             <SwiperSlide key={i}>
               <div className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl border border-green-200 hover:border-green-400">
                 <div className="text-4xl mb-2">{m.icon}</div>
-                <h3 className="text-xl font-bold text-green-800 mb-1 text-center">{m.title}</h3>
-                <p className="mt-2 text-green-700 text-center text-base font-medium">{m.desc}</p>
+                <h3 className="text-xl font-bold text-black-800 mb-1 text-center">{m.title}</h3>
+                <p className="mt-2 text-black-700 text-center text-base font-medium">{m.desc}</p>
               </div>
             </SwiperSlide>
           ))}
@@ -170,8 +170,8 @@ const Storage = () => {
       </section>
 
       {/* Advanced Techniques */}
-      <section className="mb-8 bg-green-100 rounded-xl shadow p-6 border border-green-200">
-        <h2 className="text-2xl font-bold text-green-900 text-center mb-4">Advanced Storage Techniques</h2>
+      <section className="mb-8 bg-white-100 rounded-xl shadow p-6">
+        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Advanced Storage Techniques</h2>
         <Swiper
           ref={advancedSwiperRef}
           modules={[Pagination]}
@@ -184,8 +184,8 @@ const Storage = () => {
             <SwiperSlide key={i}>
               <div className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center transition-transform hover:scale-105 hover:shadow-2xl border border-green-200 hover:border-green-400 cursor-pointer">
                 <div className="text-4xl mb-2">{tech.icon}</div>
-                <h3 className="text-xl font-bold text-green-800 mb-1 text-center">{tech.title}</h3>
-                <p className="mt-2 text-green-700 text-center text-base font-medium">{tech.desc}</p>
+                <h3 className="text-xl font-bold text-black-800 mb-1 text-center">{tech.title}</h3>
+                <p className="mt-2 text-black-700 text-center text-base font-medium">{tech.desc}</p>
               </div>
             </SwiperSlide>
           ))}
@@ -194,7 +194,7 @@ const Storage = () => {
 
       {/* Video Tutorials */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-green-900 text-center mb-4">Storage Video Tutorials</h2>
+        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Storage Video Tutorials</h2>
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {storageVideos.map((vid, i) => (
     <div key={i} className="rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform border border-green-200">
@@ -206,7 +206,7 @@ const Storage = () => {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       ></iframe>
-      <div className="p-4 bg-green-50 text-green-900 font-semibold text-center">{vid.title}</div>
+      <div className="p-4 bg-white-50 text-black-900 font-semibold text-center">{vid.title}</div>
     </div>
   ))}
 </div>
