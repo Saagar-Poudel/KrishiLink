@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import { Search, MapPin, TrendingUp } from "lucide-react";
 import { useToast } from "../../hooks/use-toast";
 
@@ -11,29 +11,23 @@ const Weather = () => {
 
   const apikey = "2a57e1e4c13eb0579d5b5f223462a126";
   const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-   const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
+  const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?units=metric&q=";
 
   const fetchWeather = async (city) => {
     setLoading(true);
     try {
-      // Fetch current weather
       const weatherResponse = await fetch(`${apiUrl}${city}&appid=${apikey}`);
-      if (!weatherResponse.ok) {
-        throw new Error("City not found");
-      }
+      if (!weatherResponse.ok) throw new Error("City not found");
       const weatherResult = await weatherResponse.json();
       setWeatherData(weatherResult);
 
-      // Fetch forecast
       const forecastResponse = await fetch(`${forecastUrl}${city}&appid=${apikey}`);
-      if (!forecastResponse.ok) {
-        throw new Error("Forecast not available");
-      }
+      if (!forecastResponse.ok) throw new Error("Forecast not available");
       const forecastResult = await forecastResponse.json();
       setForecastData(forecastResult);
 
       toast({
-        title: "Weather ",
+        title: "Weather",
         description: `Weather data for ${city} loaded successfully!`,
       });
     } catch (error) {
@@ -48,7 +42,6 @@ const Weather = () => {
   };
 
   useEffect(() => {
-    // Load default weather for Kathmandu
     fetchWeather("Kathmandu");
   }, []);
 
@@ -65,13 +58,11 @@ const Weather = () => {
     }
   };
 
-  // Get daily forecasts (filter to get one per day)
   const getDailyForecasts = () => {
     if (!forecastData) return [];
-    
     const dailyForecasts = [];
     const processedDates = new Set();
-    
+
     for (const item of forecastData.list) {
       const date = new Date(item.dt * 1000).toDateString();
       if (!processedDates.has(date) && dailyForecasts.length < 4) {
@@ -79,8 +70,14 @@ const Weather = () => {
         processedDates.add(date);
       }
     }
-    
-    return dailyForecasts.slice(1); // Skip today, show next 4 days
+    return dailyForecasts.slice(1);
+  };
+
+  // Helper function: pick color based on temperature
+  const getTempColor = (temp) => {
+    if (temp > 25) return "text-red-500";    // Hot
+    if (temp < 15) return "text-blue-500";   // Cold
+    return "text-green-600";                 // Moderate
   };
 
   return (
@@ -88,26 +85,29 @@ const Weather = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 shadow-[var(--shadow-medium)]">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Krishi Link Weather</h1>
-          <p className="text-primary-foreground/80">Agricultural Weather & Market Information</p>
+          <h1 className="text-3xl font-bold mb-2 text-green-600">Krishi Link Weather</h1>
+          <p className="text-green-600">Agricultural Weather & Market Information</p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto p-6 space-y-8">
         {/* Search Section */}
-        <div className="p-6 bg-gradient-to-r from-card to-muted border shadow-[var(--shadow-soft)]">
+        <div className="p-6 bg-gradient-to-r from-card to-muted border shadow-[var(--shadow-soft)] rounded-2xl">
           <div className="flex gap-4 items-center">
-            <MapPin className="w-6 h-6 text-primary" />
+            <MapPin className="w-6 h-6 text-green-600" />
             <div className="flex-1 flex gap-2">
               <input
                 placeholder="Search for a city..."
                 value={searchCity}
                 onChange={(e) => setSearchCity(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1"
+                className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
               />
-              
-              <button onClick={handleSearch} disabled={loading} className="bg-primary hover:bg-primary/90">
+              <button
+                onClick={handleSearch}
+                disabled={loading}
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+              >
                 <Search className="w-4 h-4" />
                 Search
               </button>
@@ -118,47 +118,55 @@ const Weather = () => {
         {/* Current Weather */}
         {weatherData && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <MapPin className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold flex items-center gap-2 text-green-700">
+              <MapPin className="w-6 h-6 text-green-600" />
               Current Weather
             </h2>
             <div className="p-6 rounded-2xl shadow bg-card border">
-      <h3 className="text-xl font-semibold mb-2">{weatherData.name}</h3>
-      <p className="text-4xl font-bold">{Math.round(weatherData.main.temp)}°C</p>
-      <p className="text-muted-foreground capitalize">{weatherData.weather[0].description}</p>
-      <div className="flex gap-6 mt-4 text-sm">
-        <span>💧 Humidity: {weatherData.main.humidity}%</span>
-        <span>🌬️ Wind: {weatherData.wind.speed} m/s</span>
-      </div>
-      </div>
+              <h3 className="text-xl font-semibold mb-2 text-green-700">{weatherData.name}</h3>
+              <p className={`text-4xl font-bold ${getTempColor(weatherData.main.temp)}`}>
+                {Math.round(weatherData.main.temp)}°C
+              </p>
+              <p className="text-muted-foreground capitalize">{weatherData.weather[0].description}</p>
+              <div className="flex gap-6 mt-4 text-sm">
+                <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700">
+                  💧 Humidity: {weatherData.main.humidity}%
+                </span>
+                <span className="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700">
+                  🌬️ Wind: {weatherData.wind.speed} m/s
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
         {/* 4-Day Forecast */}
         {forecastData && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold flex items-center gap-2 text-green-700">
+              <TrendingUp className="w-6 h-6 text-green-600" />
               4-Day Forecast
             </h2>
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {getDailyForecasts().map((forecast, index) => (
-        <div
-          key={index}
-          className="p-4 rounded-2xl shadow bg-card border flex flex-col items-center"
-        >
-          <p className="font-semibold">
-            {new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            })}
-          </p>
-          <p className="text-2xl font-bold mt-2">{Math.round(forecast.main.temp)}°C</p>
-          <p className="text-muted-foreground capitalize">{forecast.weather[0].description}</p>
-        </div>
-      ))}
-    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {getDailyForecasts().map((forecast, index) => (
+                <div
+                  key={index}
+                  className="p-4 rounded-2xl shadow bg-card border flex flex-col items-center"
+                >
+                  <p className="font-semibold text-green-700">
+                    {new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
+                  <p className={`text-2xl font-bold mt-2 ${getTempColor(forecast.main.temp)}`}>
+                    {Math.round(forecast.main.temp)}°C
+                  </p>
+                  <p className="text-muted-foreground capitalize">{forecast.weather[0].description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

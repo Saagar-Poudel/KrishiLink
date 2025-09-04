@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Store, TrendingUp, Users, Leaf } from "lucide-react";
 import { useLanguage } from '../../contexts/LanguageContext';
 import Filters from './Filters';
@@ -9,14 +9,6 @@ import { useCart } from "../../contexts/CartContex";
 
 const Market = () => {
  const { t } = useLanguage();
-
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [wishlistedProducts, setWishlistedProducts] = useState([]);
-  // const [cartItems, setCartItems] = useState([]);
-  const [filters, setFilters] = useState({});
-  const [filteredProducts, setFilteredProducts] = useState([]);
-   const { toast } = useToast(); 
-   const { addToCart } = useCart();
 
   // Sample products data
   const products = [
@@ -50,7 +42,7 @@ const Market = () => {
       quantity: 200,
       location: "Kathmandu, Nepal",
       sellerName: "Sita Cooperative",
-      image: '/Images/vegatables.jpeg',
+      image: '/Images/vegetables.jpeg',
       isVerified: true,
       isAvailable: true,
       hasDelivery: true,
@@ -102,9 +94,16 @@ const Market = () => {
     }
   ];
 
+    const [selectedProduct, setSelectedProduct] = useState(null);
+  const [wishlistedProducts, setWishlistedProducts] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [filteredProducts, setFilteredProducts] = useState(products);
+   const { toast } = useToast(); 
+   const { addToCart } = useCart();
+
   useEffect(() => {
     filterProducts();
-  }, [filters, products]);
+  }, [filters]);
 
   useEffect(() => {
   setFilteredProducts(products);
@@ -120,6 +119,7 @@ const Market = () => {
         product.sellerName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
         product.nameNepali?.toLowerCase().includes(filters.searchTerm.toLowerCase())
       );
+      setFilteredProducts(filtered);
     } 
 
 
@@ -185,30 +185,7 @@ const Market = () => {
 
   return (
     <div className=" container mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Hero Section */}
-      {/* <div className="relative h-96 overflow-hidden">
-        <img
-          src="public/images/Drinks.jpg"
-          alt={t("Smart Agriculture Marketplace")}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold">
-              {t("Smart Agriculture Marketplace")}
-            </h1>
-            <p className="text-xl md:text-2xl opacity-90">
-              {t("Connecting Farmers Directly to Consumers")}
-            </p>
-          </div>
-        </div>
-      </div> */}
-      
-  
-
-     
-
+    
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
@@ -276,19 +253,22 @@ const Market = () => {
       />
 
        {/* Stats Section */}
-      <div className="bg-primary text-primary-foreground py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <stat.icon className="w-8 h-8 mx-auto mb-2" />
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <div className="text-sm opacity-90">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+   <div className="bg-primary text-primary-foreground py-12">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className=" rounded-2xl shadow-lg p-6 text-center text-green-800 transition-transform transform hover:-translate-y-2 hover:shadow-xl"
+            >
+              <stat.icon className="w-10 h-10 mx-auto mb-3 text-primary-foreground/90" />
+              <div className="text-3xl font-extrabold">{stat.value}</div>
+              <div className="text-sm opacity-80 mt-1">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
+    </div>
     </div>
 
     

@@ -81,7 +81,7 @@ const translations = {
     //cart
     cartTitle: "Your Cart",
     cartEmpty: "Your cart is empty",
-    cartItems: (count) => `${count} item${count > 1 ? "s" : ""} in your cart`,
+    cartItems: ' item in your cart',
     continueShopping: "Continue Shopping",
     addProductsMessage: "Add some products to start shopping",
     itemRemoved: "Item Removed",
@@ -195,7 +195,7 @@ const translations = {
     //cart np
      cartTitle: "तपाईंको कार्ट",
     cartEmpty: "तपाईंको कार्ट खाली छ",
-    cartItems: (count) => `${count} वटा वस्तुहरू कार्टमा छन्`,
+    cartItems: ' वटा वस्तुहरू कार्टमा छन्',
     continueShopping: "किनमेल जारी राख्नुहोस्",
     addProductsMessage: "किनमेल सुरु गर्न केही उत्पादनहरू थप्नुहोस्",
     itemRemoved: "वस्तु हटाइयो",

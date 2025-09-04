@@ -76,7 +76,7 @@ export const Cart = ({  onClose,isOpen }) => {
         <p className="px-4 py-2 text-sm text-gray-500 border-b">
           {cartItems.length === 0
             ? t("cartEmpty")
-            : `${cartItems.length} ${t("cartItems", { count: cartItems.length })}`}
+            : `${cartItems.length} ${t("cartItems")}`}
         </p>
 
         {/* Empty cart */}

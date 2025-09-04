@@ -21,11 +21,11 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
    <Route path='/' element={<Roots/>}>
-<Route path='' element={<Home/>} />
-<Route path='/market' element={<Market/>} />
-<Route path='/news' element={<NewsSection/>} />
-<Route path='/weather' element={<WeatherAndPrices/>} />
-<Route path='/contact' element={<Contact/>} />
+ <Route index element={<Home />} />
+<Route path='market' element={<Market/>} />
+<Route path='news' element={<NewsSection/>} />
+<Route path='weather' element={<WeatherAndPrices/>} />
+<Route path='contact' element={<Contact/>} />
    </Route>
      
 

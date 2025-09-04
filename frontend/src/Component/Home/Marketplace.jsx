@@ -3,15 +3,16 @@ import {  Star, Truck, Shield,ChevronLeft, ChevronRight,  } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useEffect } from 'react';
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const Marketplace = () => {
   const { t } = useLanguage();
-  
-  
-const categories = [
-  {
-    id: "vegetables",
+  const navigate = useNavigate();
+
+  const categories = [
+    {
+      id: "vegetables",
     name: t("Vegetables"),
     image: "/Images/vegetables.jpeg",
   },
@@ -190,7 +191,9 @@ return (
 
     {/* CTA */}
     <div className="text-center mt-12">
-      <button className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-opacity flex items-center mx-auto">
+      <button 
+      onClick={()=> navigate("/market")}
+      className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-opacity flex items-center mx-auto">
         {t('All available products')}
         <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />

@@ -1,4 +1,3 @@
-import { TrendingUp, TrendingDown, Search } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import Weather from './Wether';
 
@@ -39,10 +38,10 @@ const WeatherAndPrices = () => {
  <div className="border-border/50">
           <div className="p-6">
             <div className="mb-4">
-              <h2 className="text-xl font-semibold text-foreground mb-2">
+              <h2 className="text-3xl font-semibold text-foreground mb-2 text-green-600">
                 Live Market Data from Nepal Calendar
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground text-green-600">
                 Real-time vegetable price updates from Kalimati Market
               </p>
             </div>
@@ -59,33 +58,9 @@ const WeatherAndPrices = () => {
             </div>
           </div>
         </div>
-
           </div>
         </div>
 
-         {/* <div className="border-border/50">
-          <div className="p-6">
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold text-foreground mb-2">
-                Live Market Data from Nepal Calendar
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Real-time vegetable price updates from Kalimati Market
-              </p>
-            </div>
-            
-            <div className="border border-border/50 rounded-lg overflow-hidden bg-card">
-              <iframe
-                src="https://nepalicalendar.rat32.com/vegetable/embed.php"
-                width="100%"
-                height="600"
-                frameBorder="0"
-                className="w-full"
-                title="Nepal Vegetable Market Prices"
-              />
-            </div>
-          </div>
-        </div> */}
       </div>
     </section>
   );

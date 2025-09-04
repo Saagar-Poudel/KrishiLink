@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Heart, MapPin, Star, ShoppingCart, User, Package, Truck } from "lucide-react";
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useCart } from "../../contexts/CartContex";
 
 const ProductCard = ({ 
   product, 

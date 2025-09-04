@@ -209,12 +209,10 @@ Thank you for shopping with Krishi Link!
             </div>
           </div>
 
-           <div>
+           {/* <div>
                 <label htmlFor="address">{t("Address")}</label>
                 <textarea id="address" placeholder="Street, City, Province" />
-              </div>
-
-             
+              </div> */}      
 
           {/* Order Summary */}
           <div>
