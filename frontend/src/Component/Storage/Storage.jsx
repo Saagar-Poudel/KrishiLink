@@ -1,229 +1,227 @@
-import React, { useEffect, useState, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/autoplay";
-import { Pagination, Autoplay } from "swiper/modules";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, Leaf, Truck, Warehouse, MapPin, Package } from "lucide-react";
 
-const properMethods = [
-  { icon: "🛢️", title: "Metal Bins", desc: "Store grains in airtight metal bins to prevent pests and moisture." },
-  { icon: "🛍️", title: "Hermetic Bags", desc: "Special sealed bags that stop insects and mold growth." },
-  { icon: "❄️", title: "Cold Storage", desc: "Keep fruits and vegetables fresh for weeks in temperature control." },
-  { icon: "🌱", title: "Seed Vaults", desc: "Dry seeds and keep in moisture-proof vaults for future planting." },
+const stats = [
+  { id: 1, value: "5K+", label: "Farmers Using Storage" },
+  { id: 2, value: "200+", label: "Storage Hubs" },
+  { id: 3, value: "500+", label: "Trucks Available" },
 ];
 
-const traditionalMethods = [
-  { icon: "🏺", title: "Mud Pots", desc: "Seeds and grains stored in sealed mud pots." },
-  { icon: "🎋", title: "Bamboo Bins", desc: "Grains stored in woven bamboo containers in rural areas." },
-  { icon: "🌾", title: "Straw Pits", desc: "Root crops stored underground covered with straw." },
-  { icon: "🍃", title: "Neem Leaves", desc: "Neem leaves mixed with grains to repel pests naturally." },
+const storageMethods = [
+  { id: 1, title: "Cold Storage", desc: "Keeps vegetables and fruits fresh with controlled temperature.", icon: <Package className="w-10 h-10 text-blue-600 mx-auto" /> },
+  { id: 2, title: "Dry Storage", desc: "Safe and hygienic storage for grains and pulses.", icon: <Warehouse className="w-10 h-10 text-yellow-600 mx-auto" /> },
+  { id: 3, title: "Grain Silos", desc: "Large-scale storage for bulk crops.", icon: <Leaf className="w-10 h-10 text-green-600 mx-auto" /> },
+  { id: 4, title: "Organic Vaults", desc: "Preserves organic produce with natural methods.", icon: <Package className="w-10 h-10 text-orange-600 mx-auto" /> },
 ];
 
-const advancedTechniques = [
-  { icon: "🧊", title: "Vacuum Sealing", desc: "Removes air from storage bags, preventing spoilage." },
-  { icon: "🌡️", title: "Controlled Atmosphere Storage", desc: "Adjust oxygen and CO2 levels to extend shelf life." },
-  { icon: "💨", title: "Dehydration", desc: "Dry fruits and grains to reduce moisture and prevent mold." },
-  { icon: "📦", title: "Modular Storage Units", desc: "Stackable containers for efficient space utilization." },
+const trucks = [
+  { id: 1, name: "Small Pickup", capacity: "1 Ton", img: "https://via.placeholder.com/400x250/90EE90/000000?text=Pickup" },
+  { id: 2, name: "Medium Truck", capacity: "5 Tons", img: "https://via.placeholder.com/400x250/FFD700/000000?text=Truck" },
+  { id: 3, name: "Large Lorry", capacity: "15 Tons", img: "https://via.placeholder.com/400x250/87CEFA/000000?text=Lorry" },
 ];
 
-const storageVideos = [
-  { title: "Proper Grain Storage", url: "https://www.youtube.com/embed/dQ4w9WgXcQ" },
-  { title: "Cold Storage Tips", url: "https://www.youtube.com/embed/VIDEO_ID_2" },
-  { title: "Hermetic Bags Usage", url: "https://www.youtube.com/embed/VIDEO_ID_3" },
+const testimonials = [
+  { id: 1, name: "Ramesh (Farmer)", text: "With KrishiLink storage, my vegetables stay fresh longer and sell at better prices." },
+  { id: 2, name: "Anita (Retailer)", text: "I can order storage and transport in one place – saves me time and money." },
+  { id: 3, name: "Govind (Transporter)", text: "Truck hiring is so simple now, and I get regular trips from farmers." },
 ];
 
-const locations = [
-  { name: "Kathmandu Cold Storage", position: [27.7172, 85.3240], address: "New Baneshwor, Kathmandu", distance: "2.1 km" },
-  { name: "Bhaktapur Cold Storage", position: [27.6710, 85.4298], address: "Suryabinayak, Bhaktapur", distance: "5.4 km" },
-  { name: "Lalitpur Cold Storage", position: [27.6644, 85.3188], address: "Satdobato, Lalitpur", distance: "4.7 km" },
-  { name: "Kalanki Agro Market", position: [27.6935, 85.2881], address: "Kalanki, Kathmandu", distance: "3.2 km" },
-  { name: "Bhaktapur Farmers Market", position: [27.6725, 85.4278], address: "Dattatreya Square, Bhaktapur", distance: "5.8 km" },
-];
-
-const LocationMap = () => {
-  const [userPos, setUserPos] = useState(null);
-  const [error, setError] = useState(null);
+const StorageDashboard = () => {
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [selectedTruck, setSelectedTruck] = useState(null);
+  const [formData, setFormData] = useState({ name: "", email: "", date: "", notes: "" });
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setUserPos([pos.coords.latitude, pos.coords.longitude]),
-        () => setError("Unable to fetch your location")
-      );
-    } else {
-      setError("Geolocation not supported");
-    }
+    const interval = setInterval(() => {
+      setTestimonialIndex((prev) => (prev + 1) % testimonials.length);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
-  const center = userPos || [27.7172, 85.3240];
+  const handleTruckSelect = (truck) => setSelectedTruck(truck);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Truck ${selectedTruck.name} booked successfully!`);
+    setFormData({ name: "", email: "", date: "", notes: "" });
+    setSelectedTruck(null);
+  };
 
   return (
-    <div className="w-full h-[350px] rounded-xl shadow overflow-hidden mb-6">
-      <MapContainer center={center} zoom={12} style={{ height: "100%", width: "100%" }} scrollWheelZoom={true}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {userPos && (
-          <Marker position={userPos}>
-            <Popup>Your Location</Popup>
-          </Marker>
-        )}
-        {locations.map((loc, idx) => (
-          <Marker position={loc.position} key={idx}>
-            <Popup>
-              {loc.name}
-              <br />
-              {loc.address}
-            </Popup>
-          </Marker>
+    <div className="bg-gray-50 min-h-screen text-gray-800 font-sans">
+
+      {/* Hero Section */}
+      <section className="relative flex flex-col items-center justify-center text-center py-20 px-6 bg-white">
+        <motion.h1
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="text-5xl font-bold mb-4 text-gray-800"
+        >
+          Smart Agricultural Storage & Logistics
+        </motion.h1>
+        <p className="max-w-2xl text-lg text-gray-600">
+          Keep your harvest fresh, secure, and ready for the market with KrishiLink storage solutions.
+        </p>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          className="mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl shadow-lg flex items-center gap-2"
+        >
+          Get Started <ArrowRight />
+        </motion.button>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-12 px-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        {stats.map((s) => (
+          <div key={s.id} className="bg-white rounded-2xl shadow p-6">
+            <h2 className="text-3xl font-bold text-green-600">{s.value}</h2>
+            <p className="mt-2 text-gray-600">{s.label}</p>
+          </div>
         ))}
-      </MapContainer>
-      {error && <div className="text-red-600 mt-2">{error}</div>}
-    </div>
-  );
-};
-
-const SliderCard = ({ icon, title, desc }) => (
-  <div className="bg-white p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl border border-gray-200">
-    <div className="text-4xl mb-2">{icon}</div>
-    <h3 className="text-xl font-bold text-black mb-1 text-center">{title}</h3>
-    <p className="mt-2 text-gray-700 text-center text-base font-medium">{desc}</p>
-  </div>
-);
-
-const Storage = () => {
-  const storageTips = [
-    { tip: "Check moisture levels regularly to prevent spoilage.", icon: "💧" },
-    { tip: "Clean storage containers before use to avoid contamination.", icon: "🧼" },
-    { tip: "Label and date all stored items for easy tracking.", icon: "🏷️" },
-    { tip: "Keep storage areas well-ventilated and dry.", icon: "🌬️" },
-  ];
-
-  return (
-    <div className="container mx-auto px-4 py-8 font-inter min-h-screen">
-      {/* Hero */}
-      <section className="text-center py-10 bg-white-700">
-        <h1 className="text-4xl font-bold text-green-900">Smart Crop Storage</h1>
-        <p className="mt-2 text-lg text-black-100">
-          Learn best practices to keep your harvest fresh, safe, and profitable.
-        </p><hr />
       </section>
 
-      {/* Map Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-black-900 mb-4 text-center">Nearby Cold Storage & Marketplaces</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {locations.map((loc, idx) => (
-            <div
-              key={idx}
-              className="p-4 rounded-xl shadow bg-white flex flex-col gap-2 hover:scale-105 hover:shadow-2xl transition-transform cursor-pointer"
+      {/* Storage Methods */}
+      <section className="py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-10">Storage Methods</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {storageMethods.map((m) => (
+            <motion.div
+              whileHover={{ y: -5 }}
+              key={m.id}
+              className="bg-white rounded-2xl shadow p-6 text-center"
             >
-              <h3 className="text-lg font-bold text-black">{loc.name}</h3>
-              <p className="text-sm text-gray-700">Address: {loc.address}</p>
-              <p className="text-sm text-gray-700">Distance: {loc.distance}</p>
-            </div>
-          ))}
-        </div>
-        <LocationMap />
-      </section>
-
-      {/* Proper Methods */}
-      <section className="mb-8 bg-white rounded-xl shadow p-6">
-        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Proper Storage Methods</h2>
-        <Swiper
-          modules={[Pagination, Autoplay]}
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 2000, disableOnInteraction: false }}
-          loop={true}
-          spaceBetween={20}
-          slidesPerView={1}
-          breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
-        >
-          {properMethods.map((m, i) => (
-            <SwiperSlide key={i}>
-              <SliderCard {...m} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
-
-      {/* Traditional Methods */}
-      <section className="mb-8 bg-white rounded-xl shadow p-6">
-        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Traditional Storage Methods</h2>
-        <Swiper
-          modules={[Pagination, Autoplay]}
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 2000, disableOnInteraction: false }}
-          loop={true}
-          spaceBetween={20}
-          slidesPerView={1}
-          breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
-        >
-          {traditionalMethods.map((m, i) => (
-            <SwiperSlide key={i}>
-              <SliderCard {...m} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
-
-      {/* Advanced Techniques */}
-      <section className="mb-8 bg-white rounded-xl shadow p-6">
-        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Advanced Storage Techniques</h2>
-        <Swiper
-          modules={[Pagination, Autoplay]}
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 2000, disableOnInteraction: false }}
-          loop={true}
-          spaceBetween={20}
-          slidesPerView={1}
-          breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
-        >
-          {advancedTechniques.map((tech, i) => (
-            <SwiperSlide key={i}>
-              <SliderCard {...tech} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
-
-      {/* Storage Tips Section */}
-      <section className="mb-8 bg-green-50 rounded-xl shadow p-6">
-        <h2 className="text-2xl font-bold text-green-900 text-center mb-4">Quick Storage Tips</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {storageTips.map((tipObj, idx) => (
-            <div key={idx} className="flex flex-col items-center bg-white p-4 rounded-xl shadow hover:scale-105 transition-transform border border-green-200">
-              <div className="text-3xl mb-2">{tipObj.icon}</div>
-              <p className="text-black text-center font-medium">{tipObj.tip}</p>
-            </div>
+              {m.icon}
+              <h3 className="mt-4 font-semibold">{m.title}</h3>
+              <p className="text-gray-600 mt-2 text-sm">{m.desc}</p>
+            </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Video Tutorials */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-black-800 text-center mb-4">Storage Video Tutorials</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {storageVideos.map((vid, i) => (
-            <div key={i} className="rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform border border-green-200">
-              <iframe
-                className="w-full h-56"
-                src={vid.url}
-                title={vid.title}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-              <div className="p-4 bg-white text-black font-semibold text-center">{vid.title}</div>
+      {/* Truck Booking Section */}
+      <section className="py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-10">Hire Trucks for Transport</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {trucks.map((truck) => (
+            <div
+              key={truck.id}
+              onClick={() => handleTruckSelect(truck)}
+              className="bg-white rounded-2xl shadow p-6 text-center cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform"
+            >
+              <img src={truck.img} alt={truck.name} className="w-full h-48 object-cover rounded-lg" />
+              <h3 className="mt-3 font-semibold">{truck.name}</h3>
+              <p className="text-green-600 font-bold">{truck.capacity}</p>
             </div>
           ))}
         </div>
+
+        {selectedTruck && (
+          <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow max-w-md mx-auto mt-8">
+            <h3 className="text-xl font-bold mb-4 text-center">Book {selectedTruck.name}</h3>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full mb-3 p-2 border rounded"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-full mb-3 p-2 border rounded"
+              required
+            />
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              className="w-full mb-3 p-2 border rounded"
+              required
+            />
+            <textarea
+              name="notes"
+              placeholder="Additional Notes"
+              value={formData.notes}
+              onChange={handleInputChange}
+              className="w-full mb-3 p-2 border rounded"
+            ></textarea>
+            <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Book Now
+            </button>
+          </form>
+        )}
+      </section>
+
+      {/* How It Works */}
+      <section className="py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-10">How It Works</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-8 text-center">
+          <div className="bg-white rounded-2xl shadow p-6">
+            <Leaf className="w-10 h-10 text-green-600 mx-auto" />
+            <h3 className="mt-4 font-semibold">Store Harvest</h3>
+            <p className="text-gray-600 mt-2 text-sm">Farmers place crops in KrishiLink storage hubs.</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <Warehouse className="w-10 h-10 text-yellow-600 mx-auto" />
+            <h3 className="mt-4 font-semibold">Safe Storage</h3>
+            <p className="text-gray-600 mt-2 text-sm">Crops preserved with modern storage techniques.</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <Truck className="w-10 h-10 text-blue-600 mx-auto" />
+            <h3 className="mt-4 font-semibold">Transport</h3>
+            <p className="text-gray-600 mt-2 text-sm">Hire trucks to deliver produce on demand.</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <MapPin className="w-10 h-10 text-red-600 mx-auto" />
+            <h3 className="mt-4 font-semibold">Reach Market</h3>
+            <p className="text-gray-600 mt-2 text-sm">Fresh goods arrive at retailers and buyers.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-10">What People Say</h2>
+        <motion.div
+          key={testimonialIndex}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-2xl shadow-lg p-8 max-w-xl mx-auto text-center"
+        >
+          <p className="text-gray-700 italic">“{testimonials[testimonialIndex].text}”</p>
+          <h4 className="mt-4 font-semibold text-green-600">{testimonials[testimonialIndex].name}</h4>
+        </motion.div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-6 text-center bg-white">
+        <h2 className="text-4xl font-bold mb-4">Smarter Storage, Faster Transport</h2>
+        <p className="max-w-2xl mx-auto text-lg text-gray-600">
+          From storage to delivery, KrishiLink ensures your crops stay fresh and reach the market on time.
+        </p>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          className="mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl shadow-lg flex items-center gap-2 mx-auto"
+        >
+          Start Now <ArrowRight />
+        </motion.button>
       </section>
     </div>
   );
 };
 
-export default Storage;
+export default StorageDashboard;
