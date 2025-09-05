@@ -55,6 +55,9 @@ const Marketplace = () => {
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
 
+// inside Marketplace component
+
+
   const CategoryCard = ({ category }) => (
     <div className="group cursor-pointer transition-all duration-300 hover:scale-105 text-center h-full">
       <div className="bg-white dark:bg-[#12241A] rounded-lg overflow-hidden shadow-sm hover:shadow-lg aspect-square">
@@ -105,6 +108,7 @@ const Marketplace = () => {
                 ))}
               </div>
             </div>
+
 
             {/* Dots */}
             {maxIndex > 0 && (

@@ -81,12 +81,12 @@ const Weather = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-green-50 dark:from-[#0B1A12] dark:to-[#12241A] dark:text-[#F9FAFB]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-green-500 dark:from-[#34D399] dark:to-[#059669] text-white p-6 shadow-md">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2 text">{t("Krishi Link Weather")}</h1>
-          <p>{t("Agricultural Weather & Market Information")}</p>
-        </div>
-      </div>
+ <div className="bg-white dark:bg-[#0B1A12] text-gray-900 dark:text-white p-6 shadow-md">
+  <div className="max-w-6xl mx-auto">
+    <h1 className="text-3xl font-bold mb-2 text-green-600">{t("Krishi Link Weather")}</h1>
+    <p className="text-green-600">{t("Agricultural Weather & Market Information")}</p>
+  </div>
+  </div>
 
       <div className="max-w-6xl mx-auto p-6 space-y-8">
         {/* Search Section */}
