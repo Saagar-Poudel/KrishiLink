@@ -45,22 +45,22 @@ const Landing = () => {
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
               <Users className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
               <div className="text-2xl font-bold">५०००+</div>
-              <div className="text-sm text-white/80">दर्ता भएका किसान</div>
+              <div className="text-sm text-white/80">{t('registeredFarmers')}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
               <TrendingUp className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
               <div className="text-2xl font-bold">२०००+</div>
-              <div className="text-sm text-white/80">दैनिक कारोबार</div>
+              <div className="text-sm text-white/80">{t('dailyTransactions')}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
               <MapPin className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
               <div className="text-2xl font-bold">७७</div>
-              <div className="text-sm text-white/80">जिल्लामा सेवा</div>
+              <div className="text-sm text-white/80">{t('districtsServed')}</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center text-white border border-white/20">
               <Bot className="h-8 w-8 mx-auto mb-3 text-yellow-400" />
               <div className="text-2xl font-bold">२४/७</div>
-              <div className="text-sm text-white/80">AI सहायता</div>
+              <div className="text-sm text-white/80">{t('aiSupport')}</div>
             </div>
           </div>
         </div>

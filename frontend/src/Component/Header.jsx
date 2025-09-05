@@ -1,162 +1,225 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Menu, X, ShoppingCart, User, Bell, Languages } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Thems from "./Thems";
 import { Link, NavLink } from 'react-router-dom';
-import  {Cart}  from "./Cart";
+import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
-
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
- const { getTotalItems } = useCart();
+  const { getTotalItems } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const totalItems = getTotalItems();
 
- const navItems = [
-  { name: t('Home'), path: '/' },
-  { name: t('Market'), path: '/market' },
-  { name: t('Weather'), path: '/weather' },
-  { name: t('News'), path: '/news' },
-  { name: t('Training'), path: '/training' },
-  { name: t('Storage'), path: '/storage' },
-];
-
+  const navItems = [
+    { name: t('Home'), path: '/' },
+    { name: t('Market'), path: '/market' },
+    { name: t('Weather'), path: '/weather' },
+    { name: t('News'), path: '/news' },
+    { name: t('Training'), path: '/training' },
+    { name: t('Storage'), path: '/storage' },
+  ];
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50 dark:bg-gray-900 dark:text-gray-100">
+    <header className="bg-white shadow-md sticky top-0 z-50 
+                       dark:bg-[#0B1A12] dark:text-[#F9FAFB]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16 sm:h-20">
           
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="bg-white border border-green-600 rounded px-2 py-1 text-green-600 font-bold text-lg shadow-sm">
+            <div className="bg-white border border-green-600 rounded px-2 py-1 
+                            text-green-600 font-bold text-lg shadow-sm
+                            dark:bg-[#12241A] dark:border-[#34D399] dark:text-[#34D399]">
               कृषि
             </div>
-            <span className="text-xl font-semibold text-gray-800">Krishi Link</span>
+            <span className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-[#F9FAFB]">
+              Krishi Link
+            </span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-6 text-[16px] font-medium text-gray-700">
+          <nav className="hidden lg:flex space-x-6 text-[15px] sm:text-[16px] font-medium text-gray-700 dark:text-[#D1D5DB]">
             {navItems.map((item) => (
               <NavLink
                 key={item.name}
                 to={item.path}
-                className={({ isActive }) => `px-3 py-2 rounded-md transition-all ${
-                  isActive
-                    ? 'bg-green-100 text-green-700'
-                    : 'hover:text-green-600 hover:bg-gray-100'
-                }`}
+                className={({ isActive }) =>
+                  `px-2 sm:px-3 py-2 rounded-md transition-all ${
+                    isActive
+                      ? 'bg-green-100 text-green-700 dark:bg-[#34D399]/20 dark:text-[#34D399]'
+                      : 'hover:text-green-600 hover:bg-gray-100 dark:hover:text-[#34D399] dark:hover:bg-[#12241A]'
+                  }`
+                }
               >
                 {item.name}
               </NavLink>
             ))}
           </nav>
 
-          {/* Right Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button 
+          {/* Right Actions (Desktop/Tablet) */}
+          <div className="hidden lg:flex items-center space-x-3">
+            {/* Language Switch */}
+            <button
               onClick={toggleLanguage}
-              className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex items-center"
+              className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md 
+                         hover:bg-gray-100 transition-colors flex items-center
+                         dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
             >
               <Languages className="h-4 w-4 mr-1" />
               {language === 'en' ? 'नेपाली' : 'English'}
             </button>
-            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors relative">
+
+            {/* Notifications */}
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors relative
+                               dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-[#FACC15] rounded-full"></span>
             </button>
-            {/* <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
-              <ShoppingCart className="h-5 w-5" />
-            </button> */}
-             <button
-                onClick={() => setIsCartOpen(true)}
-                className="relative flex items-center px-3 py-1 border rounded text-sm"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                <span className="hidden sm:inline ml-2">{t("cart")}</span>
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
-            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+
+            {/* Cart */}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative flex items-center px-3 py-1 border rounded text-sm
+                         dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              <span className="ml-2">{t("cart")}</span>
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full 
+                                 bg-[#EF4444] text-white text-xs flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+
+            {/* User */}
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors
+                               dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
               <User className="h-5 w-5" />
             </button>
-               <div className="flex items-center lg:order-2">
-          </div>
-             <div className="flex items-center lg:order-2">
+
+            {/* Login Button */}
             <Link
               to="/Login"
-               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all"
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all
+                         dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
             >
-             {t('login')} 
+              {t('login')}
             </Link>
-          </div>
-            <Thems/>
+
+            <Thems />
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+              className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors
+                         dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu Drawer */}
         {isMenuOpen && (
-          <div className="md:hidden mt-2">
-            <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200">
+          <div className="lg:hidden mt-2 pb-4 border-t border-gray-200 dark:border-[#1F2937]">
+            <div className="flex flex-col space-y-2 mt-3">
+              {/* Nav Links */}
               {navItems.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.path}
-                  className={({isActive}) => `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive
-                      ? 'bg-green-100 text-green-700'
-                      : 'hover:text-green-600 hover:bg-gray-100'
-                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                      isActive
+                        ? 'bg-green-100 text-green-700 dark:bg-[#34D399]/20 dark:text-[#34D399]'
+                        : 'hover:text-green-600 hover:bg-gray-100 dark:hover:text-[#34D399] dark:hover:bg-[#12241A]'
+                    }`
+                  }
                 >
                   {item.name}
                 </NavLink>
               ))}
-              <div className="flex flex-col space-y-2 pt-4">
-                <button 
+
+              {/* Divider */}
+              <div className="border-t border-gray-200 dark:border-[#1F2937] my-2"></div>
+
+              {/* All Actions (same as desktop) */}
+              <div className="flex flex-col space-y-2">
+                <button
                   onClick={toggleLanguage}
-                  className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center"
+                  className="w-full px-3 py-2 text-sm font-medium border border-gray-300 rounded-md 
+                             hover:bg-gray-100 transition-colors flex items-center justify-center
+                             dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
                 >
                   <Languages className="h-4 w-4 mr-1" />
                   {language === 'en' ? 'नेपाली' : 'English'}
                 </button>
-                <div className="flex space-x-2">
-                  <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all flex-1">
-                    {t('login')}
-                  </button>
-                  <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex-1">
-                    {t('signup')}
-                  </button>
+
+                <button className="w-full px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex justify-center
+                                   dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
+                  <Bell className="h-5 w-5 mr-2" />
+                  Notifications
+                </button>
+
+                <button
+                  onClick={() => { setIsCartOpen(true); setIsMenuOpen(false); }}
+                  className="relative flex items-center justify-center px-3 py-2 border rounded text-sm
+                             dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  {t("cart")}
+                  {totalItems > 0 && (
+                    <span className="ml-2 h-5 w-5 rounded-full bg-[#EF4444] text-white text-xs flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+
+                <button className="w-full px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex justify-center
+                                   dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
+                  <User className="h-5 w-5 mr-2" />
+                  Profile
+                </button>
+
+                <Link
+                  to="/Login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all text-center
+                             dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
+                >
+                  {t('login')}
+                </Link>
+
+                <Link
+                  to="/Signup"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-center
+                             dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
+                >
+                  {t('signup')}
+                </Link>
+
+                <div className="flex justify-center pt-2">
+                  <Thems />
                 </div>
               </div>
             </div>
           </div>
         )}
       </div>
-      {isCartOpen && (
-  <Cart
-    isOpen={isCartOpen}
-    onClose={() => setIsCartOpen(false)}
-  />
-)}
 
+      {/* Cart Drawer */}
+      {isCartOpen && (
+        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      )}
     </header>
-     
   );
 };
 
