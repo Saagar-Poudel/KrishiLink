@@ -6,6 +6,7 @@ import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
+import axios from "axios";
 
 const Market = () => {
   const { t } = useLanguage();
