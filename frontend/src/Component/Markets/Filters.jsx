@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
 import { Search, Filter } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 
@@ -54,37 +54,37 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
   };
 
   return (
-    <div className=" rounded-lg shadow-lg bg-white dark:bg-gray-800  dark:text-gray-100">
-      <div className="p-4 border-b">
-        <h3 className="flex items-center gap-2 text-lg font-semibold">
+    <div className="rounded-lg shadow-lg bg-white dark:bg-[#12241A] dark:text-[#F9FAFB]">
+      <div className="p-4 border-b border-gray-200 dark:border-[#1F2937]">
+        <h3 className="flex items-center gap-2 text-lg font-semibold dark:text-[#F9FAFB]">
           <Filter className="w-5 h-5" />
           {t("Filters")}
         </h3>
       </div>
-      <div className="p-4 space-y-6 ">
+      <div className="p-4 space-y-6">
         {/* Search */}
         <div className="space-y-2">
-          <label htmlFor="search" className="text-sm font-medium">
-            {t("Search Products")}
+          <label htmlFor="search" className="text-sm font-medium dark:text-[#D1D5DB]">
+            {t("SearchProducts")}
           </label>
           <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500 dark:text-[#9CA3AF]" />
             <input
               id="search"
-              placeholder={t("Search for products...")}
+              placeholder={t("SearchPlaceholder")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 handleFiltersChange();
               }}
-              className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB] dark:placeholder-[#9CA3AF]"
             />
           </div>
         </div>
 
         {/* Category */}
-        <div className="space-y-2   ">
-          <label className="text-sm font-medium ">{t("Category")}</label>
+        <div className="space-y-2">
+          <label className="text-sm font-medium dark:text-[#D1D5DB]">{t("Category")}</label>
           <select
             value={category}
             onChange={(e) => {
@@ -98,9 +98,9 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
                 certifications
               });
             }}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800  dark:text-gray-100"
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB]"
           >
-            <option value="all">{t("All Categories")}</option>
+            <option value="all">{t("AllCategories")}</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -111,7 +111,7 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
 
         {/* Price Range */}
         <div className="space-y-3">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium dark:text-[#D1D5DB]">
             {t("Price Range (Rs.)")}
           </label>
           <input
@@ -125,21 +125,17 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
               setPriceRange(value);
               handleFiltersChange();
             }}
-            className="w-full"
+            className="w-full accent-[#34D399] dark:accent-[#34D399]"
           />
-          <div className="flex justify-between text-sm text-gray-500">
-            <span>
-              {t("Rs.")} {priceRange[0]}
-            </span>
-            <span>
-              {t("Rs.")} {priceRange[1]}
-            </span>
+          <div className="flex justify-between text-sm text-gray-500 dark:text-[#9CA3AF]">
+            <span>{t("Rs.")} {priceRange[0]}</span>
+            <span>{t("Rs.")} {priceRange[1]}</span>
           </div>
         </div>
 
         {/* Location */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">{t("Location")}</label>
+          <label className="text-sm font-medium dark:text-[#D1D5DB]">{t("Location")}</label>
           <select
             value={location}
             onChange={(e) => {
@@ -153,9 +149,9 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
                 certifications
               });
             }}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500  dark:bg-gray-800  dark:text-gray-100"
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB]"
           >
-            <option value="all">{t("All Locations")}</option>
+            <option value="all">{t("AllLocations")}</option>
             {locations.map((loc) => (
               <option key={loc} value={loc}>
                 {loc}
@@ -166,7 +162,7 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
 
         {/* Certifications */}
         <div className="space-y-3">
-          <label className="text-sm font-medium">{t("Certifications")}</label>
+          <label className="text-sm font-medium dark:text-[#D1D5DB]">{t("Certifications")}</label>
           <div className="space-y-2">
             {certificationOptions.map((cert) => (
               <div key={cert} className="flex items-center space-x-2">
@@ -177,9 +173,9 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
                   onChange={(e) =>
                     handleCertificationChange(cert, e.target.checked)
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#34D399] focus:ring-[#34D399] border-gray-300 dark:border-[#374151] dark:bg-[#0B1A12] dark:checked:bg-[#34D399] rounded"
                 />
-                <label htmlFor={cert} className="text-sm">
+                <label htmlFor={cert} className="text-sm dark:text-[#D1D5DB]">
                   {cert}
                 </label>
               </div>

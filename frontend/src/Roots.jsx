@@ -1,23 +1,14 @@
 import React from 'react'
 import Header from './Component/Header'
-import Home from './Component/Home/Home'
-import WeatherAndPrices from './Component/Weatherandprice/WeatherAndPrices' 
-import Marketplace from './Component/Home/Marketplace'
-import NewsSection from './Component/NewsSection'
 import Footer from './Component/Footer'
 import { Outlet } from 'react-router-dom'
-import Market from './Component/Markets/Market'
+
 function Roots() {
   return (
    <>
    <div className=''>
    <Header/>
-   {/* <Market/> */}
-   <Outlet/>
-   {/* <Home/>
-   <WeatherAndPrices/>
-   <Marketplace/>
-   <NewsSection/> */}
+   <Outlet key={location.pathname}/>
    <Footer/>
    </div>
    </>
