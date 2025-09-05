@@ -4,8 +4,8 @@ import "leaflet/dist/leaflet.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Pagination } from "swiper/modules";
-import "swiper/css/navigation";
+import "swiper/css/autoplay";
+import { Pagination, Autoplay } from "swiper/modules";
 
 const properMethods = [
   { icon: "🛢️", title: "Metal Bins", desc: "Store grains in airtight metal bins to prevent pests and moisture." },
@@ -33,8 +33,6 @@ const storageVideos = [
   { title: "Cold Storage Tips", url: "https://www.youtube.com/embed/VIDEO_ID_2" },
   { title: "Hermetic Bags Usage", url: "https://www.youtube.com/embed/VIDEO_ID_3" },
 ];
-
-
 
 const locations = [
   { name: "Kathmandu Cold Storage", position: [27.7172, 85.3240], address: "New Baneshwor, Kathmandu", distance: "2.1 km" },
@@ -88,33 +86,44 @@ const LocationMap = () => {
   );
 };
 
+const SliderCard = ({ icon, title, desc }) => (
+  <div className="bg-white p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl border border-gray-200">
+    <div className="text-4xl mb-2">{icon}</div>
+    <h3 className="text-xl font-bold text-black mb-1 text-center">{title}</h3>
+    <p className="mt-2 text-gray-700 text-center text-base font-medium">{desc}</p>
+  </div>
+);
+
 const Storage = () => {
-  const properSwiperRef = useRef();
-  const traditionalSwiperRef = useRef();
-  const advancedSwiperRef = useRef();
+  const storageTips = [
+    { tip: "Check moisture levels regularly to prevent spoilage.", icon: "💧" },
+    { tip: "Clean storage containers before use to avoid contamination.", icon: "🧼" },
+    { tip: "Label and date all stored items for easy tracking.", icon: "🏷️" },
+    { tip: "Keep storage areas well-ventilated and dry.", icon: "🌬️" },
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8 font-inter min-h-screen">
       {/* Hero */}
-      <section className="text-center py-10 bg-green-700 rounded-xl shadow mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Smart Crop Storage</h1>
-        <p className="mt-2 text-lg text-white">
+      <section className="text-center py-10 bg-white-700">
+        <h1 className="text-4xl font-bold text-green-900">Smart Crop Storage</h1>
+        <p className="mt-2 text-lg text-black-100">
           Learn best practices to keep your harvest fresh, safe, and profitable.
-        </p>
+        </p><hr />
       </section>
 
-      {/* Map */}
+      {/* Map Section */}
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-black-900 mb-4 text-center">Nearby Cold Storage & Marketplaces</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           {locations.map((loc, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-xl shadow  bg-white-50 flex flex-col gap-2 hover:scale-105 hover:shadow-2xl transition-transform cursor-pointer"
+              className="p-4 rounded-xl shadow bg-white flex flex-col gap-2 hover:scale-105 hover:shadow-2xl transition-transform cursor-pointer"
             >
-              <h3 className="text-lg font-bold text-black-800">{loc.name}</h3>
-              <p className="text-sm text-black-700">Address: {loc.address}</p>
-              <p className="text-sm text-black-700">Distance: {loc.distance}</p>
+              <h3 className="text-lg font-bold text-black">{loc.name}</h3>
+              <p className="text-sm text-gray-700">Address: {loc.address}</p>
+              <p className="text-sm text-gray-700">Distance: {loc.distance}</p>
             </div>
           ))}
         </div>
@@ -122,95 +131,96 @@ const Storage = () => {
       </section>
 
       {/* Proper Methods */}
-      <section className="mb-8 bg-white-100 rounded-xl shadow p-6 ">
+      <section className="mb-8 bg-white rounded-xl shadow p-6">
         <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Proper Storage Methods</h2>
         <Swiper
-          ref={properSwiperRef}
-          modules={[Pagination]}
+          modules={[Pagination, Autoplay]}
           pagination={{ clickable: true }}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          loop={true}
           spaceBetween={20}
           slidesPerView={1}
           breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
         >
           {properMethods.map((m, i) => (
             <SwiperSlide key={i}>
-              <div
-                className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl border border-green-200 hover:border-green-400"
-              >
-                <div className="text-4xl mb-2">{m.icon}</div>
-                <h3 className="text-xl font-bold text-black-800 mb-1 text-center">{m.title}</h3>
-                <p className="mt-2 text-black-700 text-center text-base font-medium">{m.desc}</p>
-              </div>
+              <SliderCard {...m} />
             </SwiperSlide>
           ))}
         </Swiper>
       </section>
 
       {/* Traditional Methods */}
-      <section className="mb-8 bg-white-50 rounded-xl shadow p-6 ">
+      <section className="mb-8 bg-white rounded-xl shadow p-6">
         <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Traditional Storage Methods</h2>
         <Swiper
-          ref={traditionalSwiperRef}
-          modules={[Pagination]}
+          modules={[Pagination, Autoplay]}
           pagination={{ clickable: true }}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          loop={true}
           spaceBetween={20}
           slidesPerView={1}
           breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
         >
           {traditionalMethods.map((m, i) => (
             <SwiperSlide key={i}>
-              <div className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-2xl border border-green-200 hover:border-green-400">
-                <div className="text-4xl mb-2">{m.icon}</div>
-                <h3 className="text-xl font-bold text-black-800 mb-1 text-center">{m.title}</h3>
-                <p className="mt-2 text-black-700 text-center text-base font-medium">{m.desc}</p>
-              </div>
+              <SliderCard {...m} />
             </SwiperSlide>
           ))}
         </Swiper>
       </section>
 
       {/* Advanced Techniques */}
-      <section className="mb-8 bg-white-100 rounded-xl shadow p-6">
+      <section className="mb-8 bg-white rounded-xl shadow p-6">
         <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Advanced Storage Techniques</h2>
         <Swiper
-          ref={advancedSwiperRef}
-          modules={[Pagination]}
+          modules={[Pagination, Autoplay]}
           pagination={{ clickable: true }}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          loop={true}
           spaceBetween={20}
           slidesPerView={1}
           breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
         >
           {advancedTechniques.map((tech, i) => (
             <SwiperSlide key={i}>
-              <div className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 p-6 shadow-lg rounded-2xl h-56 flex flex-col items-center justify-center transition-transform hover:scale-105 hover:shadow-2xl border border-green-200 hover:border-green-400 cursor-pointer">
-                <div className="text-4xl mb-2">{tech.icon}</div>
-                <h3 className="text-xl font-bold text-black-800 mb-1 text-center">{tech.title}</h3>
-                <p className="mt-2 text-black-700 text-center text-base font-medium">{tech.desc}</p>
-              </div>
+              <SliderCard {...tech} />
             </SwiperSlide>
           ))}
         </Swiper>
       </section>
 
+      {/* Storage Tips Section */}
+      <section className="mb-8 bg-green-50 rounded-xl shadow p-6">
+        <h2 className="text-2xl font-bold text-green-900 text-center mb-4">Quick Storage Tips</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {storageTips.map((tipObj, idx) => (
+            <div key={idx} className="flex flex-col items-center bg-white p-4 rounded-xl shadow hover:scale-105 transition-transform border border-green-200">
+              <div className="text-3xl mb-2">{tipObj.icon}</div>
+              <p className="text-black text-center font-medium">{tipObj.tip}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Video Tutorials */}
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-black-800 text-center mb-4">Storage Video Tutorials</h2>
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  {storageVideos.map((vid, i) => (
-    <div key={i} className="rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform border border-green-200">
-      <iframe
-        className="w-full h-56"
-        src={vid.url}
-        title={vid.title}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      ></iframe>
-      <div className="p-4 bg-white-50 text-black-900 font-semibold text-center">{vid.title}</div>
-    </div>
-  ))}
-</div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {storageVideos.map((vid, i) => (
+            <div key={i} className="rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform border border-green-200">
+              <iframe
+                className="w-full h-56"
+                src={vid.url}
+                title={vid.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+              <div className="p-4 bg-white text-black font-semibold text-center">{vid.title}</div>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
