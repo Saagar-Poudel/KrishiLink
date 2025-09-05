@@ -11,96 +11,26 @@ import axios from "axios";
 const Market = () => {
   const { t } = useLanguage();
 
-  const products = [
-    {
-      id: "1",
-      name: "Organic Tomatoes",
-      nameNepali: "जैविक गोलभेडा",
-      category: "Vegetables",
-      price: 120,
-      unit: "kg",
-      quantity: 500,
-      location: "Chitwan, Nepal",
-      sellerName: "Ram Prasad Farmer",
-      image: "/Images/land.jpg",
-      isVerified: true,
-      isAvailable: true,
-      hasDelivery: true,
-      rating: 4.8,
-      reviewCount: 24,
-      isOrganic: true,
-      isBulkAvailable: true,
-      estimatedDelivery: "2-3 days"
-    },
-    {
-      id: "2",
-      name: "Fresh Vegetables Mix",
-      nameNepali: "ताजा तरकारी मिक्स",
-      category: "Vegetables",
-      price: 80,
-      unit: "kg",
-      quantity: 200,
-      location: "Kathmandu, Nepal",
-      sellerName: "Sita Cooperative",
-      image: '/Images/vegetables.jpeg',
-      isVerified: true,
-      isAvailable: true,
-      hasDelivery: true,
-      rating: 4.6,
-      reviewCount: 18,
-      isOrganic: false,
-      isBulkAvailable: true,
-      estimatedDelivery: "1-2 days"
-    },
-    {
-      id: "3",
-      name: "Golden Wheat",
-      nameNepali: "सुनौलो गहुँ",
-      category: "Grains",
-      price: 45,
-      unit: "kg",
-      quantity: 1000,
-      location: "Rupandehi, Nepal",
-      sellerName: "Krishna Agro Farm",
-      image: "/Images/land.jpg",
-      isVerified: true,
-      isAvailable: true,
-      hasDelivery: true,
-      rating: 4.9,
-      reviewCount: 35,
-      isOrganic: false,
-      isBulkAvailable: true,
-      estimatedDelivery: "3-5 days"
-    },
-    {
-      id: "4",
-      name: "Premium Tomatoes",
-      nameNepali: "प्रिमियम गोलभेडा",
-      category: "Vegetables",
-      price: 150,
-      unit: "kg",
-      quantity: 0,
-      location: "Pokhara, Nepal",
-      sellerName: "Himalaya Farmers",
-      image: "/Images/Drinks.jpg",
-      isVerified: false,
-      isAvailable: false,
-      hasDelivery: false,
-      rating: 4.2,
-      reviewCount: 12,
-      isOrganic: true,
-      isBulkAvailable: false,
-      estimatedDelivery: "Pickup only"
-    }
-  ];
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [wishlistedProducts, setWishlistedProducts] = useState([]);
   const [filters, setFilters] = useState({});
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const { toast } = useToast(); 
   const { addToCart } = useCart();
-
+  const [products, setProducts] = useState([]);
+   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:3000/api/products/");
+        setProducts(data);
+        setFilteredProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
   useEffect(() => { filterProducts(); }, [filters]);
   useEffect(() => { setFilteredProducts(products); }, []);
 
