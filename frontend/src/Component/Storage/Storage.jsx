@@ -194,7 +194,7 @@ const Storage = () => {
 
       {/* Video Tutorials */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-black-900 text-center mb-4">Storage Video Tutorials</h2>
+        <h2 className="text-2xl font-bold text-black-800 text-center mb-4">Storage Video Tutorials</h2>
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {storageVideos.map((vid, i) => (
     <div key={i} className="rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform border border-green-200">
