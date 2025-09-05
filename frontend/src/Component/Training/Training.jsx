@@ -90,7 +90,7 @@ const Training = () => {
 
       {/* Hero Section */}
       <section className="bg-white-700 text-white p-10 text-center">
-        <h1 className="text-4xl text-green-700 font-bold mb-2">KrishiLink Training</h1>
+        <h1 className="text-4xl text-green-800 font-bold mb-2">KrishiLink Training</h1>
         <p className="text-lg max-w-2xl mx-auto text-black">
           Learn modern agricultural techniques with step-by-step tutorials, videos, and expert tips.
         </p>
