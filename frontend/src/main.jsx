@@ -14,7 +14,7 @@ import AuthLayout from './Authlayout';
 import Market from './Component/Markets/Market';
 import { Toaster } from 'react-hot-toast'; 
 import Training from './Component/Training/Training';
-
+import Storage from './Component/Storage/Storage';
 
 
 
@@ -28,7 +28,7 @@ const router = createBrowserRouter(
 <Route path='/weather' element={<WeatherAndPrices/>} />
 <Route path='/contact' element={<Contact/>} />
 <Route path='/training' element={<Training/>} />
-
+<Route path="/storage" element={<Storage />} />
    </Route>
      
 

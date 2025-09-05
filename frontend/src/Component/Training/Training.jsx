@@ -89,9 +89,9 @@ const Training = () => {
     <div className="min-h-screen flex flex-col bg-green-50">
 
       {/* Hero Section */}
-      <section className="bg-green-700 text-white p-10 text-center">
-        <h1 className="text-4xl font-bold mb-2">KrishiLink Training</h1>
-        <p className="text-lg max-w-2xl mx-auto">
+      <section className="bg-white-700 text-white p-10 text-center">
+        <h1 className="text-4xl text-green-700 font-bold mb-2">KrishiLink Training</h1>
+        <p className="text-lg max-w-2xl mx-auto text-black">
           Learn modern agricultural techniques with step-by-step tutorials, videos, and expert tips.
         </p>
       </section>
