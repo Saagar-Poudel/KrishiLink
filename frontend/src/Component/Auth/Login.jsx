@@ -3,14 +3,17 @@ import { User, Lock, Mail } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/Authcontext';
 
 const AuthForm = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    role: 'buyer'  //default role
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,12 +116,15 @@ const AuthForm = () => {
           email: '',
           password: ''
         });
+        navigate('/');
+        login(data.user); // Update auth context with logged-in user
         console.log('Login response:', data);
       } else {
         submitData = {
           username: formData.username,
           email: formData.email,
-          password: formData.password
+          password: formData.password,
+          role: formData.role,  // send role
         };
 
         console.log('Registration data:', submitData);
@@ -129,10 +135,12 @@ const AuthForm = () => {
           withCredentials: true,
         });
         toast.success('Registration successful!');
+        setIsLogin(true);
         setFormData({
           username: '',
           email: '',
-          password: ''
+          password: '',
+           role: 'farmer'  // reset to default role
         });
         console.log('Registration response:', data);
       }
@@ -163,7 +171,8 @@ const AuthForm = () => {
     setFormData({
       username: '',
       email: '',
-      password: ''
+      password: '',
+      role: 'farmer'  // reset to default role
     });
     setErrors({});
   };
@@ -256,6 +265,20 @@ const AuthForm = () => {
                       <p className="text-red-500 text-xs mt-1 ml-2">{errors.password}</p>
                     )}
                   </div>
+                  
+{/* Role Field (only for registration) */}
+<div className={`relative transition-all duration-500 ease-in-out ${
+  !isLogin ? 'opacity-100 max-h-20 translate-y-0' : 'opacity-0 max-h-0 -translate-y-2 overflow-hidden'
+}`}>
+  <select
+    value={formData.role}
+    onChange={(e) => handleInputChange('role', e.target.value)}
+    className="w-full h-12 pl-4 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+  >
+    <option value="farmer">Farmer</option>
+    <option value="buyer">Buyer</option>
+  </select>
+</div>
 
                   {/* Forgot Password (only for login) */}
                   <div className={`text-right transition-all duration-500 ease-in-out ${isLogin ? 'opacity-100 max-h-10 translate-y-0' : 'opacity-0 max-h-0 -translate-y-2 overflow-hidden'}`}>

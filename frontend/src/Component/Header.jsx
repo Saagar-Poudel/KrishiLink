@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, X, ShoppingCart, User, Bell, Languages } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import Thems from "./Thems";
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
+import { useAuth } from '../contexts/Authcontext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
   const { getTotalItems } = useCart();
+  const { user, logout } =  useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const totalItems = getTotalItems();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: t('Home'), path: '/' },
@@ -22,9 +25,14 @@ const Header = () => {
     { name: t('Storage'), path: '/storage' },
   ];
 
+  const handleLogout = () => {
+    logout();       // clear auth state
+    navigate('/');  // redirect to homepage
+  };
+ 
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50 
-                       dark:bg-[#0B1A12] dark:text-[#F9FAFB]">
+    <header className="bg-white shadow-md sticky top-0 z-50 dark:bg-[#0B1A12] dark:text-[#F9FAFB]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20">
           
@@ -99,19 +107,37 @@ const Header = () => {
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors
                                dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
               <User className="h-5 w-5" />
+              {/* <span>{user.username}</span> */}
+
             </button>
 
-            {/* Login Button */}
-            <Link
-              to="/Login"
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all
-                         dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
-            >
-              {t('login')}
-            </Link>
+            {/* Login / Logout */}
+            {user ? (
+              <>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all"
+                >
+                  Logout
+                </button>
+                {/* <div className="flex items-center space-x-2">
+                  <User className="h-5 w-5" />
+                  <span>{user.username}</span>
+                </div> */}
+              </>
+            ) : (
+              <Link
+                to="/Login"
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all
+                           dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
+              >
+                {t("login")}
+              </Link>
+            )}
 
             <Thems />
           </div>
+
 
           {/* Mobile Menu Toggle */}
           <div className="lg:hidden">
@@ -147,10 +173,9 @@ const Header = () => {
                 </NavLink>
               ))}
 
-              {/* Divider */}
               <div className="border-t border-gray-200 dark:border-[#1F2937] my-2"></div>
 
-              {/* All Actions (same as desktop) */}
+              {/* Mobile Actions */}
               <div className="flex flex-col space-y-2">
                 <button
                   onClick={toggleLanguage}
@@ -188,24 +213,25 @@ const Header = () => {
                   Profile
                 </button>
 
-                <Link
-                  to="/Login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all text-center
-                             dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
-                >
-                  {t('login')}
-                </Link>
-
-                <Link
-                  to="/Signup"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-center
-                             dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
-                >
-                  {t('signup')}
-                </Link>
-
+                {/* Login / Logout for Mobile */}
+                {user ? (
+                  <button
+                    onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                    className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all text-center
+                               dark:bg-red-500 dark:hover:bg-red-600"
+                  >
+                    {t('logout')}
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all text-center
+                               dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
+                  >
+                    {t('login')}
+                  </Link>
+                )}
                 <div className="flex justify-center pt-2">
                   <Thems />
                 </div>
@@ -216,9 +242,7 @@ const Header = () => {
       </div>
 
       {/* Cart Drawer */}
-      {isCartOpen && (
-        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      )}
+      {isCartOpen && <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />}
     </header>
   );
 };
