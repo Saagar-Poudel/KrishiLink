@@ -8,6 +8,9 @@ import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
 import axios from "axios";
 
+const Market = () => {
+  const { t } = useLanguage();
+
 const Market =  () => {
  const { t } = useLanguage();
 
@@ -17,28 +20,9 @@ const Market =  () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const { toast } = useToast(); 
   const { addToCart } = useCart();
-  const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const { data } = await axios.get("http://localhost:3000/api/products/");
-        setProducts(data);
-        setFilteredProducts(data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    filterProducts();
-  }, [filters, products]);
-
-  useEffect(() => {
-  setFilteredProducts(products);
-}, []);
+  useEffect(() => { filterProducts(); }, [filters]);
+  useEffect(() => { setFilteredProducts(products); }, []);
 
   const filterProducts = () => {
     let filtered = [...products];
