@@ -19,6 +19,7 @@ import { Toaster } from 'react-hot-toast';
 import Training from './Component/Training/Training';
 import Storage from './Component/Storage/Storage';
 import { AuthProvider } from './contexts/Authcontext';
+import Dashboard from './Component/Dashboard/Dashboard';
 
 
 
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
 <Route path="/storage" element={<Storage />} />
 <Route path='/profile' element={<Profile/>} />
 <Route path='/profileheader' element={<ProfileHeader/>} />
+<Route path='/dashboard' element={<Dashboard/>} />
 {/* <Route path='/profile' element={<ProfilePage/>} /> */}
    </Route>
      
@@ -49,7 +51,7 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-     <LanguageProvider>
+    <LanguageProvider>
       <CartProvider>
         <AuthProvider>
           <RouterProvider router={router}/>

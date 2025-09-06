@@ -5,6 +5,7 @@ import Thems from "./Thems";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
+import LogoSVG from "../assets/logo.svg"; // ✅ updated import
 import { useAuth } from '../contexts/Authcontext';
 
 const Header = () => {
@@ -137,7 +138,6 @@ const Header = () => {
 
             <Thems />
           </div>
-
 
           {/* Mobile Menu Toggle */}
           <div className="lg:hidden">
