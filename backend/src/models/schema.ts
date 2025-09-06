@@ -1,5 +1,5 @@
 import { pgTable, serial, text, integer, boolean, numeric, timestamp, varchar, real } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { is, relations } from "drizzle-orm";
 
 //Create user credentials model for login and registration
 
@@ -8,6 +8,8 @@ export const users = pgTable("users", {
   username: varchar("username", { length: 50 }).notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
+  role: text("role").default("buyer"),
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
