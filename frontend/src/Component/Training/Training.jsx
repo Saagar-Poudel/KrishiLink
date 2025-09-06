@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import LearningHub from "./LearningHub";
 import CropCalendar from "./CropCalendar";
-import MediaResources from "./MediaResources";
-import CommunityHub from "./CommunityHub";
+import MediaResources from "./mediaResources";
+import CommunityHub from "./communityHub";
 import SupportAndFAQ from "./SupportAndFAQ";
 import { BookOpen, Calendar, Video, Users, HelpCircle } from "lucide-react";
 
