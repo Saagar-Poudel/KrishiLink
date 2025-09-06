@@ -1,6 +1,7 @@
 // src/Component/Storage/featuresData.js
 
 export const storageFeatures = [
+  // Storage Facilities
   {
     section: "Storage Facilities",
     description: "Safe, modern, and efficient storage solutions for your produce.",
@@ -35,6 +36,8 @@ export const storageFeatures = [
       },
     ],
   },
+
+  // Delivery & Transportation
   {
     section: "Delivery & Transportation",
     description: "Fast, safe, and tracked delivery solutions for farmers and retailers.",
@@ -44,7 +47,7 @@ export const storageFeatures = [
         icon: "Truck",
         title: "Farm-to-Market Delivery",
         desc: "Quick delivery from farms to storage and markets.",
-        action: "Schedule Delivery",
+        action: "Book Truck",
       },
       {
         id: 6,
@@ -53,21 +56,37 @@ export const storageFeatures = [
         desc: "Track delivery routes in real-time.",
         action: "Track Now",
       },
+      {
+        id: 7,
+        icon: "Package",
+        title: "Courier Service",
+        desc: "Small package delivery for urgent items.",
+        action: "See Details",
+      },
+      {
+        id: 8,
+        icon: "ThermometerSnowflake",
+        title: "Refrigerated Trucks",
+        desc: "Keep temperature-sensitive goods fresh during transit.",
+        action: "Book Truck",
+      },
     ],
   },
+
+  // Packaging & Handling
   {
     section: "Packaging & Handling",
     description: "Safe handling and eco-friendly packaging for your goods.",
     items: [
       {
-        id: 7,
+        id: 9,
         icon: "Package",
         title: "Eco-friendly Packaging",
         desc: "Sustainable packaging for produce.",
         action: "Order Packaging",
       },
       {
-        id: 8,
+        id: 10,
         icon: "Box",
         title: "Sorting & Grading",
         desc: "High-quality sorting before storage.",
@@ -75,19 +94,21 @@ export const storageFeatures = [
       },
     ],
   },
+
+  // Inventory & Management
   {
     section: "Inventory & Management",
     description: "Digital inventory system for transparent tracking of your goods.",
     items: [
       {
-        id: 9,
+        id: 11,
         icon: "Monitor",
         title: "Digital Stock Management",
         desc: "Track available products in real-time.",
         action: "Check Inventory",
       },
       {
-        id: 10,
+        id: 12,
         icon: "Bell",
         title: "Expiry Notifications",
         desc: "Alerts for products nearing expiry.",
@@ -95,19 +116,21 @@ export const storageFeatures = [
       },
     ],
   },
+
+  // Logistics Support
   {
     section: "Logistics Support",
     description: "Supportive logistics for smooth operation and delivery.",
     items: [
       {
-        id: 11,
+        id: 13,
         icon: "Users",
         title: "Last-Mile Connectivity",
         desc: "Direct delivery to shops and markets.",
         action: "Connect Now",
       },
       {
-        id: 12,
+        id: 14,
         icon: "Award",
         title: "Insurance for Goods",
         desc: "Protection against loss or damage.",
@@ -115,19 +138,21 @@ export const storageFeatures = [
       },
     ],
   },
+
+  // Sustainability
   {
     section: "Sustainability",
     description: "Eco-friendly practices to minimize waste and energy usage.",
     items: [
       {
-        id: 13,
+        id: 15,
         icon: "Sun",
         title: "Solar-Powered Storage",
         desc: "Eco-friendly cold storage units.",
         action: "Learn More",
       },
       {
-        id: 14,
+        id: 16,
         icon: "Leaf",
         title: "Minimal Food Wastage",
         desc: "Efficient supply chain reduces waste.",

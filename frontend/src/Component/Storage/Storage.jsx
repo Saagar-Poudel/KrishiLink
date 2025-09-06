@@ -41,7 +41,6 @@ const Storage = () => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
         >
-          Delivery & Transportation
         </motion.h2>
         <DeliveryTransportation />
       </motion.section>
