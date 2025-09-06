@@ -4,7 +4,7 @@ import LearningHub from "./LearningHub";
 import CropCalendar from "./CropCalendar";
 import MediaResources from "./mediaResources";
 import CommunityHub from "./communityHub";
-import SupportAndFAQ from "./SupportAndFAQ";
+import SupportAndFAQ from "./supportAndFAQ";
 import { BookOpen, Calendar, Video, Users, HelpCircle } from "lucide-react";
 
 const tabs = [
