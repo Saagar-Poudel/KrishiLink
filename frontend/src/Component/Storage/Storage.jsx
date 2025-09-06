@@ -1,93 +1,46 @@
+// src/Component/Storage/Storage.jsx
+
 import React from "react";
 import { motion } from "framer-motion";
 import StorageFacilities from "./StorageFacilities";
-import DeliveryTransportation from "./DeliveryTransportation";
-import PackagingHandling from "./PackagingHandling";
-import InventoryManagement from "./InventoryManagement";
 import LogisticsSupport from "./LogisticsSupport";
-import Sustainability from "./Sustainability";
+import DeliveryTransportation from "./DeliveryTransportation";
 
 const Storage = () => {
   return (
-    <div className="container mx-auto px-5 py-10 space-y-24">
+    <div>
       {/* Hero Section */}
-      <motion.div
-        className="text-center mb-16"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <h1 className="text-5xl font-bold text-green-700">Storage & Logistics</h1>
-        <p className="text-gray-600 mt-4 text-lg">
-          Safe storage, fast delivery, and sustainable solutions for farmers and buyers.
-        </p>
-      </motion.div>
-
-      {/* Sections */}
-      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <motion.h2 className="text-3xl font-semibold mb-6 text-left"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
+      <section className="relative flex flex-col items-center justify-center text-center py-20 px-6 bg-white">
+        {/* Animated Heading */}
+        <motion.h1
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="text-5xl font-bold mb-4 text-gray-800"
         >
-          Storage Facilities
-        </motion.h2>
-        <StorageFacilities />
-      </motion.section>
+          Farmer Training & Knowledge Hub
+        </motion.h1>
 
-      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <motion.h2 className="text-3xl font-semibold mb-6 text-left"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
+        {/* Animated Subtext */}
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="max-w-2xl text-lg text-gray-600"
         >
-        </motion.h2>
-        <DeliveryTransportation />
-      </motion.section>
+          Learn, apply, and grow with practical modules on crops, vegetables,
+          fruits, grains, storage, logistics, and delivery.
+        </motion.p>
+      </section>
 
-      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <motion.h2 className="text-3xl font-semibold mb-6 text-left"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          Packaging & Handling
-        </motion.h2>
-        <PackagingHandling />
-      </motion.section>
+      {/* Storage Facilities Section */}
+      <StorageFacilities />
 
-      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <motion.h2 className="text-3xl font-semibold mb-6 text-left"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          Inventory & Management
-        </motion.h2>
-        <InventoryManagement />
-      </motion.section>
+      {/* Logistics Support Section */}
+      <LogisticsSupport />
 
-      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <motion.h2 className="text-3xl font-semibold mb-6 text-left"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          Logistics Support
-        </motion.h2>
-        <LogisticsSupport />
-      </motion.section>
-
-      <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <motion.h2 className="text-3xl font-semibold mb-6 text-left"
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          Sustainability
-        </motion.h2>
-        <Sustainability />
-      </motion.section>
+      {/* Delivery & Transportation Section */}
+      <DeliveryTransportation />
     </div>
   );
 };
