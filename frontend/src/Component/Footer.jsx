@@ -1,5 +1,7 @@
+
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { Link } from "react-router-dom"; // ✅ use Link instead of href
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -9,11 +11,13 @@ const Footer = () => {
   };
 
   const quickLinks = [
-    { name: t("Marketplace"), href: "#marketplace" },
-    { name: t("Weather"), href: "#weather" },
-    { name: t("News"), href: "#news" },
-    { name: t("Training"), href: "#training" },
-    { name: t("Storage"), href: "#storage" },
+    { name: "Home", path: "/" },
+    { name: "Market", path: "/market" },
+    { name: "Weather", path: "/weather" },
+    { name: "Training", path: "/training" },
+    { name: "Storage", path: "/storage" },
+    { name: "Contact", path: "/contact" },
+    { name: "AboutUs", path: "/about" },
   ];
 
   const services = [
@@ -75,12 +79,12 @@ const Footer = () => {
               <ul className="space-y-2 text-sm">
                 {quickLinks.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.path}
                       className="text-white/80 hover:text-yellow-400 transition-colors"
                     >
                       {t(link.name)}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -171,7 +175,4 @@ const Footer = () => {
 };
 
 export default Footer;
-
-
-
 

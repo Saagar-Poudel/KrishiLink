@@ -9,6 +9,7 @@ import NewsSection from './Component/NewsSection';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { CartProvider } from './contexts/CartContex';
 import Contact from './Component/Contact';
+import AboutUs from './Component/Aboutus';
 import Profile from './Component/Profile/Profile';
 import { ProfileHeader } from './Component/Profile/Profileheader';
 // import ProfilePage from './Component/BuyerDashboard';
@@ -22,8 +23,6 @@ import { AuthProvider } from './contexts/Authcontext';
 import Dashboard from './Component/Dashboard/Dashboard';
 
 
-
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -33,6 +32,7 @@ const router = createBrowserRouter(
 <Route path='/news' element={<NewsSection/>} />
 <Route path='/weather' element={<WeatherAndPrices/>} />
 <Route path='/contact' element={<Contact/>} />
+<Route path='/about' element={<AboutUs/>} />
 <Route path='/training' element={<Training/>} />
 <Route path="/storage" element={<Storage />} />
 <Route path='/profile' element={<Profile/>} />
