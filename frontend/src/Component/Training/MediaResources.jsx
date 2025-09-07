@@ -10,13 +10,13 @@ const mediaResources = [
       {
         name: "Vegetable Farming Basics",
         type: "video",
-        src: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example YouTube video
+        src: "https://www.youtube.com/embed1/dQw4w9WgXcQ", // Example YouTube video
         icon: <Play className="w-8 h-8 text-green-500" />,
       },
       {
         name: "Organic Fertilizer Usage",
         type: "video",
-        src: "https://www.youtube.com/embed/ScMzIvxBSi4",
+        src: "https://www.youtube.com/e1mbed/ScMzIvxBSi4",
         icon: <Play className="w-8 h-8 text-green-500" />,
       },
     ],
