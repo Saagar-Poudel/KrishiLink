@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {jwtDecode} from "jwt-decode";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -36,6 +37,7 @@ useEffect(() => {
 
   const login = (userData, token) => {
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
     localStorage.setItem("token", token);
     setUser(userData);
   };

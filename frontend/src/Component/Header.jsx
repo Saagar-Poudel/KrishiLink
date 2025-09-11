@@ -5,8 +5,9 @@ import Thems from "./Thems";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
-import LogoSVG from "../assets/logo.svg"; // ✅ updated import
+import LogoSVG from "../assets/logo.svg"; // ✅ updated import path
 import { useAuth } from '../contexts/Authcontext';
+import ProfileMenu from './ProfileMenu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -70,17 +71,8 @@ const Header = () => {
 
           {/* Right Actions (Desktop/Tablet) */}
           <div className="hidden lg:flex items-center space-x-3">
-            {/* Language Switch */}
-            <button
-              onClick={toggleLanguage}
-              className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md 
-                         hover:bg-gray-100 transition-colors flex items-center
-                         dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
-            >
-              <Languages className="h-4 w-4 mr-1" />
-              {language === 'en' ? 'नेपाली' : 'English'}
-            </button>
-
+           
+           
             {/* Notifications */}
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors relative
                                dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
@@ -103,40 +95,7 @@ const Header = () => {
                 </span>
               )}
             </button>
-
-            {/* User */}
-            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors
-                               dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">
-              <User className="h-5 w-5" />
-              {/* <span>{user.username}</span> */}
-
-            </button>
-
-            {/* Login / Logout */}
-            {user ? (
-              <>
-                <button
-                  onClick={logout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all"
-                >
-                  Logout
-                </button>
-                {/* <div className="flex items-center space-x-2">
-                  <User className="h-5 w-5" />
-                  <span>{user.username}</span>
-                </div> */}
-              </>
-            ) : (
-              <Link
-                to="/Login"
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all
-                           dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
-              >
-                {t("login")}
-              </Link>
-            )}
-
-            <Thems />
+             <ProfileMenu />
           </div>
 
           {/* Mobile Menu Toggle */}
