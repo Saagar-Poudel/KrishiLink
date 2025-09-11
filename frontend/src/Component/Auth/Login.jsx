@@ -3,7 +3,7 @@ import { User, Lock, Mail } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../contexts/Authcontext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const AuthForm = () => {
   const { login } = useAuth();
@@ -105,20 +105,21 @@ const AuthForm = () => {
         };
 
         console.log('Login data:', submitData);
+
         const {data} = await axios.post('http://localhost:3000/api/users/login', submitData, {
           headers: {
             'Content-Type': 'application/json'
           },
           withCredentials: true,
         });
+      
         toast.success('Login successful!');
         setFormData({
           email: '',
           password: ''
         });
+        login(data.user, data.token); // Update auth context with logged-in user
         navigate('/');
-        login(data.user); // Update auth context with logged-in user
-        console.log('Login response:', data);
       } else {
         submitData = {
           username: formData.username,
@@ -140,24 +141,24 @@ const AuthForm = () => {
           username: '',
           email: '',
           password: '',
-           role: 'farmer'  // reset to default role
+           role: formData.role // reset to default role
         });
         console.log('Registration response:', data);
       }
 
       
-      if (isLogin) {
-        // Navigate to homepage
-        navigate('/');
-      } else {  
-        setIsLogin(true);
+      // if (isLogin) {
+      //   // Navigate to homepage
+      //   navigate('/');
+      // } else {  
+      //   setIsLogin(true);
         
-        // Keep email and password for convenience, clear username
-        setFormData(prev => ({
-          ...prev,
-          username: ''
-        }));
-      }
+      //   // Keep email and password for convenience, clear username
+      //   setFormData(prev => ({
+      //     ...prev,
+      //     username: ''
+      //   }));
+      // }
     } catch (error) {
       console.error('Submission error:', error);
       toast.error('An error occurred. Please try again.');

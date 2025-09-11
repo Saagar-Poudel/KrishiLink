@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Bell, Languages, LogOut, LogIn, User } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import Thems from "./Thems";
-import { useAuth } from "../contexts/Authcontext";
+import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const ProfileMenu = () => {
@@ -37,12 +37,20 @@ const ProfileMenu = () => {
                    hover:bg-gray-100 dark:border-[#374151] dark:hover:bg-[#12241A]"
       >
         <User className="h-5 w-5" />
-        <span className="hidden sm:block">{user ? user.username : "Profile"}</span>
+        <span className="hidden sm:block">{user ? user.username : "Guest"}</span>
       </button>
 
       {/* Dropdown Menu */}
       {open && (
         <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#0B1A12] shadow-lg rounded-xl p-2 z-50">
+           <button
+            onClick={() => navigate("/profile")}
+            className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
+          >
+            <User className="h-5 w-5 mr-2" />
+            Profile
+          </button>
+
           <button
             onClick={toggleLanguage}
             className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
@@ -67,6 +75,7 @@ const ProfileMenu = () => {
               onClick={handleLogout}
               className="flex items-center w-full px-3 py-2 text-red-600 rounded-md hover:bg-red-100 dark:hover:bg-[#12241A]"
             >
+              <span>{user.username}</span>
               <LogOut className="h-5 w-5 mr-2" />
               Logout
             </button>
