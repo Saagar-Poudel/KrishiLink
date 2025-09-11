@@ -1,7 +1,84 @@
+import React, { useState } from "react";
 import { Bar, Pie, Line } from "react-chartjs-2";
 import "chart.js/auto";
+import toast, { Toaster } from "react-hot-toast";
+import ConfirmDialog from "../ConfirmDialog";
 
 export default function Dashboard() {
+
+  // const [products, setProducts] = useState([]);
+  // const [orders, setOrders] = useState([]);
+  // const [summary, setSummary] = useState({ totals: {}, topProducts: [] });
+  // const [revenueTrend, setRevenueTrend] = useState({ labels: [], datasets: [] });
+
+  // Edit modal states
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState({ id: null, title: "", price: "" });
+
+   // For Delete
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+  // Delete Product
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setIsConfirmOpen(true);
+  };
+
+  // const handleDelete = async () => {
+  //   try {
+  //     const res = await fetch(`https://fakestoreapi.com/products/${deleteId}`, {
+  //       method: "DELETE",
+  //     });
+  //     if (!res.ok) throw new Error("Delete failed");
+
+  //     setProducts((prev) => prev.filter((p) => p.id !== deleteId));
+  //     toast.success("Product deleted!");
+  //   } catch (err) {
+  //     console.error("Delete error:", err);
+  //     toast.error("Failed to delete");
+  //   } finally {
+  //     setIsConfirmOpen(false);
+  //     setDeleteId(null);
+  //   }
+  // };
+
+  // // Open edit modal
+  // const handleEdit = (product) => {
+  //   setCurrentProduct({ id: product.id, title: product.title, price: product.price });
+  //   setIsEditing(true);
+  // };
+
+  // // Save Edited Product
+  // const saveEdit = async () => {
+  //   try {
+  //     const res = await fetch(`https://fakestoreapi.com/products/${currentProduct.id}`, {
+  //       method: "PUT",
+  //       body: JSON.stringify({
+  //         title: currentProduct.title,
+  //         price: currentProduct.price,
+  //       }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     if (!res.ok) throw new Error("Update failed");
+
+  //     const updatedProduct = await res.json();
+  //     setProducts((prev) =>
+  //       prev.map((p) => (p.id === currentProduct.id ? updatedProduct : p))
+  //     );
+
+  //     setIsEditing(false);
+  //     toast.success("Product updated!");
+  //   } catch (err) {
+  //     console.error("Edit error:", err);
+  //     toast.error("Failed to update product");
+  //   }
+  // };
+
+
   // Dummy data (pretend it's from backend)
   const summary = {
     totals: {

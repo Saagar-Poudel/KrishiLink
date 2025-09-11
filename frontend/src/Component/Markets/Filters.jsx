@@ -12,13 +12,14 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
   const [certifications, setCertifications] = useState([]);
 
   const categories = [
-    t("Vegetables"),
-    t("Fruits"),
-    t("Grains"),
-    t("Livestock"),
-    t("Seeds"),
-    t("Tools"),
-  ];
+  { value: "vegetables", label: t("Vegetables") },
+  { value: "fruits", label: t("Fruits") },
+  { value: "grains", label: t("Grains") },
+  { value: "livestock", label: t("Livestock") },
+  { value: "seeds", label: t("Seeds") },
+  { value: "tools", label: t("Tools") },
+];
+
   const locations = [
     t("Kathmandu"),
     t("Chitwan"),
@@ -86,27 +87,28 @@ const MarketplaceFilters = ({ onFiltersChange }) => {
         <div className="space-y-2">
           <label className="text-sm font-medium dark:text-[#D1D5DB]">{t("Category")}</label>
           <select
-            value={category}
-            onChange={(e) => {
-              const newCategory= e.target.value;
-              setCategory(newCategory);
-              onFiltersChange({
-                searchTerm,
-                category: newCategory,
-                priceRange,
-                location,
-                certifications
-              });
-            }}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB]"
-          >
-            <option value="all">{t("AllCategories")}</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+  value={category}
+  onChange={(e) => {
+    const newCategory = e.target.value;
+    setCategory(newCategory);
+    onFiltersChange({
+      searchTerm,
+      category: newCategory,
+      priceRange,
+      location,
+      certifications
+    });
+  }}
+  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB]"
+>
+  <option value="all">{t("AllCategories")}</option>
+  {categories.map((cat) => (
+    <option key={cat.value} value={cat.value}>
+      {cat.label}
+    </option>
+  ))}
+</select>
+
         </div>
 
         {/* Price Range */}

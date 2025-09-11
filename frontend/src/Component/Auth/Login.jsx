@@ -117,7 +117,7 @@ const AuthForm = () => {
           password: ''
         });
         navigate('/');
-        login(data.user); // Update auth context with logged-in user
+        login(data.user, data.token); // Update auth context with logged-in user
         console.log('Login response:', data);
       } else {
         submitData = {
