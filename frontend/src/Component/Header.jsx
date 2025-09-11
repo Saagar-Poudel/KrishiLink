@@ -5,7 +5,7 @@ import Thems from "./Thems";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/Authcontext';
 import ProfileMenu from './ProfileMenu';
 
 const Header = () => {

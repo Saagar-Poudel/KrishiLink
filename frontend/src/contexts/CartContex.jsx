@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState,useEffect } from 'react';
+import { useAuth } from './Authcontext';
 
 const CartContext = createContext(undefined);
 
@@ -13,22 +14,36 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [initialized, setInitialized] = useState(false);
+  const { user } = useAuth();
 
   //loadcart to localstorage
-useEffect (()=>{
-  const savedCart = localStorage.getItem("cartItems");
-  if(savedCart){
-    setCartItems(JSON.parse(savedCart));
-  }
-  setInitialized(true);
-},[]);
-//save cart to localstorage
+// useEffect (()=>{
+//   const savedCart = localStorage.getItem("cartItems");
+//   if(savedCart){
+//     setCartItems(JSON.parse(savedCart));
+//   }
+//   setInitialized(true);
+// },[]);
 
 useEffect(()=>{
-  if(initialized){
-    localStorage.setItem("cartItems",JSON.stringify(cartItems));
+  if(user){
+    const savedCart = localStorage.getItem(`cart_${user.id}`);
+    setCartItems(savedCart ? JSON.parse(savedCart) : []);
+  } else{
+    setCartItems([]);
   }
-},[cartItems,initialized]);
+  setInitialized(true);
+},[user]);
+
+
+//save cart to localstorage
+
+
+useEffect(()=>{
+  if(initialized && user){
+    localStorage.setItem(`cart_${user.id}`,JSON.stringify(cartItems));
+  }
+},[cartItems,initialized,user]);
 
 
   const addToCart = (product, quantity = 1) => {
@@ -68,6 +83,9 @@ useEffect(()=>{
 
   const clearCart = () => {
     setCartItems([]);
+    if (user) {
+      localStorage.removeItem(`cart_${user.id}`);
+    }
   };
 
   const getTotalItems = () => {

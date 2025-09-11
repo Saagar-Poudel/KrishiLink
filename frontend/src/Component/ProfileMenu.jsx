@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Bell, Languages, LogOut, LogIn, User } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import Thems from "./Thems";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/Authcontext";
 import { Link, useNavigate } from "react-router-dom";
 
 const ProfileMenu = () => {

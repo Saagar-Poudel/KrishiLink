@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit, MapPin, Phone, Mail, Star, Wheat, DollarSign, Package, Plus, TrendingUp, Clock, CheckCircle } from "lucide-react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/Authcontext";
 
 // ---------------- Profile Header ----------------
 function ProfileHeader({

@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/Authcontext";
 import FarmerProfile from "./Farmerprofile";
 import BuyerProfile from "./BuyerDashboard";
 

@@ -3,7 +3,7 @@ import { User, Lock, Mail } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/Authcontext';
 
 const AuthForm = () => {
   const { login } = useAuth();

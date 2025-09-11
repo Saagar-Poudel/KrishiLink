@@ -23,7 +23,7 @@ import Market from "./Component/Markets/Market";
 import { Toaster } from "react-hot-toast";
 import Training from "./Component/Training/Training";
 import Storage from "./Component/Storage/Storage";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/Authcontext";
 import Dashboard from "./Component/Dashboard/Dashboard";
 import SellerProductForm from "./Component/SellerProductForm";
 // import Buyerprofile from "./Component/Profile/BuyerDashboard";
@@ -70,12 +70,12 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <LanguageProvider>
-      <CartProvider>
         <AuthProvider>
+      <CartProvider>
           <RouterProvider router={router} />
           <Toaster position="bottom-right" />
-        </AuthProvider>
       </CartProvider>
+        </AuthProvider>
     </LanguageProvider>
   </StrictMode>
 );
