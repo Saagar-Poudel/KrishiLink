@@ -8,7 +8,7 @@ export const users = pgTable("users", {
   username: varchar("username", { length: 50 }).notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  role:text("role").default("buyers"),
+  role:text("role").default("buyer").notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -90,3 +90,16 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+export const Transaction = pgTable("transactions", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+  status: text("status", {
+    enum: ["PENDING", "COMPLETE", "FAILED", "REFUNDED"],
+  }).default("PENDING"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});

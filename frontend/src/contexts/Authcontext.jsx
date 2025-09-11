@@ -1,10 +1,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // <-- add loading state
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -13,29 +15,31 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-//   useEffect(()=>{
-//     const token = localStorage.getItem("token");
-//     if (!token) return;
-//     axios.get('http://localhost:5000/api/users',{
-//       headers:{
-//         Authorization: `Bearer ${token}`
-//       },
-//     })
-// .then((res)=>{
-//   setUser(res.data);
-//   localStorage.setItem("user", JSON.stringify(res.data));
-// })
-// .catch(()=>{
-//   setUser(null);
-//   localStorage.removeItem("user");
-//   localStorage.removeItem("token");
-// });
+useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  const storedToken = localStorage.getItem("token");
 
-// },[]);
-  
+  if (storedUser && storedToken) {
+    try {
+      const decoded = jwtDecode(storedToken);
+
+      if (decoded.exp * 1000 < Date.now()) {
+        // token expired
+        logout();
+      } else {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch {
+      logout();
+    }
+  }
+
+  setLoading(false);
+}, []);
+
   const login = (userData, token) => {
     localStorage.setItem("user", JSON.stringify(userData));
-   if (token) localStorage.setItem("token", token);
+    localStorage.setItem("token", token);
     setUser(userData);
   };
 
@@ -46,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

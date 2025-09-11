@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Store, TrendingUp, Users, Leaf } from "lucide-react";
-import { useLanguage } from '../../contexts/LanguageContext';
-import Filters from './Filters';
-import ProductCard from './ProductCard';
-import ProductModal from './ProductModal';
+import { useLanguage } from "../../contexts/LanguageContext";
+import Filters from "./Filters";
+import ProductCard from "./ProductCard";
+import ProductModal from "./ProductModal";
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
 import axios from "axios";
@@ -11,15 +11,14 @@ import axios from "axios";
 const Market = () => {
   const { t } = useLanguage();
 
-
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [wishlistedProducts, setWishlistedProducts] = useState([]);
   const [filters, setFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const { toast } = useToast(); 
+  const { toast } = useToast();
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
-   useEffect(() => {
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const { data } = await axios.get("http://localhost:3000/api/products/");
@@ -31,28 +30,56 @@ const Market = () => {
     };
     fetchProducts();
   }, []);
-  useEffect(() => { filterProducts(); }, [filters]);
-  useEffect(() => { setFilteredProducts(products); }, []);
+  useEffect(() => {
+    filterProducts();
+  }, [filters]);
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, []);
 
   const filterProducts = () => {
     let filtered = [...products];
 
     if (filters.searchTerm) {
-      filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        product.sellerName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        product.nameNepali?.toLowerCase().includes(filters.searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (product) =>
+          product.name
+            .toLowerCase()
+            .includes(filters.searchTerm.toLowerCase()) ||
+          product.category
+            .toLowerCase()
+            .includes(filters.searchTerm.toLowerCase()) ||
+          product.sellerName
+            .toLowerCase()
+            .includes(filters.searchTerm.toLowerCase()) ||
+          product.nameNepali
+            ?.toLowerCase()
+            .includes(filters.searchTerm.toLowerCase())
       );
     }
 
-    if (filters.category && filters.category !== "all") filtered = filtered.filter(p => p.category === filters.category);
-    if (filters.location && filters.location !== "all") filtered = filtered.filter(p => p.location.includes(filters.location));
-    if (filters.priceRange) filtered = filtered.filter(p => p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]);
+    if (filters.category && filters.category !== "all") {
+      filtered = filtered.filter(
+        (p) => p.category.toLowerCase() === filters.category.toLowerCase()
+      );
+    }
+
+    if (filters.location && filters.location !== "all")
+      filtered = filtered.filter((p) => p.location.includes(filters.location));
+    if (filters.priceRange)
+      filtered = filtered.filter(
+        (p) =>
+          p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
+      );
     if (filters.certifications && filters.certifications.length > 0) {
-      filtered = filtered.filter(product => {
-        if (filters.certifications.includes(t("Organic")) && !product.isOrganic) return false;
-        if (filters.certifications.includes(t("Government Approved")) && !product.isVerified) return false;
+      filtered = filtered.filter((product) => {
+        if (filters.certifications.includes(t("Organic")) && !product.isOrganic)
+          return false;
+        if (
+          filters.certifications.includes(t("Government Approved")) &&
+          !product.isVerified
+        )
+          return false;
         return true;
       });
     }
@@ -63,16 +90,29 @@ const Market = () => {
   const handleProductClick = (product) => setSelectedProduct(product);
   const handleToggleWishlist = (productId) => {
     if (wishlistedProducts.includes(productId)) {
-      setWishlistedProducts(wishlistedProducts.filter(id => id !== productId));
-      toast({ title: t("Removed from Wishlist"), description: t("Product removed from your wishlist.") });
+      setWishlistedProducts(
+        wishlistedProducts.filter((id) => id !== productId)
+      );
+      toast({
+        title: t("Removed from Wishlist"),
+        description: t("Product removed from your wishlist."),
+      });
     } else {
       setWishlistedProducts([...wishlistedProducts, productId]);
-      toast({ title: t("Added to Wishlist"), description: t("Product added to your wishlist.") });
+      toast({
+        title: t("Added to Wishlist"),
+        description: t("Product added to your wishlist."),
+      });
     }
   };
   const handleAddToCart = (product, quantity = 1) => {
     addToCart(product, quantity);
-    toast({ title: t("Added to Cart"), description: t(`${quantity} ${product.unit} of ${product.name} added to cart.`) });
+    toast({
+      title: t("Added to Cart"),
+      description: t(
+        `${quantity} ${product.unit} of ${product.name} added to cart.`
+      ),
+    });
   };
 
   const stats = [
@@ -82,7 +122,7 @@ const Market = () => {
     { icon: Users, label: t("Happy Customers"), value: "15,000+" },
   ];
 
-   return (
+  return (
     <div className="w-full dark:bg-[#0B1A12] dark:text-[#F9FAFB]">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -146,7 +186,11 @@ const Market = () => {
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
-        isWishlisted={selectedProduct ? wishlistedProducts.includes(selectedProduct.id) : false}
+        isWishlisted={
+          selectedProduct
+            ? wishlistedProducts.includes(selectedProduct.id)
+            : false
+        }
       />
 
       {/* Stats Section */}

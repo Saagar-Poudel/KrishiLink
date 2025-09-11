@@ -120,6 +120,7 @@ const AuthForm = () => {
         });
         login(data.user, data.token); // Update auth context with logged-in user
         navigate('/');
+        console.log('Login response:', data);
       } else {
         submitData = {
           username: formData.username,

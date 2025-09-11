@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useAuth} from "../../contexts/AuthContext";
-
+import { useAuth } from "../../contexts/AuthContext";
 import {
   ShoppingCart,
   Heart,
@@ -43,6 +42,7 @@ const mockData = {
 const BuyerProfile = () => {
   const { buyer, orderHistory, wishlist, savedSellers } = mockData;
   const [activeTab, setActiveTab] = useState("orders");
+  const { user } = useAuth();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -75,15 +75,15 @@ const BuyerProfile = () => {
       {/* Buyer Info */}
       <div className="bg-white dark:bg-zinc-800 shadow-md rounded-2xl p-6 flex items-center gap-6">
         <div className="w-20 h-20 rounded-full bg-blue-200 flex items-center justify-center text-2xl font-bold text-blue-800">
-          {User?.username }
+          {user?.username }
         </div>
         <div className="flex-1">
-          <h2 className="text-2xl font-bold">{buyer.name} </h2>
+          <h2 className="text-2xl font-bold">{user?.username} </h2>
           <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-            <Mail size={16} /> {buyer.email}
+            <Mail size={16} /> {user?.email}
           </p>
           <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-            <MapPin size={16} /> {buyer.location}
+            <MapPin size={16} /> {user?.location}
           </p>
         </div>
         <button className="bg-yellow-300 hover:bg-yellow-400 px-4 py-2 rounded-lg flex items-center gap-2">

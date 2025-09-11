@@ -6,6 +6,7 @@ import BuyerProfile from "./BuyerDashboard";
 const RoleBasedProfile = () => {
 const { user } = useAuth();
 
+console.log("Current user from context:", user);
 if (!user) return null;
 
 switch (user.role) {
