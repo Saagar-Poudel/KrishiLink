@@ -5,7 +5,7 @@ export const crops = [
   { name: "Tomato", type: "Vegetable", months: [3,4,5,6], soil: "Sandy loam", moisture: "Moderate", tips: "Provide support for vines", harvest: "60-80 days", img: "/public/images/tomato.png" },
   { name: "Potato", type: "Vegetable", months: [1,2,3], soil: "Loamy", moisture: "Moderate", tips: "Plant tubers 4 inches deep", harvest: "70-120 days", img: "/public/Images/potato.png" },
   { name: "Carrot", type: "Vegetable", months: [2,3,4], soil: "Sandy loam", moisture: "Moderate", tips: "Thin seedlings after sprouting", harvest: "70 days", img: "/public/images/carrot.png" },
-  { name: "Cabbage", type: "Vegetable", months: [3,4,5], soil: "Loamy", moisture: "Moderate", tips: "Keep soil moist", harvest: "80 days", img: "/public/images/cabbage.png" },
+  { name: "Cabbage", type: "Vegetable", months: [3,4,5], soil: "Loamy", moisture: "Moderate", tips: "Keep soil moist", harvest: "80 days", img: "/public/images/potato.png.png" },
   { name: "Beans", type: "Vegetable", months: [6,7,8], soil: "Loamy", moisture: "Moderate", tips: "Use trellis for support", harvest: "50-60 days", img: "/public/images/beans.png" },
   { name: "Cucumber", type: "Vegetable", months: [5,6,7], soil: "Loamy", moisture: "Moderate", tips: "Provide trellis support", harvest: "50-70 days", img: "/public/images/cucumber.png" },
   { name: "Pumpkin", type: "Vegetable", months: [6,7,8,9,10], soil: "Sandy loam", moisture: "Moderate", tips: "Needs wide spacing", harvest: "90 days", img: "/public/images/pumpkin.png" },
