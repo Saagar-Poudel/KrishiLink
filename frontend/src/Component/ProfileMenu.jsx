@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Bell, Languages, LogOut, LogIn, User } from "lucide-react";
+import {Languages, LogOut, LogIn, User, Settings } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import Thems from "./Thems";
 import { useAuth } from "../contexts/Authcontext";
@@ -37,7 +37,8 @@ const ProfileMenu = () => {
                    hover:bg-gray-100 dark:border-[#374151] dark:hover:bg-[#12241A]"
       >
         <User className="h-5 w-5" />
-        <span className="hidden sm:block">{user ? user.username : "Guest"}</span>
+        {/* <span className="hidden sm:block">{user ? user.username : "Guest"}</span> */}
+        <span className="hidden sm:block">Profile</span>
       </button>
 
       {/* Dropdown Menu */}
@@ -48,8 +49,14 @@ const ProfileMenu = () => {
             className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
           >
             <User className="h-5 w-5 mr-2" />
-            Profile
+           {user ? user.username : "Guest"}
           </button>
+<button onClick={()=> navigate("/accountsetting")} 
+  className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]">
+<Settings className="h-5 w-5 mr-2"/>
+ Setting
+
+</button>
 
           <button
             onClick={toggleLanguage}
@@ -57,15 +64,7 @@ const ProfileMenu = () => {
           >
             <Languages className="h-5 w-5 mr-2" />
             {language === "en" ? "नेपाली" : "English"}
-          </button>
-
-          <button
-            className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
-          >
-            <Bell className="h-5 w-5 mr-2" />
-            Notifications
-          </button>
-
+          </button> 
           <div className="px-3 py-2">
             <Thems />
           </div>
@@ -75,7 +74,6 @@ const ProfileMenu = () => {
               onClick={handleLogout}
               className="flex items-center w-full px-3 py-2 text-red-600 rounded-md hover:bg-red-100 dark:hover:bg-[#12241A]"
             >
-              <span>{user.username}</span>
               <LogOut className="h-5 w-5 mr-2" />
               Logout
             </button>

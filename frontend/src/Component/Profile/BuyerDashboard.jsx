@@ -71,7 +71,7 @@ const BuyerProfile = () => {
   const pendingOrders = orderHistory.filter(order => order.status === 'pending').length;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="mx-20 p-6 space-y-6">
       {/* Buyer Info */}
       <div className="bg-white dark:bg-zinc-800 shadow-md rounded-2xl p-6 flex items-center gap-6">
         <div className="w-20 h-20 rounded-full bg-blue-200 flex items-center justify-center text-2xl font-bold text-blue-800">
@@ -86,9 +86,6 @@ const BuyerProfile = () => {
             <MapPin size={16} /> {user?.location}
           </p>
         </div>
-        <button className="bg-yellow-300 hover:bg-yellow-400 px-4 py-2 rounded-lg flex items-center gap-2">
-          <Edit2 size={16} /> Edit Profile
-        </button>
       </div>
 
       {/* Purchase Overview */}
@@ -121,22 +118,22 @@ const BuyerProfile = () => {
       </div>
 
       {/* Tabs */}
-      <div>
-        <div className="flex space-x-4 border-b">
+      <div className="bg-white rounded shadow">
+        <div className="flex border-b">
           <button
-            className={`pb-2 ${activeTab === 'orders' ? 'border-b-2 border-blue-600 font-semibold' : ''}`}
+            className={`flex-1 p-3  ${activeTab === 'orders' ? 'border-b-2 border-blue-600 font-semibold' : ''}`}
             onClick={() => setActiveTab('orders')}
           >
             Order History
           </button>
           <button
-            className={`pb-2 ${activeTab === 'wishlist' ? 'border-b-2 border-blue-600 font-semibold' : ''}`}
+            className={`flex-1 p-3  ${activeTab === 'wishlist' ? 'border-b-2 border-blue-600 font-semibold' : ''}`}
             onClick={() => setActiveTab('wishlist')}
           >
             Wishlist
           </button>
           <button
-            className={`pb-2 ${activeTab === 'sellers' ? 'border-b-2 border-blue-600 font-semibold' : ''}`}
+            className={`flex-1 p-3  ${activeTab === 'sellers' ? 'border-b-2 border-blue-600 font-semibold' : ''}`}
             onClick={() => setActiveTab('sellers')}
           >
             Saved Sellers
