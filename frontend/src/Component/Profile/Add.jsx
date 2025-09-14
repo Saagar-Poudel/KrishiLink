@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Upload, Package } from "lucide-react";
+import { ArrowLeft, Package } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { v4 as uuid } from "uuid"; 
+import { supabase } from "../../lib/supabaseClient";
+import { useAuth } from "../../contexts/Authcontext";
 
 export default function AddProduct() {
+  const {user} = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -11,59 +16,85 @@ export default function AddProduct() {
     name: "",
     description: "",
     price: "",
-    stock: "",
+    quantity: 0,
+    sellerName: user.username,
+    location: "Chitwan",
     category: "",
     image: ""
   });
 
-  const [imagePreview, setImagePreview] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
-  const categories = ["Vegetables","Fruits","Grains","Dairy","Organic","Herbs","Other"];
+  async function handleImageUpload(file) {
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${uuid()}.${fileExt}`;
+      const filePath = `products/${fileName}`;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+      const { error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(filePath, file, { upsert: true, cacheControl: "3600" });
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        setImagePreview(e.target.result);
-        setFormData(prev => ({ ...prev, image: e.target.result }));
-      };
-      reader.readAsDataURL(file);
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from("product-images")
+        .getPublicUrl(filePath);
+
+      setFormData((f) => ({ ...f, image: data.publicUrl }));
+      setPreview(data.publicUrl);
+    } catch (err) {
+      toast.error(err.message || "Image upload failed");
+    } finally {
+      setUploading(false);
     }
-  };
+  }
 
-  const handleSubmit = (e) => {
+  function onChange(e) {
+    const { name, value, type, checked } = e.target;
+    setFormData((f) => ({
+      ...f,
+      [name]: type === "checkbox" ? checked : value
+    }));
+  }
+
+  const categories = [
+    "Vegetables",
+    "Fruits",
+    "Grains",
+    "Dairy",
+    "Organic",
+    "Herbs",
+    "Other"
+  ];
+
+  async function onSubmit(e) {
     e.preventDefault();
-    if (!formData.name || !formData.price || !formData.stock || !formData.category || !formData.image) {
-      toast("Please fill in all required fields");
-      return;
+    try {
+      await axios.post("http://localhost:3000/api/products", {
+        ...formData,
+        price: String(formData.price),
+        stock: Number(formData.stock)
+      });
+
+      toast.success("Product created");
+      navigate("/farmerprofile");
+    } catch (err) {
+      toast.error("Failed to create product");
+      console.error(err);
     }
-
-    const newProduct = {
-      id: Date.now().toString(),
-      ...formData,
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock),
-      status: parseInt(formData.stock) > 0 ? "active" : "out_of_stock",
-      sold: 0
-    };
-
-    const onAdd = location.state?.onAdd;
-    if (onAdd) onAdd(newProduct);
-
-    navigate("/farmerprofile");
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate("/farmerprofile")} className="flex items-center gap-2 px-3 py-1 border rounded-md bg-white hover:bg-gray-100">
+          <button
+            onClick={() => navigate("/farmerprofile")}
+            className="flex items-center gap-2 px-3 py-1 border rounded-md bg-white hover:bg-gray-100"
+          >
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <div className="flex items-center gap-2">
@@ -72,38 +103,102 @@ export default function AddProduct() {
           </div>
         </div>
 
-        <form className="bg-white shadow-md rounded-lg p-6 space-y-4">
+        <form
+          onSubmit={onSubmit}
+          className="bg-white shadow-md rounded-lg p-6 space-y-4"
+        >
           <div>
             <label className="font-medium">Product Name *</label>
-            <input name="name" value={formData.name} onChange={handleInputChange} required className="w-full border rounded-md px-3 py-2" />
+            <input
+              name="name"
+              value={formData.name}
+              onChange={onChange}
+              required
+              className="w-full border rounded-md px-3 py-2"
+            />
           </div>
           <div>
             <label className="font-medium">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleInputChange} rows={3} className="w-full border rounded-md px-3 py-2" />
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={onChange}
+              rows={3}
+              className="w-full border rounded-md px-3 py-2"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <input name="price" type="number" value={formData.price} onChange={handleInputChange} placeholder="Price per kg" required className="border rounded-md px-3 py-2" />
-            <input name="stock" type="number" value={formData.stock} onChange={handleInputChange} placeholder="Stock Quantity" required className="border rounded-md px-3 py-2" />
+            <input
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={onChange}
+              placeholder="Price per kg"
+              required
+              className="border rounded-md px-3 py-2"
+            />
+            <input
+              name="stock"
+              type="number"
+              value={formData.stock}
+              onChange={onChange}
+              placeholder="Stock Quantity"
+              required
+              className="border rounded-md px-3 py-2"
+            />
           </div>
           <div>
             <label className="font-medium">Category *</label>
-            <select value={formData.category} onChange={handleInputChange} name="category" required className="w-full border rounded-md px-3 py-2">
+            <select
+              value={formData.category}
+              onChange={onChange}
+              name="category"
+              required
+              className="w-full border rounded-md px-3 py-2"
+            >
               <option value="">Select category</option>
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
           <div>
             <label className="font-medium">Product Image</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-            {imagePreview && <img src={imagePreview} className="w-32 h-32 mt-2 object-cover rounded" />}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                e.target.files && handleImageUpload(e.target.files[0])
+              }
+            />
+            {uploading && <div>Uploading…</div>}
+            {preview && (
+              <img
+                src={preview}
+                alt="preview"
+                className="h-32 object-cover rounded"
+              />
+            )}
           </div>
           <div className="flex gap-4">
-            <button type="button" onClick={() => navigate("/farmerprofile")} className="flex-1 border px-4 py-2 rounded">Cancel</button>
-            <button onClick={handleSubmit} type="submit" className="flex-1 bg-green-600 text-white px-4 py-2 rounded">Add Product</button>
+            <button
+              type="button"
+              onClick={() => navigate("/farmerprofile")}
+              className="flex-1 border px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-green-600 text-white px-4 py-2 rounded"
+            >
+              Add Product
+            </button>
           </div>
         </form>
       </div>
     </div>
   );
 }
-

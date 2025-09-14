@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Edit,
@@ -14,52 +14,42 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../contexts/Authcontext";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 export default function FarmerProfile() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const defaultAvatar =
     "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=400&fit=crop&crop=face";
 
-  const [products, setProducts] = useState([
-    {
-      id: "1",
-      name: "Organic Tomatoes",
-      description: "Fresh organic tomatoes grown without pesticides",
-      price: 120,
-      stock: 50,
-      sold: 245,
-      status: "active",
-      image:
-        "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&h=300&fit=crop",
-      category: "Vegetables",
-    },
-    {
-      id: "2",
-      name: "Fresh Wheat",
-      description: "Premium quality wheat grain",
-      price: 45,
-      stock: 0,
-      sold: 180,
-      status: "out_of_stock",
-      image:
-        "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&h=300&fit=crop",
-      category: "Grains",
-    },
-    {
-      id: "3",
-      name: "Green Vegetables",
-      description: "Mixed fresh green vegetables",
-      price: 80,
-      stock: 25,
-      sold: 67,
-      status: "active",
-      image:
-        "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop",
-      category: "Vegetables",
-    },
-  ]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch farmer products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const {data} = await axios.get("http://localhost:3000/api/products");
+        // Filter products belonging to the logged-in farmer
+        const farmerProducts = data.filter(
+          (p) => p.sellerName?.toLowerCase() === user?.username?.toLowerCase()
+        );
+        console.log("Data:",data);
+        console.log("User:",user)
+        setProducts(farmerProducts);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        toast.error("Failed to load products!");
+      } finally {
+         
+        setLoading(false);
+      }
+    };
+      fetchProducts();
+  }, []);
 
   const [orders] = useState([
     {
@@ -90,6 +80,15 @@ export default function FarmerProfile() {
       date: "2024-01-13",
     },
   ]);
+
+  // useEffect(() => {
+  //   if (location.state?.addedProduct) {
+  //     setProducts((prev) => [
+  //       { id: crypto.randomUUID(), ...location.state.addedProduct },
+  //       ...prev,
+  //     ]);
+  //   }
+  // }, [location.state]);
 
   const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
