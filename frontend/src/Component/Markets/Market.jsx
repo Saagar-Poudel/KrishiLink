@@ -43,13 +43,13 @@ const Market = () => {
     if (filters.searchTerm) {
       filtered = filtered.filter(
         (product) =>
-          product.name
+           (product.name || "")
             .toLowerCase()
             .includes(filters.searchTerm.toLowerCase()) ||
-          product.category
+         (product.category || "")
             .toLowerCase()
             .includes(filters.searchTerm.toLowerCase()) ||
-          product.sellerName
+          (product.sellerName || "")
             .toLowerCase()
             .includes(filters.searchTerm.toLowerCase()) ||
           product.nameNepali

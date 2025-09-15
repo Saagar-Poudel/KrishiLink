@@ -81,15 +81,6 @@ export default function FarmerProfile() {
     },
   ]);
 
-  // useEffect(() => {
-  //   if (location.state?.addedProduct) {
-  //     setProducts((prev) => [
-  //       { id: crypto.randomUUID(), ...location.state.addedProduct },
-  //       ...prev,
-  //     ]);
-  //   }
-  // }, [location.state]);
-
   const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
   const [activeTab, setActiveTab] = useState("products");
@@ -303,7 +294,7 @@ export default function FarmerProfile() {
                     #{o.id} - {o.product}
                   </h4>
                   <p className="text-sm text-gray-500">
-                    Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total}
+                    Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total} • Date: {o.date}
                   </p>
                 </div>
                 {o.status === "pending" && (
