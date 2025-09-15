@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
-import { EsewaPaymentGateway, EsewaCheckStatus } from "esewajs";
 import { db } from "../dbConnection/dbConnection"; // your drizzle db instance
 import { Transaction } from "../models/schema"; 
 import { eq } from "drizzle-orm";
 
+import { loadEsewa } from "../services/esewaClient";
+
+
 // Initiate Esewa Payment
-export const EsewaInitiatePayment = async (req: Request, res: Response) => {
+export const EsewaInitiatePayment = async (req: Request, res: Response): Promise<any> => {
   const { amount, productId } = req.body;
+  const { EsewaPaymentGateway } = await loadEsewa();
+
 
   try {
     const reqPayment = await EsewaPaymentGateway(
@@ -48,8 +52,9 @@ export const EsewaInitiatePayment = async (req: Request, res: Response) => {
 };
 
 // Check Esewa Payment Status
-export const paymentStatus = async (req: Request, res: Response) => {
+export const paymentStatus = async (req: Request, res: Response):Promise<any> => {
   const { productId } = req.body;
+  const { EsewaCheckStatus } = await loadEsewa();
 
   try {
     // Find transaction by productId
@@ -64,7 +69,7 @@ export const paymentStatus = async (req: Request, res: Response) => {
 
     // Check status from Esewa
     const paymentStatusCheck = await EsewaCheckStatus(
-      transaction.amount,
+      Number(transaction.amount),
       transaction.productId,
       process.env.MERCHANT_ID!,
       process.env.ESEWAPAYMENT_STATUS_CHECK_URL!

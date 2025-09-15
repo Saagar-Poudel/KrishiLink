@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { useToast } from "../hooks/use-toast";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useAuth } from "../contexts/Authcontext";
 import { User, X, CheckCircle, Download } from "lucide-react";
+import axios from "axios";
 
 const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [customerInfo, setCustomerInfo] = useState({
-    name: "",
     phone: "",
     address: "",
     email: "",
+    note: "",
   });
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
   if (!isOpen) return null;
@@ -32,8 +36,27 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
     }));
   };
 
-  const handlePlaceOrder = () => {
-    if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
+  const handlePlaceOrder = async () => {
+    const url = "http://localhost:3000/api/orders";
+    const esewaCall = (formData) => {
+      console.log(formData);
+      const path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+      const form = document.createElement("form");
+      form.setAttribute("method", "POST");
+      form.setAttribute("action", path);
+
+      for (let key in formData) {
+        const hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", key);
+        hiddenField.setAttribute("value", formData[key]);
+        form.appendChild(hiddenField);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    };
+    if (!customerInfo.email || !customerInfo.phone || !customerInfo.address) {
       toast({
         title: t("missingInfoTitle"),
         description: t("missingInfoDesc"),
@@ -57,42 +80,84 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       });
       return;
     }
-    setTimeout(() => {
-      setIsOrderPlaced(true);
-      toast({
-        title: t("Order Placed Successfully"),
-        description: t("Your order has been placed successfully."),
-      });
-    }, 500);
+    if (paymentMethod === "esewa") {
+      try {
+        const response = await axios.post(url, {
+          userId: user.id,
+          contactName: user.username,
+          phone: customerInfo.phone,
+          email: customerInfo.email,
+          location: customerInfo.address,
+          notes: customerInfo.note,
+          items: cartItems.map((item) => ({
+            productId: item.id,
+            quantity: item.cartQuantity,
+            price: item.price,
+          })),
+        });
+        console.log("Full Response:", response);
+        console.log("Message:", response.data.message);
+        console.log("Order:", response.data.order);
+        console.log("Esewa Form Data:", response.data.formData);
+
+        // ✅ Now safe to call Esewa
+        esewaCall(response.data.formData);
+
+        toast({
+          title: "Order Placed Successfully",
+          description: response.data.message,
+        });
+
+        setIsOrderPlaced(true);
+      } catch (error) {
+        console.error("Error placing order:", error);
+        toast({
+          title: t("orderErrorTitle"),
+          description: t("orderErrorDesc"),
+          variant: "destructive",
+        });
+      }
+    } else if (paymentMethod === "khalti") {
+      window.location.href = "https://khalti.com/#/home";
+      return;
+    } else {
+      setTimeout(() => {
+        setIsOrderPlaced(true);
+        toast({
+          title: t("Order Placed Successfully"),
+          description: t("Your order has been placed successfully."),
+        });
+      }, 500);
+    }
   };
 
   const downloadBill = () => {
     const billContent = `
-KRISHI LINK - INVOICE
-=====================
+      KRISHI LINK - INVOICE
+      =====================
 
-Customer Information:
-Name: ${customerInfo.name}
-Phone: ${customerInfo.phone}
-Address: ${customerInfo.address}
-${customerInfo.email ? `Email: ${customerInfo.email}` : ""}
+      Customer Information:
+      Name: ${customerInfo.name}
+      Phone: ${customerInfo.phone}
+      Address: ${customerInfo.address}
+      ${customerInfo.email ? `Email: ${customerInfo.email}` : ""}
 
-Order Summary:
-${cartItems
-  .map(
-    (item) =>
-      `${item.name} - ${item.cartQuantity} ${item.unit} @ Rs.${item.price} = Rs.${
-        item.price * item.cartQuantity
-      }`
-  )
-  .join("\n")}
+      Order Summary:
+      ${cartItems
+        .map(
+          (item) =>
+            `${item.name} - ${item.cartQuantity} ${item.unit} @ Rs.${
+              item.price
+            } = Rs.${item.price * item.cartQuantity}`
+        )
+        .join("\n")}
 
-Subtotal: Rs.${subtotal.toLocaleString()}
-Delivery Fee: Rs.${deliveryFee}
-Tax (13%): Rs.${tax.toFixed(2)}
-Grand Total: Rs.${grandTotal.toFixed(2)}
+      Subtotal: Rs.${subtotal.toLocaleString()}
+      Delivery Fee: Rs.${deliveryFee}
+      Tax (13%): Rs.${tax.toFixed(2)}
+      Grand Total: Rs.${grandTotal.toFixed(2)}
 
-Thank you for shopping with Krishi Link!
+      Thank you for shopping with Krishi Link!
     `;
 
     const blob = new Blob([billContent], { type: "text/plain" });
@@ -163,18 +228,6 @@ Thank you for shopping with Krishi Link!
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  value={customerInfo.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 dark:bg-[#12241A] dark:text-gray-100"
-                  placeholder="Enter your full name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
                   Phone Number *
                 </label>
                 <input
@@ -207,6 +260,16 @@ Thank you for shopping with Krishi Link!
                   placeholder="Enter your email address"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Note *</label>
+                <input
+                  type="text"
+                  value={customerInfo.note}
+                  onChange={(e) => handleInputChange("note", e.target.value)}
+                  className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 dark:bg-[#12241A] dark:text-gray-100"
+                  placeholder="Enter your full name"
+                />
+              </div>
             </div>
           </div>
 
@@ -230,7 +293,8 @@ Thank you for shopping with Krishi Link!
                     <div>
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {item.cartQuantity} {item.unit} × {t("Rs.")} {item.price}
+                        {item.cartQuantity} {item.unit} × {t("Rs.")}{" "}
+                        {item.price}
                       </p>
                     </div>
                   </div>
@@ -247,15 +311,21 @@ Thank you for shopping with Krishi Link!
           <div className="space-y-2 pt-4 border-t dark:border-gray-700">
             <div className="flex justify-between">
               <span>{t("Subtotal")}</span>
-              <span>{t("Rs.")} {subtotal.toLocaleString()}</span>
+              <span>
+                {t("Rs.")} {subtotal.toLocaleString()}
+              </span>
             </div>
             <div className="flex justify-between">
               <span>{t("Delivery Fee")}</span>
-              <span>{t("Rs.")} {deliveryFee}</span>
+              <span>
+                {t("Rs.")} {deliveryFee}
+              </span>
             </div>
             <div className="flex justify-between">
               <span>{t("Tax (13%)")}</span>
-              <span>{t("Rs.")} {tax.toFixed(2)}</span>
+              <span>
+                {t("Rs.")} {tax.toFixed(2)}
+              </span>
             </div>
             <div className="flex justify-between text-xl font-bold border-t pt-2 dark:border-gray-700">
               <span>{t("Grand Total")}</span>
@@ -274,11 +344,22 @@ Thank you for shopping with Krishi Link!
                 <label htmlFor="cod">{t("Cash on Delivery (COD)")}</label>
               </div>
               <div className="flex items-center space-x-2">
-                <input type="radio" id="esewa" name="payment" />
+                <input
+                  type="radio"
+                  id="esewa"
+                  name="payment"
+                  onChange={(e) => setPaymentMethod("esewa")}
+                />
                 <label htmlFor="esewa">{t("eSewa")}</label>
               </div>
               <div className="flex items-center space-x-2">
-                <input type="radio" id="khalti" name="payment" />
+                <input
+                  type="radio"
+                  id="khalti"
+                  name="payment"
+                  value="khalti"
+                  onChange={(e) => setPaymentMethod("khalti")}
+                />
                 <label htmlFor="khalti">{t("Khalti")}</label>
               </div>
             </div>

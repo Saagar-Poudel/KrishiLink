@@ -6,6 +6,8 @@ import orderRouter from './routes/orderRoutes';
 import newsRouter from './routes/newsRoutes';
 import dashboardRouter from './routes/dashboardRoutes'
 import cors from 'cors';
+import bodyParser from 'body-parser';
+import { EsewaInitiatePayment, paymentStatus } from './controllers/esewaController';
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,9 @@ app.use(cors({
 }));
 
 app.use(express.json());
+//middle ware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use('/api/users', userRouter);
@@ -26,6 +31,10 @@ app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 app.use("/api/news", newsRouter);
 app.use("/api/analytics", dashboardRouter);
+
+//routes
+app.post("/initiate-payment", EsewaInitiatePayment);
+app.post("/payment-status", paymentStatus);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');

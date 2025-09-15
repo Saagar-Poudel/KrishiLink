@@ -27,6 +27,8 @@ import Storage from "./Component/Storage/Storage";
 import { AuthProvider } from "./contexts/Authcontext";
 import Dashboard from "./Component/Dashboard/Dashboard";
 import SellerProductForm from "./Component/SellerProductForm";
+import Success from "./Component/ESewa/Success";
+import Failure from "./Component/ESewa/Failure";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,6 +46,8 @@ const router = createBrowserRouter(
         <Route path="/profileheader" element={<ProfileHeader />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sell" element={<SellerProductForm />} />
+        <Route path="/payment-success" element={<Success />} />
+        <Route path="/payment-failure" element={<Failure />} />
       </Route>
       <Route element={<AuthLayout />}>
         <Route path="login" element={<Login />} />
