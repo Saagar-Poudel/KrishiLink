@@ -373,6 +373,7 @@ const ChatData = [
   { question: "environmentally friendly pest control", answer: "Use organic sprays, predators, crop rotation, and traps." },
   { question: "importance of pest management", answer: "Reduces crop loss, improves quality, and ensures food security." },
   { question: "importance of disease management", answer: "Protects crops, improves yield, and reduces economic loss." },
+  { question: "what is pesticides", answer: "Pesticides are chemicals used to kill or control pests, insects, weeds, or plant diseases." },
 
 // Fertilizers Dataset - 100 questions
 
@@ -907,6 +908,56 @@ const ChatData = [
   { question: "Techniques for off-season crops?", answer: "Use greenhouses or shade nets to simulate favorable conditions." },
 
 
+  // Additional agriculture questions
+  { question: "What is organic farming?", answer: "Organic farming is a method of growing crops without synthetic chemicals." },
+  { question: "How to improve soil fertility?", answer: "Add compost, green manure, and use crop rotation to improve soil fertility." },
+  { question: "What are the types of irrigation?", answer: "Common types include drip, sprinkler, surface, and sub-surface irrigation." },
+  { question: "How to prevent soil erosion?", answer: "Use contour plowing, terracing, and cover crops to reduce soil erosion." },
+  { question: "Which crops grow in summer?", answer: "Tomato, chili, cucumber, pumpkin, and maize grow well in summer." },
+  { question: "Which crops grow in winter?", answer: "Cabbage, cauliflower, carrot, and wheat thrive in winter conditions." },
+  { question: "What is crop rotation?", answer: "Rotating different crops on the same field improves soil fertility and reduces pests." },
+  { question: "How to control pests naturally?", answer: "Use neem oil, garlic spray, and companion planting to control pests naturally." },
+  { question: "What is the ideal pH for crops?", answer: "Most crops grow well in soil with pH between 6 and 7.5." },
+  { question: "What is nitrogen deficiency in plants?", answer: "Plants show yellow leaves when nitrogen is insufficient, affecting growth." },
+  { question: "What are biofertilizers?", answer: "Biofertilizers contain living microorganisms that enhance nutrient availability in soil." },
+  { question: "How to store harvested grains?", answer: "Keep grains dry, in sealed containers, and away from pests." },
+  { question: "What is mulching?", answer: "Covering soil with organic material to retain moisture and prevent weeds." },
+  { question: "What is precision farming?", answer: "Using technology and sensors to manage crops efficiently and reduce waste." },
+  { question: "How to manage water in fields?", answer: "Use drip irrigation, scheduling, and mulching to conserve water." },
+  { question: "What are high-yield varieties?", answer: "Crop varieties bred for higher production under suitable conditions." },
+  { question: "Which crops need sandy soil?", answer: "Carrots, radish, peanuts, and some melons prefer sandy soil for growth." },
+  { question: "Which crops need loamy soil?", answer: "Tomatoes, cabbage, spinach, and beans grow best in loamy soil." },
+  { question: "How to prepare land for sowing?", answer: "Plow, level, remove weeds, and add organic matter before sowing." },
+  { question: "What is integrated pest management?", answer: "Combining biological, mechanical, and chemical methods to control pests." },
+  { question: "How to detect crop diseases early?", answer: "Regular field inspection, observing leaves, stems, and fruits for symptoms." },
+  { question: "Which crops are drought-resistant?", answer: "Millet, sorghum, chickpeas, and barley tolerate low water conditions." },
+  { question: "What is hydroponics?", answer: "Growing plants without soil using nutrient-rich water solutions." },
+  { question: "How to improve soil structure?", answer: "Add organic matter, avoid compaction, and practice crop rotation." },
+  { question: "What are cover crops?", answer: "Plants grown to protect soil from erosion and enhance fertility." },
+  { question: "How to increase crop yield?", answer: "Use quality seeds, proper irrigation, fertilization, and pest management." },
+  { question: "Which crops are best for winter?", answer: "Wheat, cabbage, broccoli, spinach, and carrot are ideal winter crops." },
+  { question: "Which crops are best for summer?", answer: "Tomatoes, cucumbers, corn, pumpkin, and okra grow well in summer." },
+  { question: "What is composting?", answer: "Decomposing organic waste to make nutrient-rich soil amendment." },
+  { question: "How to protect crops from frost?", answer: "Use mulching, covers, and protective shelters to prevent frost damage." },
+  // Agriculture Basics
+  { question: "What is agriculture?", answer: "Agriculture is the practice of cultivating soil, growing crops, and raising animals for food, fiber, and other products." },
+  { question: "Why is agriculture important?", answer: "Agriculture provides food, raw materials, employment, and supports the economy." },
+  { question: "What are the main types of agriculture?", answer: "The main types are subsistence, commercial, organic, and intensive agriculture." },
+  { question: "What is subsistence farming?", answer: "Farming done mainly to feed the farmer's family, not for sale." },
+  { question: "What is commercial farming?", answer: "Farming done to produce crops and livestock for sale and profit." },
+  { question: "What are crops?", answer: "Crops are plants grown for food, fiber, or other agricultural uses." },
+  { question: "What is livestock farming?", answer: "Raising animals such as cows, goats, sheep, and poultry for food or other products." },
+  { question: "What is organic farming?", answer: "Farming without synthetic fertilizers or pesticides, using natural methods." },
+  { question: "What is irrigation?", answer: "The artificial supply of water to crops to help them grow." },
+  { question: "What is crop rotation?", answer: "Growing different types of crops in the same field in sequential seasons to maintain soil fertility." },
+  { question: "What are fertilizers?", answer: "Substances added to soil to provide nutrients for better crop growth." },
+  { question: "What are pesticides?", answer: "Chemicals used to kill or control pests that harm crops." },
+  { question: "What is soil conservation?", answer: "Methods to prevent soil erosion and maintain soil fertility." },
+  { question: "What is sustainable agriculture?", answer: "Farming that meets present needs without harming future generations." },
+  { question: "What is mechanized farming?", answer: "Using machines like tractors and harvesters to do farm work efficiently." },
+
+
 ];
+
 
 export default ChatData;

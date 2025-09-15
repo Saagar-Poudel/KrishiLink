@@ -4,16 +4,23 @@ import { MessageCircle, Maximize, X } from "lucide-react";
 import ChatData from "./Chat.js"; // <-- Only dataset file, edit this for responses
 
 const Chatbot = () => {
-  // Dummy user for testing
   const user = { id: 1, name: "Demo User" };
 
   const [isOpen, setIsOpen] = useState(false); // minimized interface
   const [isMaximized, setIsMaximized] = useState(false); // maximized interface
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]); // last 3 queries
+  const [messages, setMessages] = useState([]); // last queries
   const [savedChats, setSavedChats] = useState([]); // saved chats
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [suggestions, setSuggestions] = useState([]); // clickable suggestion options
+
   const chatbotRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Exit on clicking outside maximized chat
   useEffect(() => {
@@ -32,81 +39,75 @@ const Chatbot = () => {
     };
   }, [isMaximized]);
 
-  // Load saved chats from localStorage for dummy user
+  // Load saved chats from localStorage
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("savedChats")) || [];
     setSavedChats(saved);
   }, []);
 
-  // Function to get bot response (with exact + partial match)
-  // Improved response matching for any question
-const getBotResponse = (query) => {
-  const lowerQuery = query.toLowerCase();
+  // Get bot response
+  const getBotResponse = (query) => {
+    const lowerQuery = query.toLowerCase();
 
-  // 1. Try to find exact match first
-  let exactMatch = ChatData.find(
-    (item) => item.question.toLowerCase() === lowerQuery
-  );
-  if (exactMatch) return exactMatch.answer;
-
-  // 2. Find partial matches
-  const partialMatches = ChatData.filter((item) =>
-    item.question.toLowerCase().includes(lowerQuery)
-  );
-
-  if (partialMatches.length === 1) {
-    return partialMatches[0].answer;
-  } else if (partialMatches.length > 1) {
-    // Suggest possible matches
-    const suggestions = partialMatches
-      .map((item) => `"${item.question}"`)
-      .join(", ");
-    return `Did you mean one of these questions? ${suggestions}`;
-  }
-
-  // 3. If no match, use similarity (words in common)
-  const words = lowerQuery.split(" ");
-  let bestMatch = null;
-  let maxCommon = 0;
-
-  ChatData.forEach((item) => {
-    const itemWords = item.question.toLowerCase().split(" ");
-    const commonWords = itemWords.filter((w) => words.includes(w));
-    if (commonWords.length > maxCommon) {
-      maxCommon = commonWords.length;
-      bestMatch = item;
+    // 1. Exact match
+    let exactMatch = ChatData.find(
+      (item) => item.question.toLowerCase() === lowerQuery
+    );
+    if (exactMatch) {
+      setSuggestions([]);
+      return exactMatch.answer;
     }
-  });
 
-  if (bestMatch && maxCommon > 0) {
-    return `Did you mean: "${bestMatch.question}"? If yes, the answer is: ${bestMatch.answer}`;
-  }
+    // 2. Partial matches
+    const partialMatches = ChatData.filter((item) =>
+      item.question.toLowerCase().includes(lowerQuery)
+    );
 
-  // 4. Default fallback
-  return "Sorry, I don't have information on that. Please try another question.";
-};
+    if (partialMatches.length === 1) {
+      setSuggestions([]);
+      return partialMatches[0].answer;
+    } else if (partialMatches.length > 1) {
+      setSuggestions(partialMatches); // show clickable options
+      return `I found multiple possible matches. Click one to get the answer!`;
+    }
 
+    // 3. Similarity by common words
+    const words = lowerQuery.split(" ");
+    let bestMatch = null;
+    let maxCommon = 0;
 
-
-  // Handle sending message
-  const handleSend = () => {
-    if (!input.trim()) return;
-
-    const userMsg = { sender: "user", text: input };
-    const botMsg = { sender: "bot", text: getBotResponse(input) };
-
-    // Update last 3 queries dynamically
-    setMessages((prev) => {
-      const newMsgs = [...prev, userMsg, botMsg];
-      const filtered = newMsgs.slice(-6); // last 3 queries + responses
-      return filtered;
+    ChatData.forEach((item) => {
+      const itemWords = item.question.toLowerCase().split(" ");
+      const commonWords = itemWords.filter((w) => words.includes(w));
+      if (commonWords.length > maxCommon) {
+        maxCommon = commonWords.length;
+        bestMatch = item;
+      }
     });
 
-    setInput("");
-    setShowSavePrompt(true);
+    if (bestMatch && maxCommon > 0) {
+      setSuggestions([bestMatch]);
+      return `Did you mean: "${bestMatch.question}"? Click it to see the answer.`;
+    }
+
+    setSuggestions([]);
+    return "Sorry, I don't have information on that. Please try another question.";
   };
 
-  // Save last query to saved chats
+  // Handle sending message (user input or clicked suggestion)
+  const handleSend = (msg = input) => {
+    if (!msg.trim()) return;
+
+    const userMsg = { sender: "user", text: msg };
+    const botMsg = { sender: "bot", text: getBotResponse(msg) };
+
+    setMessages((prev) => [...prev, userMsg, botMsg].slice(-50));
+    setInput("");
+    setShowSavePrompt(true);
+    setSuggestions([]); // clear suggestions after sending
+  };
+
+  // Save last query
   const saveChat = () => {
     const lastUserMsg = messages[messages.length - 2];
     const lastBotMsg = messages[messages.length - 1];
@@ -169,7 +170,23 @@ const getBotResponse = (query) => {
                 {msg.text}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
+
+          {/* Suggestions */}
+          {suggestions.length > 0 && (
+            <div className="p-2 border-t border-gray-200 dark:border-[#374151] flex flex-col space-y-1 max-h-32 overflow-y-auto">
+              {suggestions.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSend(item.question)}
+                  className="text-left w-full p-1 bg-yellow-100 rounded hover:bg-yellow-200 dark:bg-yellow-900 dark:hover:bg-yellow-800"
+                >
+                  {item.question}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Input */}
           <div className="p-2 border-t border-gray-200 dark:border-[#374151] flex space-x-2">
@@ -182,7 +199,7 @@ const getBotResponse = (query) => {
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
             <button
-              onClick={handleSend}
+              onClick={() => handleSend()}
               className="px-3 bg-green-600 text-white rounded hover:bg-green-700"
             >
               Send
@@ -218,7 +235,23 @@ const getBotResponse = (query) => {
                   {msg.text}
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
+
+            {/* Suggestions */}
+            {suggestions.length > 0 && (
+              <div className="p-2 border-t border-gray-200 dark:border-[#374151] flex flex-col space-y-1 max-h-32 overflow-y-auto">
+                {suggestions.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSend(item.question)}
+                    className="text-left w-full p-1 bg-yellow-100 rounded hover:bg-yellow-200 dark:bg-yellow-900 dark:hover:bg-yellow-800"
+                  >
+                    {item.question}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Saved Chats */}
             {savedChats.length > 0 && (
@@ -252,7 +285,7 @@ const getBotResponse = (query) => {
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
               <button
-                onClick={handleSend}
+                onClick={() => handleSend()}
                 className="px-3 bg-green-600 text-white rounded hover:bg-green-700"
               >
                 Send
