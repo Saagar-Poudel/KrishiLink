@@ -5,7 +5,6 @@ import Thems from "./Thems";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
-import LogoSVG from "../assets/logo.svg"; // ✅ updated import path
 import { useAuth } from '../contexts/Authcontext';
 import ProfileMenu from './ProfileMenu';
 
@@ -21,7 +20,6 @@ const Header = () => {
   const navItems = [
     { name: t('Home'), path: '/' },
     { name: t('Market'), path: '/market' },
-    { name: t('Weather'), path: '/weather' },
     { name: t('News'), path: '/news' },
     { name: t('Training'), path: '/training' },
     { name: t('Storage'), path: '/storage' },
@@ -71,8 +69,6 @@ const Header = () => {
 
           {/* Right Actions (Desktop/Tablet) */}
           <div className="hidden lg:flex items-center space-x-3">
-           
-           
             {/* Notifications */}
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors relative
                                dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]">

@@ -15,9 +15,6 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { CartProvider } from "./contexts/CartContex";
 import Contact from "./Component/Contact";
 import AboutUs from "./Component/Aboutus";
-import Profile from "./Component/Profile/Profile";
-import { ProfileHeader } from "./Component/Profile/Profileheader";
-// import ProfilePage from './Component/BuyerDashboard';
 import Login from "./Component/Auth/Login";
 import AuthLayout from "./Authlayout";
 import Market from "./Component/Markets/Market";
@@ -27,6 +24,13 @@ import Storage from "./Component/Storage/Storage";
 import { AuthProvider } from "./contexts/Authcontext";
 import Dashboard from "./Component/Dashboard/Dashboard";
 import SellerProductForm from "./Component/SellerProductForm";
+import FarmerProfile from "./Component/Profile/Farmerprofile";
+import BuyerProfile from "./Component/Profile/BuyerDashboard";
+import RoleBasedProfile from "./Component/Profile/Profile";
+import RequiredAuth from "./Component/routes/RequiredAuth";
+import AddProduct from "./Component/Profile/Add";
+import EditProduct from "./Component/Profile/Edit";
+import AccountSettings from "./Component/AccountSetting";
 import Success from "./Component/ESewa/Success";
 import Failure from "./Component/ESewa/Failure";
 
@@ -42,10 +46,22 @@ const router = createBrowserRouter(
         <Route path="/about" element={<AboutUs />} />
         <Route path="/training" element={<Training />} />
         <Route path="/storage" element={<Storage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profileheader" element={<ProfileHeader />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sell" element={<SellerProductForm />} />
+        <Route path="/farmerprofile" element={<FarmerProfile />} />
+        <Route path="/buyerprofile" element={<BuyerProfile />} />
+        <Route path="/addproduct" element={<AddProduct />} />
+        <Route path="/editproduct" element={<EditProduct />} />
+        <Route path="/accountsetting" element={<AccountSettings />} />
+           <Route
+        path="/profile"
+        element={
+          <RequiredAuth>
+            <RoleBasedProfile />
+          </RequiredAuth>
+        }
+      />
+
         <Route path="/payment-success" element={<Success />} />
         <Route path="/payment-failure" element={<Failure />} />
       </Route>
@@ -59,12 +75,12 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <LanguageProvider>
-      <CartProvider>
         <AuthProvider>
+      <CartProvider>
           <RouterProvider router={router} />
           <Toaster position="bottom-right" />
-        </AuthProvider>
       </CartProvider>
+        </AuthProvider>
     </LanguageProvider>
   </StrictMode>
 );

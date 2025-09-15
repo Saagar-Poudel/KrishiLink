@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Bell, Languages, LogOut, LogIn, User } from "lucide-react";
+import {Languages, LogOut, LogIn, User, Settings } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import Thems from "./Thems";
 import { useAuth } from "../contexts/Authcontext";
@@ -37,27 +37,34 @@ const ProfileMenu = () => {
                    hover:bg-gray-100 dark:border-[#374151] dark:hover:bg-[#12241A]"
       >
         <User className="h-5 w-5" />
-        <span className="hidden sm:block">{user ? user.username : "Profile"}</span>
+        {/* <span className="hidden sm:block">{user ? user.username : "Guest"}</span> */}
+        <span className="hidden sm:block">Profile</span>
       </button>
 
       {/* Dropdown Menu */}
       {open && (
         <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#0B1A12] shadow-lg rounded-xl p-2 z-50">
+           <button
+            onClick={() => navigate("/profile")}
+            className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
+          >
+            <User className="h-5 w-5 mr-2" />
+           {user ? user.username : "Guest"}
+          </button>
+<button onClick={()=> navigate("/accountsetting")} 
+  className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]">
+<Settings className="h-5 w-5 mr-2"/>
+ Setting
+
+</button>
+
           <button
             onClick={toggleLanguage}
             className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
           >
             <Languages className="h-5 w-5 mr-2" />
             {language === "en" ? "नेपाली" : "English"}
-          </button>
-
-          <button
-            className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#12241A]"
-          >
-            <Bell className="h-5 w-5 mr-2" />
-            Notifications
-          </button>
-
+          </button> 
           <div className="px-3 py-2">
             <Thems />
           </div>

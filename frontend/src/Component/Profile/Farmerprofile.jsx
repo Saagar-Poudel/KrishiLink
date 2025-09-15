@@ -1,163 +1,288 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Wheat,
-  DollarSign,
-  Package,
+  Edit,
+  MapPin,
+  Phone,
+  Mail,
+  Star,
   Plus,
   TrendingUp,
-  Clock,
-  CheckCircle,
-  Images
+  Trash2,
+  Eye,
+  MoreVertical,
 } from "lucide-react";
+import { useAuth } from "../../contexts/Authcontext";
+import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
-const mockData = {
-  earnings: { total: 45280, monthly: 8560, growth: 12.5 },
-  products: [
-    { id: '1', name: 'Organic Tomatoes', price: 120, stock: 50, sold: 245, status: 'active', image: '/Images/vegetable'  },
-    { id: '2', name: 'Fresh Wheat', price: 45, stock: 0, sold: 180, status: 'out_of_stock', image: '/Images/wheat'  },
-    { id: '3', name: 'Green Vegetables', price: 80, stock: 25, sold: 67, status: 'active', image: '/Images/vegetable'  },
-  ],
-  orders: [
-    { id: 'ORD001', buyer: 'Rahul Sharma', product: 'Organic Tomatoes', quantity: 10, total: 1200, status: 'pending' },
-    { id: 'ORD002', buyer: 'Priya Patel', product: 'Green Vegetables', quantity: 5, total: 400, status: 'confirmed' },
-    { id: 'ORD003', buyer: 'Arjun Kumar', product: 'Fresh Wheat', quantity: 20, total: 900, status: 'shipped' },
-  ]
-};
-
-export default function FarmerDashboard() {
-  const [products, setProducts] = useState(mockData.products);
-  const [orders] = useState(mockData.orders);
-  const earnings = mockData.earnings;
-  const [activeTab, setActiveTab] = useState("products");
+export default function FarmerProfile() {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'active': return 'bg-green-500 text-white';
-      case 'out_of_stock': return 'bg-red-500 text-white';
-      case 'pending': return 'bg-yellow-400 text-black';
-      case 'confirmed': return 'bg-gray-400 text-black';
-      case 'shipped': return 'bg-blue-400 text-white';
-      case 'delivered': return 'bg-green-500 text-white';
-      default: return 'bg-gray-300 text-black';
-    }
-  };
+  const defaultAvatar =
+    "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=400&fit=crop&crop=face";
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending': return <Clock className="w-4 h-4 inline-block mr-1" />;
-      case 'confirmed':
-      case 'delivered': return <CheckCircle className="w-4 h-4 inline-block mr-1" />;
-      case 'shipped': return <Package className="w-4 h-4 inline-block mr-1" />;
-      default: return null;
-    }
-  };
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Edit product
-  const handleEdit = (id) => {
-    const product = products.find(p => p.id === id);
-    const newName = prompt("Edit Product Name", product.name);
-    if (newName) {
-      setProducts(products.map(p => p.id === id ? { ...p, name: newName } : p));
-    }
-  };
+  // Fetch farmer products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const {data} = await axios.get("http://localhost:3000/api/products");
+        // Filter products belonging to the logged-in farmer
+        const farmerProducts = data.filter(
+          (p) => p.sellerName?.toLowerCase() === user?.username?.toLowerCase()
+        );
+        console.log("Data:",data);
+        console.log("User:",user)
+        setProducts(farmerProducts);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        toast.error("Failed to load products!");
+      } finally {
+         
+        setLoading(false);
+      }
+    };
+      fetchProducts();
+  }, []);
 
-  // Delete product
+  const [orders] = useState([
+    {
+      id: "ORD001",
+      buyer: "Rahul Sharma",
+      product: "Organic Tomatoes",
+      quantity: 10,
+      total: 1200,
+      status: "pending",
+      date: "2024-01-15",
+    },
+    {
+      id: "ORD002",
+      buyer: "Priya Patel",
+      product: "Green Vegetables",
+      quantity: 5,
+      total: 400,
+      status: "confirmed",
+      date: "2024-01-14",
+    },
+    {
+      id: "ORD003",
+      buyer: "Arjun Kumar",
+      product: "Fresh Wheat",
+      quantity: 20,
+      total: 900,
+      status: "shipped",
+      date: "2024-01-13",
+    },
+  ]);
+
+  // useEffect(() => {
+  //   if (location.state?.addedProduct) {
+  //     setProducts((prev) => [
+  //       { id: crypto.randomUUID(), ...location.state.addedProduct },
+  //       ...prev,
+  //     ]);
+  //   }
+  // }, [location.state]);
+
+  const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
+
+  const [activeTab, setActiveTab] = useState("products");
+  const [openMenu, setOpenMenu] = useState(null);
+
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter(p => p.id !== id));
-    }
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+    toast("Product deleted successfully!");
   };
-
-  // Add product callback
-  const handleAddProduct = (newProduct) => {
-    setProducts([...products, newProduct]);
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
+      {/* Profile Header */}
+      <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow p-8">
+        <div className="flex flex-col md:flex-row md:items-center gap-6">
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white">
+              <img
+                src={defaultAvatar}
+                alt={user?.username}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl font-bold">{user?.username}</h1>
+                <span className="px-2 py-1 bg-white/30 rounded text-sm">
+                  🌾 Farmer
+                </span>
+              </div>
+              <p className="opacity-80 text-lg">
+                @{user?.username?.toLowerCase()}
+              </p>
+              {user?.farmName && (
+                <p className="font-medium text-lg">{user.farmName}</p>
+              )}
+              <div className="flex items-center gap-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < 4
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-white/40"
+                    }`}
+                  />
+                ))}
+                <span className="text-sm opacity-80">4.7 (156 reviews)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
+          <div className="flex items-center gap-3">
+            <Mail className="w-5 h-5" /> <span>{user?.email}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Phone className="w-5 h-5" /> <span>{user?.phone}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <MapPin className="w-5 h-5" /> <span>{user?.location}</span>
+          </div>
+        </div>
+      </div>
+
       {/* Earnings Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-4 bg-white rounded-xl shadow">
-          <div className="flex justify-between items-center pb-2">
-            <div className="text-sm font-medium">Total Earnings</div>
-            <DollarSign className="h-5 w-5 text-green-500" />
-          </div>
-          <div className="text-2xl font-bold text-green-500">₹{earnings.total.toLocaleString()}</div>
-        </div>
-        <div className="p-4 bg-white rounded-xl shadow">
-          <div className="flex justify-between items-center pb-2">
-            <div className="text-sm font-medium">Monthly Revenue</div>
-            <TrendingUp className="h-5 w-5 text-blue-500" />
-          </div>
-          <div className="text-2xl font-bold">₹{earnings.monthly.toLocaleString()}</div>
-          <p className="text-xs text-green-500 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +{earnings.growth}% from last month
+        <div className="bg-white rounded shadow p-6">
+          <p className="text-sm text-gray-500">Total Earnings</p>
+          <p className="text-3xl font-bold text-green-600">
+            ₹{earnings.total.toLocaleString()}
           </p>
         </div>
-        <div className="p-4 bg-white rounded-xl shadow">
-          <div className="flex justify-between items-center pb-2">
-            <div className="text-sm font-medium">Active Products</div>
-            <Wheat className="h-5 w-5 text-yellow-500" />
-          </div>
-          <div className="text-2xl font-bold">{products.filter(p => p.status === 'active').length}</div>
-          <p className="text-xs text-gray-500 mt-1">{products.length} total products</p>
+        <div className="bg-white rounded shadow p-6">
+          <p className="text-sm text-gray-500">Monthly Revenue</p>
+          <p className="text-3xl font-bold">
+            ₹{earnings.monthly.toLocaleString()}
+          </p>
+          <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+            <TrendingUp className="w-3 h-3" /> +{earnings.growth}% from last
+            month
+          </p>
+        </div>
+        <div className="bg-white rounded shadow p-6">
+          <p className="text-sm text-gray-500">Active Products</p>
+          <p className="text-3xl font-bold">
+            {products.filter((p) => p.status === "active").length}
+          </p>
+          <p className="text-xs text-gray-500">
+            {products.length} total products
+          </p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="space-y-4">
-        <div className="flex gap-6 border-b pb-2">
+      <div className="bg-white rounded shadow">
+        <div className="flex border-b">
           <button
-            className={`${activeTab === "products" ? "border-b-2 border-green-600 font-semibold text-green-700 px-4 py-2" : "text-gray-600 hover:text-green-600 px-4 py-2"}`}
             onClick={() => setActiveTab("products")}
+            className={`flex-1 p-3 ${
+              activeTab === "products"
+                ? "border-b-2 border-green-500 font-semibold"
+                : ""
+            }`}
           >
             My Products
           </button>
           <button
-            className={`${activeTab === "orders" ? "border-b-2 border-green-600 font-semibold text-green-700 px-4 py-2" : "text-gray-600 hover:text-green-600 px-4 py-2"}`}
             onClick={() => setActiveTab("orders")}
+            className={`flex-1 p-3 ${
+              activeTab === "orders"
+                ? "border-b-2 border-green-500 font-semibold"
+                : ""
+            }`}
           >
             Order Requests
           </button>
         </div>
 
-        {/* Products Tab */}
         {activeTab === "products" && (
-          <div className="space-y-4">
+          <div className="p-6 space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">Product Management</h3>
               <button
-                className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded"
-                onClick={() => navigate("/add-product", { state: { onAdd: handleAddProduct } })}
+                onClick={() => navigate("/addproduct")}
+                className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" /> Add New Product
               </button>
             </div>
-
             <div className="grid gap-4">
-              {products.map(product => (
-                <div key={product.id} className="p-4 bg-white rounded-xl shadow flex justify-between items-center">
-                  <div className="flex items-center gap-4">
-                    <img src={product.image} alt={product.name} className="w-16 h-16 rounded object-cover" />
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <h4 className="font-semibold text-lg">{product.name}</h4>
-                        <span className={`px-2 py-1 rounded ${getStatusColor(product.status)}`}>
-                          {product.status === 'active' ? 'In Stock' : 'Out of Stock'}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
-                        <span>Price: ₹{product.price}/kg</span>
-                        <span>Stock: {product.stock} kg</span>
-                        <span>Sold: {product.sold} kg</span>
-                      </div>
+              {products.map((p) => (
+                <div
+                  key={p.id}
+                  className="flex items-center gap-6 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                >
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="w-20 h-20 rounded-lg object-cover"
+                  />
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center gap-3">
+                      <h4 className="font-semibold text-gray-800">{p.name}</h4>
+                      <span
+                        className={`px-2 py-1 rounded text-xs ${
+                          p.status === "active"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {p.status === "active" ? "In Stock" : "Out of Stock"}
+                      </span>
                     </div>
+                    <p className="text-sm text-gray-600">{p.description}</p>
+                    <p className="text-sm text-gray-500 space-x-2">
+                      <span>₹{p.price}/kg</span>
+                      <span>• Stock: {p.stock}kg</span>
+                      <span>• Sold: {p.sold}kg</span>
+                    </p>
                   </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleEdit(product.id)} className="px-2 py-1 border rounded text-sm">Edit</button>
-                    <button onClick={() => handleDelete(product.id)} className="px-2 py-1 border rounded text-sm">Delete</button>
+
+                  {/* 3-dot dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={() =>
+                        setOpenMenu(openMenu === p.id ? null : p.id)
+                      }
+                      className="p-2 hover:bg-gray-200 rounded-full"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {openMenu === p.id && (
+                      <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+                        <button
+                          onClick={() =>
+                            navigate("/editproduct", { state: { product: p } })
+                          }
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm"
+                        >
+                          <Edit className="w-4 h-4" /> Edit
+                        </button>
+                        <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm">
+                          <Eye className="w-4 h-4" /> View
+                        </button>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm text-red-600"
+                        >
+                          <Trash2 className="w-4 h-4" /> Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -165,37 +290,34 @@ export default function FarmerDashboard() {
           </div>
         )}
 
-        {/* Orders Tab */}
         {activeTab === "orders" && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Recent Order Requests</h3>
-            <div className="grid gap-4">
-              {orders.map(order => (
-                <div key={order.id} className="p-4 bg-white rounded-xl shadow flex justify-between items-center">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <h4 className="font-semibold">#{order.id}</h4>
-                      <span className={`px-2 py-1 rounded ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
-                      <span>Buyer: {order.buyer}</span>
-                      <span>Product: {order.product}</span>
-                      <span>Quantity: {order.quantity} kg</span>
-                      <span>Total: ₹{order.total}</span>
-                    </div>
-                  </div>
-                  {order.status === 'pending' && (
-                    <div className="flex gap-2">
-                      <button className="px-2 py-1 bg-green-500 text-white rounded text-sm">Accept</button>
-                      <button className="px-2 py-1 border rounded text-sm">Decline</button>
-                    </div>
-                  )}
+          <div className="p-6 space-y-4">
+            <h3 className="text-lg font-semibold">Order Management</h3>
+            {orders.map((o) => (
+              <div
+                key={o.id}
+                className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-semibold">
+                    #{o.id} - {o.product}
+                  </h4>
+                  <p className="text-sm text-gray-500">
+                    Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total}
+                  </p>
                 </div>
-              ))}
-            </div>
+                {o.status === "pending" && (
+                  <div className="flex gap-2">
+                    <button className="bg-green-500 text-white px-3 py-1 rounded">
+                      Accept
+                    </button>
+                    <button className="border px-3 py-1 rounded">
+                      Decline
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>
