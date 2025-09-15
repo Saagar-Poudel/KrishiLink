@@ -38,17 +38,55 @@ const Chatbot = () => {
     setSavedChats(saved);
   }, []);
 
-  // Simple matching function to find best response
-  const getBotResponse = (query) => {
-    const lowerQuery = query.toLowerCase();
-    // Find dataset entry that matches partially or fully
-    const match = ChatData.find((item) =>
-      item.question.toLowerCase().includes(lowerQuery)
-    );
-    return match
-      ? match.answer
-      : "Sorry, I don't have information on that. Please try another question.";
-  };
+  // Function to get bot response (with exact + partial match)
+  // Improved response matching for any question
+const getBotResponse = (query) => {
+  const lowerQuery = query.toLowerCase();
+
+  // 1. Try to find exact match first
+  let exactMatch = ChatData.find(
+    (item) => item.question.toLowerCase() === lowerQuery
+  );
+  if (exactMatch) return exactMatch.answer;
+
+  // 2. Find partial matches
+  const partialMatches = ChatData.filter((item) =>
+    item.question.toLowerCase().includes(lowerQuery)
+  );
+
+  if (partialMatches.length === 1) {
+    return partialMatches[0].answer;
+  } else if (partialMatches.length > 1) {
+    // Suggest possible matches
+    const suggestions = partialMatches
+      .map((item) => `"${item.question}"`)
+      .join(", ");
+    return `Did you mean one of these questions? ${suggestions}`;
+  }
+
+  // 3. If no match, use similarity (words in common)
+  const words = lowerQuery.split(" ");
+  let bestMatch = null;
+  let maxCommon = 0;
+
+  ChatData.forEach((item) => {
+    const itemWords = item.question.toLowerCase().split(" ");
+    const commonWords = itemWords.filter((w) => words.includes(w));
+    if (commonWords.length > maxCommon) {
+      maxCommon = commonWords.length;
+      bestMatch = item;
+    }
+  });
+
+  if (bestMatch && maxCommon > 0) {
+    return `Did you mean: "${bestMatch.question}"? If yes, the answer is: ${bestMatch.answer}`;
+  }
+
+  // 4. Default fallback
+  return "Sorry, I don't have information on that. Please try another question.";
+};
+
+
 
   // Handle sending message
   const handleSend = () => {
