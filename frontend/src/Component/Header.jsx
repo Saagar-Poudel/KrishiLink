@@ -6,6 +6,8 @@ import { Link, NavLink } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
 import LogoSVG from "../assets/logo.svg"; // ✅ updated import
+import Chatbot from "../Component/chatbot/Chatbot"; 
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -213,8 +215,10 @@ const Header = () => {
 
       {/* Cart Drawer */}
       {isCartOpen && (
-        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} /> 
       )}
+    {/* Floating Chatbot */}
+<Chatbot />
     </header>
   );
 };
