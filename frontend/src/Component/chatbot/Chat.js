@@ -862,6 +862,50 @@ const ChatData = [
   { question: "What is a fodder cutter?", answer: "Machine that cuts fodder into small pieces for animals." },
 
 
+// SEASONAL & TECHNIQUE FARMING QUESTIONS
+  // Seasons: Spring
+  { question: "Which crops are suitable for spring?", answer: "Wheat, barley, peas, and lettuce are suitable for spring planting." },
+  { question: "How to prepare soil in spring?", answer: "Plough the soil, add compost, and test pH for optimal nutrient balance." },
+  { question: "Best irrigation method in spring?", answer: "Drip or sprinkler irrigation is recommended for spring crops." },
+  { question: "Spring pest control techniques?", answer: "Use neem oil, trap crops, and biological agents to manage pests." },
+  { question: "Spring fertilization tips?", answer: "Apply nitrogen-rich fertilizers at the early growth stage." },
+
+  // Seasons: Summer
+  { question: "Which crops grow well in summer?", answer: "Maize, cotton, tomatoes, okra, and chilies thrive in summer." },
+  { question: "How to protect crops from heat?", answer: "Use shade nets, mulching, and regular irrigation to reduce heat stress." },
+  { question: "Summer pest management?", answer: "Monitor aphids, whiteflies, and apply organic insecticides as needed." },
+  { question: "Summer soil moisture techniques?", answer: "Mulch heavily and schedule irrigation in early morning or evening." },
+  { question: "Summer harvesting tips?", answer: "Harvest early in the morning to reduce water loss and quality degradation." },
+
+  // Seasons: Monsoon
+  { question: "Crops suitable for monsoon?", answer: "Rice, sugarcane, jute, and soybean are ideal for monsoon planting." },
+  { question: "Monsoon planting techniques?", answer: "Use raised beds or rows to prevent waterlogging and rot." },
+  { question: "Monsoon pest control?", answer: "Check for fungal infections and apply organic fungicides." },
+  { question: "Irrigation in monsoon?", answer: "Usually not required; ensure proper drainage to prevent waterlogging." },
+  { question: "Soil management in rainy season?", answer: "Add organic matter and maintain proper field drainage." },
+
+  // Seasons: Autumn/Fall
+  { question: "Best crops for autumn?", answer: "Carrots, spinach, cabbage, and potatoes grow well in autumn." },
+  { question: "Autumn sowing techniques?", answer: "Prepare well-drained beds and use mulching to retain moisture." },
+  { question: "Autumn pest control?", answer: "Monitor for leaf miners and caterpillars; use traps and organic sprays." },
+  { question: "Autumn irrigation methods?", answer: "Drip irrigation is ideal for root crops in autumn." },
+  { question: "Autumn fertilization tips?", answer: "Use balanced NPK fertilizers at sowing time." },
+
+  // General seasonal techniques
+  { question: "How to rotate crops seasonally?", answer: "Rotate legumes, cereals, and root crops to maintain soil fertility." },
+  { question: "How to prevent seasonal diseases?", answer: "Choose resistant varieties and apply preventive sprays based on crop season." },
+  { question: "Seasonal pruning techniques?", answer: "Prune fruit trees before flowering and remove dead branches." },
+  { question: "How to store seeds seasonally?", answer: "Dry seeds and store in cool, dark places for the next season." },
+  { question: "Seasonal mulching techniques?", answer: "Use straw or compost to retain soil moisture and reduce weeds." },
+
+  // Add more questions below following same structure
+  // Example placeholders
+  { question: "Spring crop rotation techniques?", answer: "Rotate legumes with cereals to improve soil nitrogen." },
+  { question: "Summer pest prevention methods?", answer: "Install sticky traps and encourage natural predators." },
+  { question: "Monsoon waterlogging prevention?", answer: "Use raised beds and proper field channels." },
+  { question: "Autumn harvesting techniques for vegetables?", answer: "Harvest in morning and store in ventilated containers." },
+  { question: "Techniques for off-season crops?", answer: "Use greenhouses or shade nets to simulate favorable conditions." },
+
 
 ];
 

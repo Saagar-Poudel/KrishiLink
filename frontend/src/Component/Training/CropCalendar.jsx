@@ -146,14 +146,16 @@ const CropCalendar = () => {
         {/* Right: Selected Crop Details */}
         <div className="md:w-1/2 border rounded-lg p-4 shadow bg-white">
           {selectedCrop ? (
-            <motion.div whileHover={{ scale: 1.05 }}>
-              <img src={selectedCrop.img} alt={selectedCrop.name} className="w-24 h-24 mb-2 rounded-xl mx-auto" />
+            <motion.div whileHover={{ scale: 1 }}>
+              <img src={selectedCrop.img} alt={selectedCrop.name} className="w-45 h-45 mb-2 rounded-xl mx-auto" />
               <h2 className="text-xl font-bold mb-1 text-center">{selectedCrop.name}</h2>
               <p><strong>Type:</strong> {selectedCrop.type}</p>
               <p><strong>Soil:</strong> {selectedCrop.soil}</p>
               <p><strong>Moisture:</strong> {selectedCrop.moisture}</p>
               <p><strong>Tips:</strong> {selectedCrop.tips}</p>
               <p><strong>Harvest:</strong> {selectedCrop.harvest}</p>
+              <p><strong>Description:</strong> {selectedCrop.description}</p>
+
             </motion.div>
           ) : (
             <p className="text-gray-400">Select a crop to see details</p>
