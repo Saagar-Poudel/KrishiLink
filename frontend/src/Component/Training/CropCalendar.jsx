@@ -16,10 +16,9 @@ const CropCalendar = () => {
   const [modalCrop, setModalCrop] = useState(null);
   const [tooltipCrop, setTooltipCrop] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-
-  // Filters
   const [soilFilter, setSoilFilter] = useState("");
   const [moistureFilter, setMoistureFilter] = useState("");
+  const [selectedCrop, setSelectedCrop] = useState(null); // fixed error
 
   const handleMonthClick = (index) => setSelectedMonth(index);
 
@@ -56,59 +55,84 @@ const CropCalendar = () => {
         </select>
       </div>
 
-      {/* Month Grid */}
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-4 mb-6">
-        {monthNames.map((month, index) => (
-          <div
-            key={index}
-            onClick={() => handleMonthClick(index)}
-            className={`cursor-pointer p-3 rounded-xl text-center font-medium shadow ${
-              selectedMonth === index ? "bg-green-600 text-white" : "bg-white hover:shadow-lg"
-            }`}
-          >
-            {month}
+      {/* Calendar + Right Panel */}
+      <div className="md:flex gap-6">
+
+        {/* Month & Day Grid */}
+        <div className="md:w-1/2">
+          {/* Month Grid */}
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-4 mb-6">
+            {monthNames.map((month, index) => (
+              <div
+                key={index}
+                onClick={() => handleMonthClick(index)}
+                className={`cursor-pointer p-3 rounded-xl text-center font-medium shadow ${
+                  selectedMonth === index ? "bg-green-600 text-white" : "bg-white hover:shadow-lg"
+                }`}
+              >
+                {month}
+              </div>
+            ))}
           </div>
-        ))}
+
+          {/* Day Grid */}
+          {selectedMonth !== null && (
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {Array.from({ length: 30 }, (_, i) => {
+                const day = i + 1;
+                const dayCrops = cropsThisMonth.slice(0,5); // max 5 crops per day
+                return (
+                  <div
+                    key={i}
+                    className="border rounded-md p-2 text-center text-sm relative cursor-pointer hover:shadow-md bg-white"
+                  >
+                    {day}
+                    <div className="flex justify-center gap-1 mt-1 flex-wrap">
+                      {dayCrops.map((c, idx) => (
+                        <img
+                          key={idx}
+                          src={c.img}
+                          alt={c.name}
+                          className="w-6 h-6 cursor-pointer rounded-full border"
+                          onClick={() => {
+                            setModalCrop(c);       // open modal
+                            setSelectedCrop(c);    // update right panel
+                          }}
+                          onMouseEnter={(e) => {
+                            setTooltipCrop(c);
+                            setTooltipPos({ x: e.pageX, y: e.pageY }); // fixed tooltip position
+                          }}
+                          onMouseLeave={() => setTooltipCrop(null)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Right: Selected Crop Details */}
+        <div className="md:w-1/2 border rounded-lg p-4 shadow bg-white">
+          {selectedCrop ? (
+            <motion.div whileHover={{ scale: 1 }}>
+              <img src={selectedCrop.img} alt={selectedCrop.name} className="w-45 h-45 mb-2 rounded-xl mx-auto" />
+              <h2 className="text-xl font-bold mb-1 text-center">{selectedCrop.name}</h2>
+              <p><strong>Type:</strong> {selectedCrop.type}</p>
+              <p><strong>Soil:</strong> {selectedCrop.soil}</p>
+              <p><strong>Moisture:</strong> {selectedCrop.moisture}</p>
+              <p><strong>Tips:</strong> {selectedCrop.tips}</p>
+              <p><strong>Harvest:</strong> {selectedCrop.harvest}</p>
+              <p><strong>Description:</strong> {selectedCrop.description}</p>
+            </motion.div>
+          ) : (
+            <p className="text-gray-400">Select a crop to see details</p>
+          )}
+        </div>
       </div>
 
-      {/* Day Grid */}
-      {selectedMonth !== null && (
-        <div>
-          <div className="grid grid-cols-7 gap-2 mb-4">
-            {Array.from({ length: 30 }, (_, i) => {
-              const day = i + 1;
-              const dayCrops = cropsThisMonth.slice(0,5); // max 5 crops per day
-
-              return (
-                <div
-                  key={i}
-                  className="border rounded-md p-2 text-center text-sm relative cursor-pointer hover:shadow-md bg-white"
-                >
-                  {day}
-                  <div className="flex justify-center gap-1 mt-1 flex-wrap">
-                    {dayCrops.map((c, idx) => (
-                      <img
-                        key={idx}
-                        src={c.img}
-                        alt={c.name}
-                        className="w-6 h-6 cursor-pointer rounded-full border"
-                        onClick={() => setModalCrop(c)}
-                        onMouseEnter={(e) => {
-                          setTooltipCrop(c);
-                          setTooltipPos({ x: e.clientX, y: e.clientY });
-                        }}
-                        onMouseLeave={() => setTooltipCrop(null)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Tooltip */}
+      {/* Tooltip (Point 3 enhanced) */}
       {tooltipCrop && (
         <motion.div
           initial={{ opacity: 0, y: -5 }}
