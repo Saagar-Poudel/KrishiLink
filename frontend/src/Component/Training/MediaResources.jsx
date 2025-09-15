@@ -69,27 +69,32 @@ const mediaResources = [
     },
   ],
 },
-
-
-  {
-    title: "PDF Guides",
-    description: "Download detailed PDF guides for crops, fertilizers, and tools.",
-    icon: <FileText className="w-10 h-10 text-blue-500" />,
-    items: [
-      {
-        name: "Crop Calendar PDF",
-        type: "pdf",
-        src: "/pdf/CropCalendar.pdf", // Place file in public/pdf/
-        icon: <FileText className="w-8 h-8 text-blue-500" />,
-      },
-      {
-        name: "Fertilizer Guide PDF",
-        type: "pdf",
-        src: "/pdf/FertilizerGuide.pdf",
-        icon: <FileText className="w-8 h-8 text-blue-500" />,
-      },
-    ],
-  },
+   {
+  title: "PDF Guides",
+  description: "Download or view detailed guides for crops, fertilizers, and tools.",
+  icon: <FileText className="w-10 h-10 text-blue-500" />,
+  items: [
+    {
+      name: "Crop Calendar PDF",
+      type: "pdf",
+      src: "https://www.fao.org/3/x6917e/x6917e.pdf",
+      icon: <FileText className="w-8 h-8 text-blue-500" />,
+    },
+    {
+      name: "Fertilizer Guide PDF",
+      type: "pdf",
+      src: "https://www.fertilizer.org/images/Library_Documents/FertilizerGuide.pdf",
+      icon: <FileText className="w-8 h-8 text-blue-500" />,
+    },
+    {
+      name: "Pest Management Guide",
+      type: "pdf",
+      src: "https://www.usaid.gov/sites/default/files/documents/1860/Pest_Management_Guide.pdf",
+      icon: <FileText className="w-8 h-8 text-blue-500" />,
+    },
+  ],
+}
+,
   {
     title: "Articles & Blogs",
     description: "Read informative articles and tips from agriculture experts.",
