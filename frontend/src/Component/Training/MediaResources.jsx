@@ -164,16 +164,26 @@ const MediaResources = () => {
                     allowFullScreen
                   ></iframe>
                 )}
-                {item.type === "pdf" && (
-                  <a
-                    href={item.src}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                  >
-                    Download PDF
-                  </a>
-                )}
+               {item.type === "pdf" && (
+  <div className="flex flex-col gap-2 w-full">
+    <a
+      href={item.src}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition text-center"
+    >
+      View PDF
+    </a>
+    <a
+      href={item.src}
+      download
+      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-center"
+    >
+      Download PDF
+    </a>
+  </div>
+)}
+
                 {item.type === "blog" && (
                   <a
                     href={item.src}
