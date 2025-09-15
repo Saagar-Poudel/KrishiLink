@@ -31,6 +31,9 @@ import RequiredAuth from "./Component/routes/RequiredAuth";
 import AddProduct from "./Component/Profile/Add";
 import EditProduct from "./Component/Profile/Edit";
 import AccountSettings from "./Component/AccountSetting";
+import Success from "./Component/ESewa/Success";
+import Failure from "./Component/ESewa/Failure";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -59,6 +62,8 @@ const router = createBrowserRouter(
         }
       />
 
+        <Route path="/payment-success" element={<Success />} />
+        <Route path="/payment-failure" element={<Failure />} />
       </Route>
       <Route element={<AuthLayout />}>
         <Route path="login" element={<Login />} />
