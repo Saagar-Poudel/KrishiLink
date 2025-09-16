@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import {jwtDecode} from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // <-- add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -14,27 +14,27 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-useEffect(() => {
-  const storedUser = localStorage.getItem("user");
-  const storedToken = localStorage.getItem("token");
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-  if (storedUser && storedToken) {
-    try {
-      const decoded = jwtDecode(storedToken);
+    if (storedUser && storedToken) {
+      try {
+        const decoded = jwtDecode(storedToken);
 
-      if (decoded.exp * 1000 < Date.now()) {
-        // token expired
+        if (decoded.exp * 1000 < Date.now()) {
+          // token expired
+          logout();
+        } else {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch {
         logout();
-      } else {
-        setUser(JSON.parse(storedUser));
       }
-    } catch {
-      logout();
     }
-  }
 
-  setLoading(false);
-}, []);
+    setLoading(false);
+  }, []);
 
   const login = (userData, token) => {
     localStorage.setItem("user", JSON.stringify(userData));
