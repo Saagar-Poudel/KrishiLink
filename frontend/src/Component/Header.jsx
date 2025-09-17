@@ -7,6 +7,8 @@ import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
 import LogoSVG from "../assets/logo.svg"; // ✅ updated import
 import Chatbot from "../Component/chatbot/Chatbot"; 
+import { useAuth } from '../contexts/Authcontext';
+import ProfileMenu from './ProfileMenu';
 
 
 const Header = () => {
