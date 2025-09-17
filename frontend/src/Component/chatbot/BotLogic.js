@@ -1,101 +1,88 @@
 import ChatData from "./Chat.js";
 import preprocess from "./Preprocessor.js";
 
-// --- Synonyms map
-const synonyms = {
-  farming: "agriculture",
-  agronomy: "agriculture",
-  crop: "crop",
-  crops: "crop",
-  "soil fertility": "soil",
-  irrigation: "irrigation",
-};
-
-// normalize + synonym expansion
-function normalize(text = "") {
-  let t = preprocess(text.toLowerCase().trim());
-  Object.keys(synonyms).forEach((k) => {
-    const re = new RegExp(`\\b${k}\\b`, "gi");
-    t = t.replace(re, synonyms[k]);
-  });
-  return t;
-}
-
-// --- Levenshtein distance
+// Levenshtein distance for fuzzy matching
 function levenshtein(a = "", b = "") {
   if (!a) return b.length;
   if (!b) return a.length;
-  const al = a.length, bl = b.length;
-  const dp = Array.from({ length: al + 1 }, () => new Array(bl + 1).fill(0));
-  for (let i = 0; i <= al; i++) dp[i][0] = i;
-  for (let j = 0; j <= bl; j++) dp[0][j] = j;
-  for (let i = 1; i <= al; i++) {
-    for (let j = 1; j <= bl; j++) {
-      dp[i][j] = a[i - 1] === b[j - 1]
-        ? dp[i - 1][j - 1]
-        : 1 + Math.min(dp[i - 1][j - 1], dp[i][j - 1], dp[i - 1][j]);
+  const dp = Array.from({ length: a.length + 1 }, () =>
+    Array(b.length + 1).fill(0)
+  );
+  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] =
+        a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j - 1], dp[i][j - 1], dp[i - 1][j]);
     }
   }
-  return dp[al][bl];
+  return dp[a.length][b.length];
 }
 
-// --- Jaccard similarity
-function jaccard(a = "", b = "") {
-  const A = new Set(a.split(" ").filter(Boolean));
-  const B = new Set(b.split(" ").filter(Boolean));
-  if (A.size === 0 && B.size === 0) return 1;
-  const inter = [...A].filter(x => B.has(x)).length;
-  const union = new Set([...A, ...B]).size;
-  return union === 0 ? 0 : inter / union;
+// similarity combining keyword & fuzzy
+function similarityScore(a, b) {
+  const na = preprocess(a);
+  const nb = preprocess(b);
+  if (!na || !nb) return 0;
+
+  const wordsA = na.split(" ");
+  const wordsB = nb.split(" ");
+  const common = wordsB.filter((w) => wordsA.includes(w)).length;
+
+  const jac = common / Math.max(wordsA.length + wordsB.length - common, 1);
+  const lev = levenshtein(na, nb);
+  const levNorm = 1 - lev / Math.max(na.length, nb.length, 1);
+
+  return 0.5 * jac + 0.5 * levNorm;
 }
 
-// --- Weighted similarity
-function similarityScore(input, question) {
-  const ni = normalize(input);
-  const nq = normalize(question);
-  if (!ni || !nq) return 0;
+// --- getBotResponse
+export function getBotResponse(query) {
+  const cleanQuery = preprocess(query);
 
-  const jac = jaccard(ni, nq); // 0..1
-  const lev = levenshtein(ni, nq);
-  const levNorm = 1 - lev / Math.max(ni.length, nq.length, 1);
-  
-  // Keyword overlap
-  const inputWords = ni.split(" ");
-  const questionWords = nq.split(" ");
-  const common = questionWords.filter((w) => inputWords.includes(w)).length;
-  const keywordScore = common / Math.max(questionWords.length, 1);
-
-  return 0.4 * jac + 0.4 * levNorm + 0.2 * keywordScore; // weighted
-}
-
-// --- Get bot response
-export function getBotResponse(query, lastTopic = null) {
-  const cleanQuery = normalize(query);
-
-  // --- Exact match
-  const exact = ChatData.find((item) => normalize(item.question) === cleanQuery);
+  // Exact match
+  const exact = ChatData.find(
+    (item) => preprocess(item.question) === cleanQuery
+  );
   if (exact) return { answer: exact.answer, suggestions: [] };
 
-  // --- Partial / substring matches
-  const partials = ChatData.filter((item) => normalize(item.question).includes(cleanQuery));
+  // Partial matches
+  const partials = ChatData.filter((item) =>
+    preprocess(item.question).includes(cleanQuery)
+  );
   if (partials.length === 1) return { answer: partials[0].answer, suggestions: [] };
-  if (partials.length > 1) return { answer: "I found multiple matches, please choose:", suggestions: partials };
+  if (partials.length > 1) return { answer: "I found multiple matches. Please choose one:", suggestions: partials };
 
-  // --- Similarity scoring
-  const scored = ChatData.map(item => ({ ...item, score: similarityScore(query, item.question) }))
-                         .sort((a, b) => b.score - a.score);
+  // Fuzzy similarity
+  let bestMatch = null, maxScore = 0;
+  ChatData.forEach((item) => {
+    const score = similarityScore(query, item.question);
+    if (score > maxScore) {
+      maxScore = score;
+      bestMatch = item;
+    }
+  });
 
-  const top = scored[0];
-  if (!top || top.score < 0.35) {
-    return { answer: "Sorry, I don't know that. Try rephrasing.", suggestions: [] };
+  if (bestMatch && maxScore > 0.45) {
+    return { answer: `Did you mean: "${bestMatch.question}"?`, suggestions: [bestMatch] };
   }
 
-  // --- Multiple high similarity candidates
-  const candidates = scored.filter(s => s.score >= Math.max(0.4, top.score - 0.1));
-  if (candidates.length > 1) {
-    return { answer: "I found several related topics. Please pick one:", suggestions: candidates.slice(0, 6) };
+  // Broad topics suggestions
+  const broadTopics = ["agriculture","farming","crop","soil","irrigation"];
+  if (broadTopics.includes(cleanQuery)) {
+    const topicMatches = ChatData.filter(item => preprocess(item.question).includes(cleanQuery)).slice(0,6);
+    const clarifications = [
+      `What is ${cleanQuery}?`,
+      `${cleanQuery} in Nepal`,
+      `Modern ${cleanQuery} methods`,
+      `Common problems in ${cleanQuery}`
+    ];
+    const sug = [...topicMatches.map(t => ({ question: t.question, answer: t.answer })), ...clarifications.map(s => ({ question: s, answer: null }))].slice(0,6);
+    return { answer: `I can help with several ${cleanQuery}-related topics. Please pick one:`, suggestions: sug };
   }
 
-  // --- Single confident match
-  return { answer: top.answer, suggestions: [] };
+  // Fallback
+  return { answer: "Sorry, I don't know that. Try rephrasing or pick a suggestion.", suggestions: [] };
 }
