@@ -2,65 +2,6 @@ import React, { useState } from "react";
 import { Play, FileText, BookOpen } from "lucide-react";
 
 const mediaResources = [
-<<<<<<< HEAD
-  {
-    title: "Video Tutorials",
-    description: "Watch step-by-step farming and crop management videos.",
-    icon: <Play className="w-10 h-10 text-green-600" />,
-    items: [
-      {
-        name: "Vegetable Farming Basics",
-        type: "video",
-        src: "https://www.youtube.com/embed/FW_bw9jdrlQ?start=0", // plays from start
-        icon: <Play className="w-8 h-8 text-green-500" />,
-      },
-      {
-        name: "Organic Fertilizer Usage",
-        type: "video",
-        src: "https://www.youtube.com/embed/ScMzIvxBSi4?start=0",
-        icon: <Play className="w-8 h-8 text-green-500" />,
-      },
-      {
-        name: "Tomato Cultivation Tips",
-        type: "video",
-        src: "https://www.youtube.com/embed/1Bix44C1EzY?start=0",
-        icon: <Play className="w-8 h-8 text-green-500" />,
-      },
-      {
-        name: "Pest Control Techniques",
-        type: "video",
-        src: "https://www.youtube.com/embed/2vjPBrBU-TM?start=0",
-        icon: <Play className="w-8 h-8 text-green-500" />,
-      },
-      {
-        name: "Harvesting & Storage",
-        type: "video",
-        src: "https://www.youtube.com/embed/hT_nvWreIhg?start=0",
-        icon: <Play className="w-8 h-8 text-green-500" />,
-      },
-    ],
-  },
-
-  {
-    title: "PDF Guides",
-    description: "Download detailed PDF guides for crops, fertilizers, and tools.",
-    icon: <FileText className="w-10 h-10 text-blue-500" />,
-    items: [
-      {
-        name: "Crop Calendar PDF",
-        type: "pdf",
-        src: "/pdf/CropCalendar.pdf", // Place file in public/pdf/
-        icon: <FileText className="w-8 h-8 text-blue-500" />,
-      },
-      {
-        name: "Fertilizer Guide PDF",
-        type: "pdf",
-        src: "/pdf/FertilizerGuide.pdf",
-        icon: <FileText className="w-8 h-8 text-blue-500" />,
-      },
-    ],
-  },
-=======
 {
   title: "Video Tutorials",
   description: "Watch step-by-step farming and crop management videos.",
@@ -154,7 +95,6 @@ const mediaResources = [
   ],
 }
 ,
->>>>>>> temp-save
   {
     title: "Articles & Blogs",
     description: "Read informative articles and tips from agriculture experts.",
