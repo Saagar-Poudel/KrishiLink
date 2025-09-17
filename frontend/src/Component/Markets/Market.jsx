@@ -212,6 +212,11 @@ const Market = () => {
       </div>
     </div>
   );
+}
 };
+<<<<<<< HEAD
 
 export default Market;
+=======
+export default Market;
+>>>>>>> temp-save

@@ -1,4 +1,8 @@
 export const crops = [
+<<<<<<< HEAD
+=======
+  // Vegetables
+>>>>>>> temp-save
   { name: "Spinach", type: "Vegetable", months: [2,3,4,5], soil: "Loamy", moisture: "Moderate", tips: "Sow seeds shallowly", harvest: "30-45 days", img: "/public/Images/spinach.png", description: "Leafy green rich in iron and vitamins, grows fast, ideal for salads and cooking." },
   { name: "Chili", type: "Vegetable", months: [3,4,5,6], soil: "Sandy loam", moisture: "Moderate", tips: "Use well-drained soil", harvest: "70-90 days", img: "/public/images/chili.png", description: "Spicy fruit used in cooking, boosts metabolism, needs sunlight and well-drained soil." },
   { name: "Tomato", type: "Vegetable", months: [3,4,5,6], soil: "Sandy loam", moisture: "Moderate", tips: "Provide support for vines", harvest: "60-80 days", img: "/public/images/tomato.png", description: "Juicy red fruit commonly used in sauces and salads, requires sunlight and support." },
