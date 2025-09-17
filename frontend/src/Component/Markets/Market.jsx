@@ -7,9 +7,11 @@ import ProductModal from "./ProductModal";
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const Market = () => {
   const { t } = useLanguage();
+  const location = useLocation();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [wishlistedProducts, setWishlistedProducts] = useState([]);
@@ -30,6 +32,15 @@ const Market = () => {
     };
     fetchProducts();
   }, []);
+
+useEffect(()=>{
+  const params = new URLSearchParams(location.search);
+  const categoryFromUrl = params.get("category");
+  if (categoryFromUrl) {
+    setFilters((prev) => ({ ...prev, category: categoryFromUrl }));
+  }
+},[location.search]);
+
   useEffect(() => {
     filterProducts();
   }, [filters]);
@@ -127,13 +138,16 @@ const Market = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:w-1/4">
-            <Filters
+         <div className="lg:w-1/4">
+           <div className="sticky top-30">
+              <Filters
               onFiltersChange={(newFilter) =>
-                setFilters((prev) => ({ ...prev, ...newFilter }))
-              }
-            />
+              setFilters((prev) => ({ ...prev, ...newFilter }))
+               }
+             />
+            </div>
           </div>
+
 
           {/* Main Content */}
           <div className="lg:w-3/4">
