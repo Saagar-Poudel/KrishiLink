@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Maximize, X } from "lucide-react";
 import ChatData from "./Chat.js"; // [{ question, answer }, ...]
+import { getBotResponse } from "./BotLogic.js";
+
 
 // --- Chatbot component
 const Chatbot = () => {
@@ -507,3 +509,4 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
+// --- End of Chatbot component
