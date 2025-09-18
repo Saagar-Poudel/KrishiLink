@@ -226,6 +226,5 @@ useEffect(()=>{
       </div>
     </div>
   );
-};
-
+}
 export default Market;
