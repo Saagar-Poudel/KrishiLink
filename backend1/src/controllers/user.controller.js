@@ -16,6 +16,10 @@ export class UserController {
         username,
         email,
         password: hashedPassword,
+         role: role || 'buyer',        // default to 'buyer' if not provided
+      farmName: farmName || null,
+      phone: phone || null,
+      location: location || null,
       }).returning();
 
       res.status(201).json({ message: 'User registered successfully', user: newUser });
@@ -48,4 +52,27 @@ export class UserController {
       res.status(500).json({ error: 'Error logging in' });
     }
   }
+
+
+// Get user by username
+static async getUserByUsername(req, res) {
+  const { username } = req.params;
+
+  try {
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username))
+      .limit(1);
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json(user[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching user' });
+  }
+}
 }

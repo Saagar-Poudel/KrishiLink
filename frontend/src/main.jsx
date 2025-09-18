@@ -48,23 +48,28 @@ const router = createBrowserRouter(
         <Route path="/storage" element={<Storage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sell" element={<SellerProductForm />} />
+
         <Route path="/farmerprofile" element={<FarmerProfile />} />
+         <Route path="/farmer/:username" element={<FarmerProfile />} /> 
         <Route path="/buyerprofile" element={<BuyerProfile />} />
+
         <Route path="/addproduct" element={<AddProduct />} />
         <Route path="/editproduct" element={<EditProduct />} />
+
         <Route path="/accountsetting" element={<AccountSettings />} />
            <Route
-        path="/profile"
-        element={
-          <RequiredAuth>
-            <RoleBasedProfile />
-          </RequiredAuth>
-        }
-      />
+             path="/profile"
+             element={
+               <RequiredAuth>
+                 <RoleBasedProfile />
+              </RequiredAuth>
+            }
+           />
 
         <Route path="/payment-success" element={<Success />} />
         <Route path="/payment-failure" element={<Failure />} />
       </Route>
+
       <Route element={<AuthLayout />}>
         <Route path="login" element={<Login />} />
       </Route>

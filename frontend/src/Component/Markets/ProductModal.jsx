@@ -3,6 +3,7 @@ import {
   Star, MapPin, User, Package, Truck, ShoppingCart, Heart,
   Phone, MessageCircle, Shield, X
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ProductModal = ({
   product,
@@ -13,6 +14,7 @@ const ProductModal = ({
   isWishlisted = false
 }) => {
   const [quantity, setQuantity] = useState(1);
+   const navigate = useNavigate();
 
   if (!product || !isOpen) return null;
 
@@ -126,6 +128,12 @@ const ProductModal = ({
             </div>
 
             <div className="flex gap-2">
+               <button
+        onClick={() => navigate(`/farmer/${product.username || product.sellerName}`)}
+          className="text-green-600 hover:underline text-sm"
+        >
+          View Farmer Profile
+        </button>
               <button
                 className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:text-yellow-300 dark:bg-[#34D399] dark:hover:bg-[#059669]"
                 onClick={() => onAddToCart(product, quantity)}
