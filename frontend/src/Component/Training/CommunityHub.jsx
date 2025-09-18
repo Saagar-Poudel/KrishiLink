@@ -1,93 +1,159 @@
-import React, { useState } from "react";
-import { Users, MessageCircle, Calendar, LifeBuoy, Send, FileText, Video } from "lucide-react";
+// src/components/CommunityHub.jsx
+import React, { useState, useRef, useEffect } from "react";
+import { Users, MessageCircle, Calendar, Send, FileText, Video, Mic } from "lucide-react";
 
 const initialSections = [
   {
     title: "Discussion Forums",
-    description: "Post your farming questions and discuss with experts.",
+    description: "Chat with other farmers and share tips.",
     icon: <MessageCircle className="w-10 h-10 text-green-600" />,
-    items: [
-      { name: "Crop Management Tips", posts: [] },
-      { name: "Organic Fertilizer Discussion", posts: [] },
-    ],
   },
   {
     title: "Farmer Groups",
-    description: "Join groups to collaborate and share resources.",
+    description: "Join groups to fulfill big orders.",
     icon: <Users className="w-10 h-10 text-blue-500" />,
-    items: [
-      { name: "Vegetable Growers Group", joined: false, members: 12 },
-      { name: "Fruit Farmers Association", joined: false, members: 8 },
-    ],
   },
   {
-    title: "Events & Webinars",
-    description: "Register for online and local events.",
+    title: "Auctions",
+    description: "Participate in customer auctions for large orders.",
     icon: <Calendar className="w-10 h-10 text-yellow-500" />,
-    items: [
-      { name: "Organic Farming Webinar", registered: false, registrants: [] },
-      { name: "Crop Harvest Festival", registered: false, registrants: [] },
-    ],
-  },
-  {
-    title: "Support & Resources",
-    description: "Access guides, videos, and PDFs to improve your farming.",
-    icon: <LifeBuoy className="w-10 h-10 text-red-500" />,
-    items: [
-      { name: "Expert Q&A", resources: [] },
-      { name: "Resource Library", resources: [] },
-    ],
   },
 ];
 
 const CommunityHub = () => {
-  const [sections, setSections] = useState(initialSections);
   const [activeSection, setActiveSection] = useState(null);
-  const [newPost, setNewPost] = useState("");
-  const [resourceFile, setResourceFile] = useState(null);
-  const [registrationForm, setRegistrationForm] = useState({ name: "", email: "" });
 
-  // Toggle join/register buttons
-  const toggleJoin = (sectionIdx, itemIdx) => {
-    const copy = [...sections];
-    const item = copy[sectionIdx].items[itemIdx];
-    if ("joined" in item) {
-      item.joined = !item.joined;
-      item.members += item.joined ? 1 : -1;
-    }
-    if ("registered" in item) item.registered = !item.registered;
-    setSections(copy);
+  // ---------------- Discussion Forums ----------------
+  const [farmers, setFarmers] = useState([
+    { id: 1, name: "Ramesh" },
+    { id: 2, name: "Sita" },
+    { id: 3, name: "Hari" },
+  ]);
+  const [chatMessages, setChatMessages] = useState({
+    1: [], // messages for Ramesh
+    2: [], // messages for Sita
+    3: [], // messages for Hari
+  });
+  const [selectedFarmerId, setSelectedFarmerId] = useState(1);
+  const [newMessage, setNewMessage] = useState("");
+  const [newMedia, setNewMedia] = useState(null);
+  const [recording, setRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const [audioChunks, setAudioChunks] = useState([]);
+
+  // ---------------- Farmer Groups ----------------
+  const [groups, setGroups] = useState([
+    { id: 1, name: "Vegetable Growers", members: [1, 2] },
+    { id: 2, name: "Fruit Farmers Association", members: [3] },
+  ]);
+  const [newGroupName, setNewGroupName] = useState("");
+
+  // ---------------- Auctions ----------------
+  const [auctions, setAuctions] = useState([
+    {
+      id: 1,
+      customer: "Customer A",
+      product: "Tomatoes Bulk",
+      participants: [],
+      endTime: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000), // 2 days
+      winner: null,
+    },
+  ]);
+
+  // ---------- Discussion Forums Functions ----------
+  const sendMessage = () => {
+    if (!newMessage.trim() && !newMedia) return;
+    const newMsg = {
+      sender: "You",
+      text: newMessage,
+      media: newMedia,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+    setChatMessages({
+      ...chatMessages,
+      [selectedFarmerId]: [...chatMessages[selectedFarmerId], newMsg],
+    });
+    setNewMessage("");
+    setNewMedia(null);
   };
 
-  // Add post in discussion forums
-  const addPost = (sectionIdx, itemIdx) => {
-    if (!newPost.trim()) return;
-    const copy = [...sections];
-    copy[sectionIdx].items[itemIdx].posts.push(newPost);
-    setSections(copy);
-    setNewPost("");
+  const startRecording = () => {
+    if (!navigator.mediaDevices) return alert("Microphone not supported");
+    setRecording(true);
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      setAudioChunks([]);
+      mediaRecorder.ondataavailable = (e) => {
+        setAudioChunks((prev) => [...prev, e.data]);
+      };
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks);
+        const url = URL.createObjectURL(audioBlob);
+        setNewMedia({ type: "audio", url });
+      };
+      mediaRecorder.start();
+    });
   };
 
-  // Register for events
-  const registerEvent = (sectionIdx, itemIdx) => {
-    const copy = [...sections];
-    const item = copy[sectionIdx].items[itemIdx];
-    if (!registrationForm.name || !registrationForm.email) return;
-    item.registrants.push({ ...registrationForm });
-    item.registered = true;
-    setSections(copy);
-    setRegistrationForm({ name: "", email: "" });
+  const stopRecording = () => {
+    setRecording(false);
+    mediaRecorderRef.current.stop();
   };
 
-  // Upload resources
-  const uploadResource = (sectionIdx, itemIdx) => {
-    if (!resourceFile) return;
-    const copy = [...sections];
-    copy[sectionIdx].items[itemIdx].resources.push(resourceFile);
-    setSections(copy);
-    setResourceFile(null);
+  // ---------- Farmer Groups Functions ----------
+  const createGroup = () => {
+    if (!newGroupName.trim()) return;
+    const newGroup = {
+      id: groups.length + 1,
+      name: newGroupName,
+      members: [],
+    };
+    setGroups([...groups, newGroup]);
+    setNewGroupName("");
+    alert(`New group "${newGroupName}" created! (Simulated notification to farmers)`);
   };
 
+  const toggleGroupJoin = (groupId, farmerId = 1) => {
+    setGroups((prev) =>
+      prev.map((g) =>
+        g.id === groupId
+          ? g.members.includes(farmerId)
+            ? { ...g, members: g.members.filter((m) => m !== farmerId) }
+            : { ...g, members: [...g.members, farmerId] }
+          : g
+      )
+    );
+  };
+
+  // ---------- Auction Functions ----------
+  const joinAuction = (auctionId, farmerId = 1) => {
+    setAuctions((prev) =>
+      prev.map((a) =>
+        a.id === auctionId && !a.participants.includes(farmerId)
+          ? { ...a, participants: [...a.participants, farmerId] }
+          : a
+      )
+    );
+  };
+
+  const selectWinner = (auctionId, farmerId) => {
+    setAuctions((prev) =>
+      prev.map((a) => (a.id === auctionId ? { ...a, winner: farmerId } : a))
+    );
+  };
+
+  const countdown = (endTime) => {
+    const now = new Date();
+    const diff = new Date(endTime) - now;
+    if (diff <= 0) return "Auction Ended";
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    return `${days}d ${hours}h ${minutes}m`;
+  };
+
+  // ---------- UI Components ----------
   const Card = ({ title, description, icon, onClick }) => (
     <div
       onClick={onClick}
@@ -101,12 +167,12 @@ const CommunityHub = () => {
   );
 
   return (
-    <div className="p-6 min-h-screen bg-white">
+    <div className="p-6 min-h-screen bg-gray-50">
       <h1 className="text-3xl font-bold text-center mb-6">Community Hub</h1>
 
       {/* Main Cards */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {sections.map((s, i) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {initialSections.map((s, i) => (
           <Card
             key={i}
             title={s.title}
@@ -119,174 +185,193 @@ const CommunityHub = () => {
         ))}
       </div>
 
-      {/* Dynamic Content */}
+      {/* Dynamic Section */}
       {activeSection && (
-        <div className="mt-8 grid gap-4">
-          {sections
-            .find((s) => s.title === activeSection)
-            .items.map((item, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-white shadow-md rounded-xl hover:shadow-lg transition flex flex-col gap-3"
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-lg">{item.name}</h3>
-                  {"members" in item && (
-                    <span className="text-gray-500 text-sm">
-                      {item.members} members
-                    </span>
-                  )}
-                </div>
-
-                {/* Discussion Forum Posts */}
-                {"posts" in item && (
-                  <div className="flex flex-col gap-2">
-                    {item.posts.map((p, pidx) => (
-                      <div
-                        key={pidx}
-                        className="p-2 bg-gray-100 rounded-md text-gray-800 text-sm"
-                      >
-                        {p}
-                      </div>
-                    ))}
-                    <div className="flex gap-2 mt-2">
-                      <input
-                        type="text"
-                        value={newPost}
-                        onChange={(e) => setNewPost(e.target.value)}
-                        placeholder="Ask a question..."
-                        className="flex-1 border rounded-md p-2"
-                      />
-                      <button
-                        onClick={() =>
-                          addPost(
-                            sections.findIndex((s) => s.title === activeSection),
-                            idx
-                          )
-                        }
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-1"
-                      >
-                        <Send className="w-4 h-4" /> Post
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Join / Leave Farmer Groups */}
-                {"joined" in item && (
-                  <button
-                    onClick={() =>
-                      toggleJoin(
-                        sections.findIndex((s) => s.title === activeSection),
-                        idx
-                      )
-                    }
-                    className={`px-4 py-2 rounded-md text-white transition ${
-                      item.joined
-                        ? "bg-gray-500 hover:bg-gray-600"
-                        : "bg-blue-600 hover:bg-blue-700"
+        <div className="mt-8">
+          {/* ---------------- Discussion Forums UI ---------------- */}
+          {activeSection === "Discussion Forums" && (
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Farmer List */}
+              <div className="md:w-1/4 bg-white p-4 rounded-lg shadow-md">
+                <h3 className="font-semibold mb-3">Farmers</h3>
+                {farmers.map((f) => (
+                  <div
+                    key={f.id}
+                    onClick={() => setSelectedFarmerId(f.id)}
+                    className={`p-2 rounded-md cursor-pointer hover:bg-green-100 ${
+                      selectedFarmerId === f.id ? "bg-green-200" : ""
                     }`}
                   >
-                    {item.joined ? "Joined" : "Join"}
-                  </button>
-                )}
+                    {f.name}
+                  </div>
+                ))}
+              </div>
 
-                {/* Register for Events */}
-                {"registered" in item && (
-                  <form
-                    className="flex flex-col gap-2"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      registerEvent(
-                        sections.findIndex((s) => s.title === activeSection),
-                        idx
-                      );
-                    }}
-                  >
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      value={registrationForm.name}
-                      onChange={(e) =>
-                        setRegistrationForm({ ...registrationForm, name: e.target.value })
-                      }
-                      className="border rounded-md p-2"
-                      required
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      value={registrationForm.email}
-                      onChange={(e) =>
-                        setRegistrationForm({ ...registrationForm, email: e.target.value })
-                      }
-                      className="border rounded-md p-2"
-                      required
-                    />
-                    <button
-                      type="submit"
-                      className={`px-4 py-2 rounded-md text-white ${
-                        item.registered
-                          ? "bg-gray-500 hover:bg-gray-600"
-                          : "bg-yellow-500 hover:bg-yellow-600"
+              {/* Chat Area */}
+              <div className="md:w-3/4 flex flex-col bg-white p-4 rounded-lg shadow-md">
+                <h3 className="font-semibold mb-2">
+                  Chat with{" "}
+                  {farmers.find((f) => f.id === selectedFarmerId)?.name}
+                </h3>
+                <div className="flex-1 overflow-y-auto h-64 border p-2 rounded-md mb-2 flex flex-col gap-2">
+                  {chatMessages[selectedFarmerId]?.map((m, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-2 rounded-md max-w-xs ${
+                        m.sender === "You"
+                          ? "bg-green-100 self-end"
+                          : "bg-gray-100 self-start"
                       }`}
                     >
-                      {item.registered ? "Registered" : "Register"}
-                    </button>
-                  </form>
-                )}
-
-                {/* Support & Resources */}
-                {"resources" in item && (
-                  <div className="flex flex-col gap-2">
-                    {item.resources.map((res, ridx) => (
-                      <div
-                        key={ridx}
-                        className="flex justify-between items-center bg-gray-100 p-2 rounded-md"
-                      >
-                        <span className="flex items-center gap-2">
-                          {res.type === "video" ? <Video /> : <FileText />}
-                          {res.name}
-                        </span>
-                        <a
-                          href={res.url || "#"}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-600 hover:underline text-sm"
-                        >
-                          View
-                        </a>
-                      </div>
-                    ))}
-                    <div className="flex gap-2 mt-2">
-                      <input
-                        type="file"
-                        onChange={(e) => {
-                          if (!e.target.files[0]) return;
-                          setResourceFile({
-                            name: e.target.files[0].name,
-                            type: e.target.files[0].type.includes("video") ? "video" : "pdf",
-                            url: URL.createObjectURL(e.target.files[0]),
-                          });
-                        }}
-                        className="flex-1 border rounded-md p-2"
-                      />
-                      <button
-                        onClick={() =>
-                          uploadResource(
-                            sections.findIndex((s) => s.title === activeSection),
-                            idx
-                          )
-                        }
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
-                      >
-                        Upload
-                      </button>
+                      {m.text && <p>{m.text}</p>}
+                      {m.media && m.media.type === "image" && (
+                        <img src={m.media.url} className="mt-1 rounded" />
+                      )}
+                      {m.media && m.media.type === "video" && (
+                        <video src={m.media.url} controls className="mt-1 rounded" />
+                      )}
+                      {m.media && m.media.type === "audio" && (
+                        <audio controls src={m.media.url} className="mt-1 rounded" />
+                      )}
+                      <span className="text-xs text-gray-500">{m.timestamp}</span>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
+                {/* Input Area */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    className="flex-1 border rounded-md p-2"
+                  />
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      if (!e.target.files[0]) return;
+                      const file = e.target.files[0];
+                      const type = file.type.includes("video")
+                        ? "video"
+                        : file.type.includes("image")
+                        ? "image"
+                        : null;
+                      if (!type) return alert("Only image/video allowed");
+                      setNewMedia({ type, url: URL.createObjectURL(file) });
+                    }}
+                  />
+                  {recording ? (
+                    <button
+                      onClick={stopRecording}
+                      className="bg-red-500 text-white px-2 rounded-md"
+                    >
+                      Stop <Mic className="inline w-4 h-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={startRecording}
+                      className="bg-blue-500 text-white px-2 rounded-md"
+                    >
+                      Record <Mic className="inline w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={sendMessage}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center gap-1"
+                  >
+                    <Send className="w-4 h-4" /> Send
+                  </button>
+                </div>
               </div>
-            ))}
+            </div>
+          )}
+
+          {/* ---------------- Farmer Groups UI ---------------- */}
+          {activeSection === "Farmer Groups" && (
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="New Group Name"
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                  className="border p-2 rounded-md flex-1"
+                />
+                <button
+                  onClick={createGroup}
+                  className="bg-blue-600 text-white px-4 rounded-md"
+                >
+                  Create Group
+                </button>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {groups.map((g) => (
+                  <div
+                    key={g.id}
+                    className="bg-white p-4 rounded-lg shadow-md flex flex-col gap-2"
+                  >
+                    <h3 className="font-semibold">{g.name}</h3>
+                    <span className="text-gray-500 text-sm">
+                      {g.members.length} members
+                    </span>
+                    <button
+                      onClick={() => toggleGroupJoin(g.id)}
+                      className={`px-4 py-2 rounded-md text-white ${
+                        g.members.includes(1)
+                          ? "bg-gray-500 hover:bg-gray-600"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      {g.members.includes(1) ? "Joined" : "Join"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ---------------- Auctions UI ---------------- */}
+          {activeSection === "Auctions" && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {auctions.map((a) => (
+                <div
+                  key={a.id}
+                  className="bg-white p-4 rounded-lg shadow-md flex flex-col gap-2"
+                >
+                  <h3 className="font-semibold">{a.product}</h3>
+                  <span className="text-gray-500 text-sm">
+                    Customer: {a.customer}
+                  </span>
+                  <span className="text-gray-500 text-sm">
+                    Participants: {a.participants.length}
+                  </span>
+                  <span className="text-red-500 font-semibold">
+                    {countdown(a.endTime)}
+                  </span>
+                  {a.winner ? (
+                    <span className="text-green-600 font-semibold">
+                      Winner: Farmer {a.winner}
+                    </span>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => joinAuction(a.id)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-md"
+                      >
+                        Participate
+                      </button>
+                      <button
+                        onClick={() => selectWinner(a.id, 1)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-md mt-1"
+                      >
+                        Select Winner (Simulated)
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

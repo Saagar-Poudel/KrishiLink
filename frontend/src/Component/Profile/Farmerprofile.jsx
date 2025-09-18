@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
   Edit,
   MapPin,
@@ -9,48 +9,80 @@ import {
   Plus,
   TrendingUp,
   Trash2,
-  Eye,
   MoreVertical,
 } from "lucide-react";
 import { useAuth } from "../../contexts/Authcontext";
 import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 export default function FarmerProfile() {
-  const { user } = useAuth();
+  const { user } = useAuth(); // current logged-in user
   const navigate = useNavigate();
   const location = useLocation();
+  const { username } = useParams(); // farmerId if buyer visits /farmer/:username
 
   const defaultAvatar =
     "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=400&fit=crop&crop=face";
 
+    const [farmer, setFarmer] = useState(null); // farmer info
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
-  // Fetch farmer products from backend
+  // check if this is farmer's own profile or buyer viewing
+    const isFarmerOwner = user?.role === "farmer" && (!username || user?.username === username);
+
+      // Fetch farmer info
+   useEffect(() => {
+  const fetchFarmer = async () => {
+    try {
+      if (isFarmerOwner) {
+        setFarmer(user);
+      } else {
+        const { data } = await axios.get(
+          `http://localhost:3000/api/users/by-username/${username}`
+        );
+        setFarmer(data);
+      }
+    } catch (err) {
+      // console.error(err);
+      toast.error("Failed to load farmer info");
+    }
+  };
+  fetchFarmer();
+}, [user, username, isFarmerOwner]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+<<<<<<< HEAD
         const {data} = await axios.get("http://localhost:3000/api/products");
         // Filter products belonging to the logged-in farmer
         const farmerProducts = data.filter(
           (p) => p.sellerName?.toLowerCase() === user?.username?.toLowerCase()
         );
+=======
+        const { data } = await axios.get("http://localhost:3000/api/products");
+        let farmerProducts;
+        if (isFarmerOwner) {
+          farmerProducts = data.filter(p => p.sellerName?.toLowerCase() === user?.username?.toLowerCase());
+        } else {
+          farmerProducts = data.filter(p => p.sellerName?.toLowerCase() === username?.toLowerCase());
+        }
+>>>>>>> 7dcea379048b3ff235c82932e37449dcf6bc7054
         setProducts(farmerProducts);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error(err);
         toast.error("Failed to load products!");
       } finally {
-         
         setLoading(false);
       }
     };
-      fetchProducts();
-  }, []);
+    fetchProducts();
+  }, [username, isFarmerOwner, user]);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -71,6 +103,30 @@ export default function FarmerProfile() {
   fetchOrders();
 }, []);
 
+=======
+  // dummy orders (only visible to farmer owner)
+  const [orders] = useState([
+    {
+      id: "ORD001",
+      buyer: "Rahul Sharma",
+      product: "Organic Tomatoes",
+      quantity: 10,
+      total: 1200,
+      status: "pending",
+      date: "2024-01-15",
+    },
+    {
+      id: "ORD002",
+      buyer: "Priya Patel",
+      product: "Green Vegetables",
+      quantity: 5,
+      total: 400,
+      status: "confirmed",
+      date: "2024-01-14",
+    },
+  ]);
+
+>>>>>>> 7dcea379048b3ff235c82932e37449dcf6bc7054
   const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
   const [activeTab, setActiveTab] = useState("products");
@@ -80,6 +136,12 @@ export default function FarmerProfile() {
     setProducts((prev) => prev.filter((p) => p.id !== id));
     toast("Product deleted successfully!");
   };
+
+  const handleAddToCart = (product) => {
+    toast.success(`${product.name} added to cart`);
+    // integrate with your CartContext here if available
+  };
+ if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
   return (
     <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
       {/* Profile Header */}
@@ -89,22 +151,22 @@ export default function FarmerProfile() {
             <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white">
               <img
                 src={defaultAvatar}
-                alt={user?.username}
+                alt={farmer?.username}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold">{user?.username}</h1>
+                <h1 className="text-3xl font-bold">{farmer?.username}</h1>
                 <span className="px-2 py-1 bg-white/30 rounded text-sm">
                   🌾 Farmer
                 </span>
               </div>
               <p className="opacity-80 text-lg">
-                @{user?.username?.toLowerCase()}
+                @{farmer?.username?.toLowerCase()}
               </p>
-              {user?.farmName && (
-                <p className="font-medium text-lg">{user.farmName}</p>
+              {farmer?.farmName && (
+                <p className="font-medium text-lg">{farmer.farmName}</p>
               )}
               <div className="flex items-center gap-2">
                 {[...Array(5)].map((_, i) => (
@@ -124,45 +186,47 @@ export default function FarmerProfile() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
           <div className="flex items-center gap-3">
-            <Mail className="w-5 h-5" /> <span>{user?.email}</span>
+            <Mail className="w-5 h-5" /> <span>{farmer?.email}</span>
           </div>
           <div className="flex items-center gap-3">
-            <Phone className="w-5 h-5" /> <span>{user?.phone}</span>
+            <Phone className="w-5 h-5" /> <span>{farmer?.phone}</span>
           </div>
           <div className="flex items-center gap-3">
-            <MapPin className="w-5 h-5" /> <span>{user?.location}</span>
+            <MapPin className="w-5 h-5" /> <span>{farmer?.location}</span>
           </div>
         </div>
       </div>
 
-      {/* Earnings Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded shadow p-6">
-          <p className="text-sm text-gray-500">Total Earnings</p>
-          <p className="text-3xl font-bold text-green-600">
-            ₹{earnings.total.toLocaleString()}
-          </p>
+      {/* Earnings Overview (Farmer only) */}
+      {isFarmerOwner && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded shadow p-6">
+            <p className="text-sm text-gray-500">Total Earnings</p>
+            <p className="text-3xl font-bold text-green-600">
+              ₹{earnings.total.toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-white rounded shadow p-6">
+            <p className="text-sm text-gray-500">Monthly Revenue</p>
+            <p className="text-3xl font-bold">
+              ₹{earnings.monthly.toLocaleString()}
+            </p>
+            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+              <TrendingUp className="w-3 h-3" /> +{earnings.growth}% from last
+              month
+            </p>
+          </div>
+          <div className="bg-white rounded shadow p-6">
+            <p className="text-sm text-gray-500">Active Products</p>
+            <p className="text-3xl font-bold">
+              {products.filter((p) => p.status === "active").length}
+            </p>
+            <p className="text-xs text-gray-500">
+              {products.length} total products
+            </p>
+          </div>
         </div>
-        <div className="bg-white rounded shadow p-6">
-          <p className="text-sm text-gray-500">Monthly Revenue</p>
-          <p className="text-3xl font-bold">
-            ₹{earnings.monthly.toLocaleString()}
-          </p>
-          <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> +{earnings.growth}% from last
-            month
-          </p>
-        </div>
-        <div className="bg-white rounded shadow p-6">
-          <p className="text-sm text-gray-500">Active Products</p>
-          <p className="text-3xl font-bold">
-            {products.filter((p) => p.status === "active").length}
-          </p>
-          <p className="text-xs text-gray-500">
-            {products.length} total products
-          </p>
-        </div>
-      </div>
+      )}
 
       {/* Tabs */}
       <div className="bg-white rounded shadow">
@@ -175,31 +239,41 @@ export default function FarmerProfile() {
                 : ""
             }`}
           >
-            My Products
+            {isFarmerOwner ? "My Products" : "Products"}
           </button>
-          <button
-            onClick={() => setActiveTab("orders")}
-            className={`flex-1 p-3 ${
-              activeTab === "orders"
-                ? "border-b-2 border-green-500 font-semibold"
-                : ""
-            }`}
-          >
-            Order Requests
-          </button>
+
+          {isFarmerOwner && (
+            <button
+              onClick={() => setActiveTab("orders")}
+              className={`flex-1 p-3 ${
+                activeTab === "orders"
+                  ? "border-b-2 border-green-500 font-semibold"
+                  : ""
+              }`}
+            >
+              Order Requests
+            </button>
+          )}
         </div>
 
+        {/* Products Tab */}
         {activeTab === "products" && (
           <div className="p-6 space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Product Management</h3>
-              <button
-                onClick={() => navigate("/addproduct")}
-                className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" /> Add New Product
-              </button>
+              <h3 className="text-lg font-semibold">
+                {isFarmerOwner ? "Product Management" : "Available Products"}
+              </h3>
+
+              {isFarmerOwner && (
+                <button
+                  onClick={() => navigate("/addproduct")}
+                  className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" /> Add New Product
+                </button>
+              )}
             </div>
+
             <div className="grid gap-4">
               {products.map((p) => (
                 <div
@@ -212,66 +286,61 @@ export default function FarmerProfile() {
                     className="w-20 h-20 rounded-lg object-cover"
                   />
                   <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-3">
-                      <h4 className="font-semibold text-gray-800">{p.name}</h4>
-                      <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          p.status === "active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {p.status === "active" ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </div>
+                    <h4 className="font-semibold text-gray-800">{p.name}</h4>
                     <p className="text-sm text-gray-600">{p.description}</p>
-                    <p className="text-sm text-gray-500 space-x-2">
-                      <span>₹{p.price}/kg</span>
-                      <span>• Stock: {p.stock}kg</span>
-                      <span>• Sold: {p.sold}kg</span>
+                    <p className="text-sm text-gray-500">
+                      ₹{p.price}/kg • Stock: {p.stock}kg
                     </p>
                   </div>
 
-                  {/* 3-dot dropdown */}
-                  <div className="relative">
-                    <button
-                      onClick={() =>
-                        setOpenMenu(openMenu === p.id ? null : p.id)
-                      }
-                      className="p-2 hover:bg-gray-200 rounded-full"
-                    >
-                      <MoreVertical className="w-5 h-5 text-gray-600" />
-                    </button>
+                  {isFarmerOwner ? (
+                    // Edit/Delete menu for farmer
+                    <div className="relative">
+                      <button
+                        onClick={() =>
+                          setOpenMenu(openMenu === p.id ? null : p.id)
+                        }
+                        className="p-2 hover:bg-gray-200 rounded-full"
+                      >
+                        <MoreVertical className="w-5 h-5 text-gray-600" />
+                      </button>
 
-                    {openMenu === p.id && (
-                      <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
-                        <button
-                          onClick={() =>
-                            navigate("/editproduct", { state: { product: p } })
-                          }
-                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm"
-                        >
-                          <Edit className="w-4 h-4" /> Edit
-                        </button>
-                        <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm">
-                          <Eye className="w-4 h-4" /> View
-                        </button>
-                        <button
-                          onClick={() => handleDelete(p.id)}
-                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" /> Delete
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                      {openMenu === p.id && (
+                        <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+                          <button
+                            onClick={() =>
+                              navigate("/editproduct", { state: { product: p } })
+                            }
+                            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm"
+                          >
+                            <Edit className="w-4 h-4" /> Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p.id)}
+                            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" /> Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    // Add to Cart button for buyer
+                    <button
+                      onClick={() => handleAddToCart(p)}
+                      className="bg-green-600 text-white px-3 py-2 rounded"
+                    >
+                      Add to Cart
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {activeTab === "orders" && (
+        {/* Orders Tab (Farmer only) */}
+        {isFarmerOwner && activeTab === "orders" && (
           <div className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Order Management</h3>
             {
@@ -290,7 +359,8 @@ export default function FarmerProfile() {
                     #{o.id} - {o.product}
                   </h4>
                   <p className="text-sm text-gray-500">
-                    Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total}
+                    Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total} •
+                    Date: {o.date}
                   </p>
                 </div>
                 {o.status === "pending" && (
@@ -298,9 +368,7 @@ export default function FarmerProfile() {
                     <button className="bg-green-500 text-white px-3 py-1 rounded">
                       Accept
                     </button>
-                    <button className="border px-3 py-1 rounded">
-                      Decline
-                    </button>
+                    <button className="border px-3 py-1 rounded">Decline</button>
                   </div>
                 )}
               </div>

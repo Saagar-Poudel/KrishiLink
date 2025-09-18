@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Upload, Package } from "lucide-react";
+import { ArrowLeft, Package } from "lucide-react";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { v4 as uuid } from "uuid";
+import { supabase } from "../../lib/supabaseClient";
 
-const EditProduct = () => {
+export default function EditProduct() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,13 +16,14 @@ const EditProduct = () => {
   const [formData, setFormData] = useState({
     name: product?.name || "",
     description: product?.description || "",
-    price: product?.price?.toString() || "",
-    stock: product?.stock?.toString() || "",
+    price: product?.price || "",
+    stock: product?.stock || 0,
     category: product?.category || "",
-    image: product?.image || ""
+    image: product?.image || "",
   });
 
-  const [imagePreview, setImagePreview] = useState(product?.image || "");
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(product?.image || "");
 
   const categories = [
     "Vegetables",
@@ -27,55 +32,62 @@ const EditProduct = () => {
     "Dairy",
     "Organic",
     "Herbs",
-    "Other"
+    "Other",
   ];
 
-  const handleInputChange = (e) => {
+  async function handleImageUpload(file) {
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${uuid()}.${fileExt}`;
+      const filePath = `products/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(filePath, file, { upsert: true, cacheControl: "3600" });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from("product-images")
+        .getPublicUrl(filePath);
+
+      setFormData((f) => ({ ...f, image: data.publicUrl }));
+      setPreview(data.publicUrl);
+    } catch (err) {
+      toast.error(err.message || "Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function onChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    setFormData((f) => ({ ...f, [name]: value }));
+  }
 
-  const handleCategoryChange = (e) => {
-    setFormData((prev) => ({ ...prev, category: e.target.value }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const result = ev.target?.result;
-        setImagePreview(result);
-        setFormData((prev) => ({ ...prev, image: result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
+    try {
+      const res = await axios.put(
+        `http://localhost:3000/api/products/${product._id}`,
+        {
+          ...formData,
+          price: String(formData.price),
+          stock: Number(formData.stock),
+        }
+      );
 
-    if (!formData.name || !formData.price || !formData.stock) {
-      alert("⚠️ Please fill in all required fields");
-      return;
+      toast.success("✅ Product updated successfully");
+
+      if (onUpdate) onUpdate(res.data); // update locally without refetch
+
+      navigate("/farmerprofile");
+    } catch (err) {
+      toast.error("❌ Failed to update product");
+      console.error(err);
     }
-
-    const updatedProduct = {
-      ...product,
-      name: formData.name,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock),
-      category: formData.category,
-      image: formData.image,
-      status: parseInt(formData.stock) > 0 ? "active" : "out_of_stock"
-    };
-
-    if (onUpdate) onUpdate(updatedProduct);
-
-    alert("✅ Product updated successfully");
-    navigate("/farmerprofile");
-  };
+  }
 
   if (!product) {
     return (
@@ -83,7 +95,7 @@ const EditProduct = () => {
         <div className="bg-white p-6 rounded-xl shadow-md text-center">
           <p className="text-gray-700">Product not found</p>
           <button
-            onClick={() => navigate("/farmer-profile")}
+            onClick={() => navigate("/farmerprofile")}
             className="mt-4 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
           >
             Back to Profile
@@ -99,164 +111,114 @@ const EditProduct = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate("/farmer-profile")}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+            onClick={() => navigate("/farmerprofile")}
+            className="flex items-center gap-2 px-3 py-1 border rounded-md bg-white hover:bg-gray-100"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Profile
+            <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <div className="flex items-center gap-2">
             <Package className="w-6 h-6 text-green-600" />
-            <h1 className="text-2xl font-bold text-gray-800">Edit Product</h1>
+            <h1 className="text-2xl font-bold">Edit Product</h1>
           </div>
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Update Product Details
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Product Image */}
-            <div className="space-y-2">
-              <label htmlFor="image" className="font-medium text-gray-700">
-                Product Image
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-100 overflow-hidden">
-                  {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="text-center text-gray-500 text-sm">
-                      <Upload className="w-6 h-6 mx-auto mb-1" />
-                      Upload Image
-                    </div>
-                  )}
-                </div>
-                <input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="flex-1 text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Product Name */}
-            <div className="space-y-2">
-              <label htmlFor="name" className="font-medium text-gray-700">
-                Product Name *
-              </label>
-              <input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="e.g., Organic Tomatoes"
-                required
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
+        <form
+          onSubmit={onSubmit}
+          className="bg-white shadow-md rounded-lg p-6 space-y-4"
+        >
+          <div>
+            <label className="font-medium">Product Name *</label>
+            <input
+              name="name"
+              value={formData.name}
+              onChange={onChange}
+              required
+              className="w-full border rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="font-medium">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={onChange}
+              rows={3}
+              className="w-full border rounded-md px-3 py-2"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={onChange}
+              placeholder="Price per kg"
+              required
+              className="border rounded-md px-3 py-2"
+            />
+            <input
+              name="stock"
+              type="number"
+              value={formData.stock}
+              onChange={onChange}
+              placeholder="Stock Quantity"
+              required
+              className="border rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="font-medium">Category *</label>
+            <select
+              value={formData.category}
+              onChange={onChange}
+              name="category"
+              required
+              className="w-full border rounded-md px-3 py-2"
+            >
+              <option value="">Select category</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="font-medium">Product Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                e.target.files && handleImageUpload(e.target.files[0])
+              }
+            />
+            {uploading && <div>Uploading…</div>}
+            {preview && (
+              <img
+                src={preview}
+                alt="preview"
+                className="h-32 object-cover rounded"
               />
-            </div>
-
-            {/* Description */}
-            <div className="space-y-2">
-              <label htmlFor="description" className="font-medium text-gray-700">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Describe your product..."
-                rows={3}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-              />
-            </div>
-
-            {/* Price and Stock */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="price" className="font-medium text-gray-700">
-                  Price per kg (₹) *
-                </label>
-                <input
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  placeholder="120"
-                  min="0"
-                  step="0.01"
-                  required
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="stock" className="font-medium text-gray-700">
-                  Stock Quantity (kg) *
-                </label>
-                <input
-                  id="stock"
-                  name="stock"
-                  type="number"
-                  value={formData.stock}
-                  onChange={handleInputChange}
-                  placeholder="50"
-                  min="0"
-                  required
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Category */}
-            <div className="space-y-2">
-              <label htmlFor="category" className="font-medium text-gray-700">
-                Category
-              </label>
-              <select
-                id="category"
-                value={formData.category}
-                onChange={handleCategoryChange}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-              >
-                <option value="">Select a category</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Submit Buttons */}
-            <div className="flex gap-4 pt-4">
-              <button
-                type="button"
-                onClick={() => navigate("/farmer-profile")}
-                className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-              >
-                Update Product
-              </button>
-            </div>
-          </form>
-        </div>
+            )}
+          </div>
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => navigate("/farmerprofile")}
+              className="flex-1 border px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-green-600 text-white px-4 py-2 rounded"
+            >
+              Update Product
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-};
-
-export default EditProduct;
+}

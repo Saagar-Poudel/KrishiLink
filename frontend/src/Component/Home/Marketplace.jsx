@@ -225,7 +225,9 @@ const Marketplace = () => {
                     boxSizing: "border-box",
                   }}
                 >
+                  <button onClick={()=> navigate(`/market?category=${category.name}`)}> 
                   <CategoryCard category={category} />
+                  </button>
                 </div>
               ))}
             </div>

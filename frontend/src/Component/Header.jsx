@@ -5,8 +5,11 @@ import Thems from "./Thems";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Cart } from "./Cart";
 import { useCart } from '../contexts/CartContex';
+import LogoSVG from "../assets/logo.svg"; // ✅ updated import
+import Chatbot from "../Component/chatbot/Chatbot"; 
 import { useAuth } from '../contexts/Authcontext';
 import ProfileMenu from './ProfileMenu';
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
