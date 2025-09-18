@@ -1,97 +1,130 @@
 import { db } from "../dbConnection/dbConnection.js";
 import { orders, orderItems, products, transaction } from "../models/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import crypto from "crypto";
 
 // ✅ Create new order
 export const createOrder = async (req, res) => {
   try {
-    const { userId, items } = req.body;
-    // items = [{ productId: 1, quantity: 2 }, ...]
+    const { userId, items, contactName, phone, email, location, notes, payment_method } = req.body;
 
     if (!userId || !items || items.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "User ID and items are required" });
+      return res.status(400).json({ message: "User ID and items are required" });
     }
 
-    let formData;
+    const productIds = items.map((i) => i.productId);
 
-    // ✅ Run everything inside a transaction
-    const result = await db.transaction(async (tx) => {
-      let totalAmount = 0;
-      const orderItemsData = [];
+    // 1. Fetch products
+    const fetchedProducts = await db
+      .select()
+      .from(products)
+      .where(inArray(products.id, productIds));
 
-      for (const item of items) {
-        if (!item.productId || !item.quantity || item.quantity <= 0) {
-          throw new Error("Invalid product or quantity");
-        }
-
-        // ✅ Fetch product price from DB (don’t trust client price)
-        const [product] = await tx
-          .select()
-          .from(products)
-          .where(eq(products.id, item.productId));
-
-        if (!product) throw new Error("Product not found");
-
-        const itemTotal = Number(product.price) * item.quantity;
-        totalAmount += itemTotal;
-
-        orderItemsData.push({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: product.price, // snapshot from DB
-        });
-      }
-
-      // ✅ Insert order
-      const [newOrder] = await tx
-        .insert(orders)
-        .values({
-          userId,
-          totalAmount,
-          contactName: req.body.contactName,
-          phone: req.body.phone,
-          email: req.body.email,
-          location: req.body.location,
-          notes: req.body.notes || null,
-        })
-        .returning();
-
-      // ✅ Attach orderId to items
-      const itemsWithOrderId = orderItemsData.map((oi) => ({
-        ...oi,
-        orderId: newOrder.id,
-      }));
-      const signature = createRequestSignature(newOrder.totalAmount, newOrder.id, process.env.MERCHANT_ID);
-
-      formData = {
-      amount: newOrder.totalAmount,
-      failure_url: process.env.FAILURE_URL,
-      product_delivery_charge: "0",
-      product_service_charge: "0",
-      product_code: process.env.MERCHANT_ID,
-      signature: signature,
-      signed_field_names: "total_amount,transaction_uuid,product_code",
-      success_url: process.env.SUCCESS_URL,
-      tax_amount: "0",
-      totalAmount: newOrder.totalAmount,
-      transaction_uuid: newOrder.id,
+    if (fetchedProducts.length === 0) {
+      return res.status(400).json({ message: "Invalid product IDs" });
     }
 
-      await tx.insert(orderItems).values(itemsWithOrderId);
-      return newOrder;
+    // 2. Merge items with product
+    const itemsWithSeller = items.map((i) => {
+      const product = fetchedProducts.find((p) => p.id === i.productId);
+      if (!product) throw new Error(`Product not found: ${i.productId}`);
+      return { ...i, product };
     });
 
-    res
-      .status(201)
-      .json({ message: "Order placed successfully", order: result, formData: formData });
+    // 3. Group by sellerName
+    const groupedBySeller = itemsWithSeller.reduce((acc, item) => {
+      if (!acc[item.product.sellerName]) acc[item.product.sellerName] = [];
+      acc[item.product.sellerName].push(item);
+      return acc;
+    }, {});
+
+    const createdOrders = [];
+    let paymentPayload = null;
+
+    // 4. Transaction
+    await db.transaction(async (tx) => {
+      for (const [sellerName, sellerItems] of Object.entries(groupedBySeller)) {
+        const totalAmount = sellerItems.reduce(
+          (sum, item) => sum + Number(item.product.price) * item.quantity,
+          0
+        );
+
+        // 4a. Insert into orders
+        const [newOrder] = await tx
+          .insert(orders)
+          .values({
+            userId,
+            totalAmount,
+            contactName,
+            phone,
+            email,
+            location,
+            notes,
+            paymentMethod: payment_method,
+            status: "pending",
+          })
+          .returning();
+
+        // 4b. Insert order items
+        for (const item of sellerItems) {
+          await tx.insert(orderItems).values({
+            orderId: newOrder.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.product.price,
+          });
+        }
+
+        createdOrders.push(newOrder);
+
+        // 4c. Prepare payment payload only once
+        if (!paymentPayload) {
+          if (payment_method === "esewa") {
+            const transaction_uuid = `order-${newOrder.id}-${Date.now()}`;
+            const amountStr = Number(totalAmount).toFixed(2);
+            const message = `total_amount=${amountStr},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`;
+
+            const hmac = crypto.createHmac("sha256", process.env.SECRET.trim());
+            hmac.update(message);
+            const signature = hmac.digest("base64");
+
+            paymentPayload = {
+              esewa: {
+                amount: amountStr,
+                transaction_uuid,
+                signature,
+                product_code: "EPAYTEST",
+                success_url: process.env.SUCCESS_URL,
+                failure_url: process.env.FAILURE_URL,
+              },
+            };
+          } else if (payment_method === "khalti") {
+            paymentPayload = {
+              khalti: {
+                return_url: "http://localhost:3000/api/khalti/callback",
+                website_url: "http://localhost:3000",
+                amount: totalAmount * 100, // in paisa
+                purchase_order_id: newOrder.id,
+                purchase_order_name: "test",
+              },
+            };
+          }
+        }
+      }
+    });
+
+    // ✅ Final response
+    res.status(201).json({
+      message: "Orders created successfully",
+      orders: createdOrders,
+      ...paymentPayload, // attach outside orders
+    });
   } catch (err) {
-    console.error(err);
+    console.error("Error creating order:", err);
     res.status(500).json({ message: err.message || "Error creating order" });
   }
 };
+
 
 // ✅ Get all orders
 export const getAllOrders = async (req, res) => {
@@ -120,6 +153,53 @@ export const getOrderById = async (req, res) => {
     res.json(order);
   } catch (err) {
     res.status(500).json({ message: "Error fetching order" });
+  }
+};
+
+// controllers/order.controller.js
+export const getAllOrdersBySellerName = async (req, res) => {
+  try {
+    const { sellerName } = req.params;
+    const result = await db.query.orders.findMany({
+      with: {
+        user: true,
+        items: {
+          with: { product: true },
+        },
+      },
+      where: (orders, { eq }) => eq(orders.id, orders.id), // placeholder, Drizzle requires condition
+    });
+
+    // Filter only orders where any item belongs to this seller
+    const filtered = result
+      .map((order) => {
+        const sellerItems = order.items.filter((item) => {
+          return (
+            item.product?.sellerName.toLowerCase() &&
+            item.product.sellerName.toLowerCase() ===
+            sellerName.toLowerCase()
+          );
+        });
+
+        if (sellerItems.length === 0) return null;
+
+        return sellerItems.map((item) => ({
+          id: order.id,
+          buyer: order.user.username,
+          product: item.product.name,
+          quantity: item.quantity,
+          total: Number(item.price) * item.quantity,
+          status: order.status,
+          date: order.createdAt,
+        }));
+      })
+      .flat()
+      .filter(Boolean);
+
+    res.json(filtered);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching seller orders" });
   }
 };
 
@@ -161,19 +241,33 @@ export const deleteOrder = async (req, res) => {
   }
 };
 
-// For request (when you send to eSewa)
-export const createRequestSignature = (totalAmount, transactionId, productCode) => {
-  const amountStr = Number(totalAmount).toFixed(2);
-  const message = `total_amount=${amountStr},transaction_uuid=${transactionId},product_code=${productCode}`;
-  
-  const hmac = crypto.createHmac("sha256", process.env.SECRET.trim());
-  hmac.update(message);
-  return hmac.digest("base64");
-};
+export const updateOrderAfterPayment = async (req,res,next) => {
+  try {
+    console.log(req.body);
+    const [updatedOrder] = await db
+      .update(orders)
+      .set("paid")
+      .where(eq(orders.id, Number(req.transaction_uuid)))
+      .returning();
+    
+    if (!updatedOrder)
+      return res.status(404).json({ message: "Order not found" });
 
-// For response (when verifying eSewa’s callback)
-export const verifyResponseSignature = (message) => {
+    res.redirect("http://localhost:5173");
+     
+  } catch (error) {
+    return res.status(400).json({error: err?.message || "No Orders Found"})
+  }
+}
+
+export const createSignature = (totalAmount, transactionId, productCode) => {
+  // ensure exactly 2 decimal places
+  const amountStr = Number(totalAmount).toFixed(2);
+
+  // build string exactly in order of signed_field_names
+  const message = `total_amount=${amountStr},transaction_uuid=${transactionId},product_code=${productCode}`;
+
   const hmac = crypto.createHmac("sha256", process.env.SECRET.trim());
   hmac.update(message);
-  return hmac.digest("base64");
+  return hmac.digest("base64").toString();
 };

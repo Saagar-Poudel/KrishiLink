@@ -63,6 +63,9 @@ export const orders = pgTable("orders", {
   location: text("location").notNull(), // address or district
   notes: text("notes"), // optional delivery notes
 
+  // 💳 New column
+  paymentMethod: varchar("payment_method", { length: 50 }), 
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -108,11 +111,19 @@ export const transactionStatusEnum = pgEnum("transaction_status", [
 
 export const transaction = pgTable("transactions", {
   id: serial("id").primaryKey(),
-  productId: integer("order_id")
+  orderId: integer("order_id")
     .notNull()
     .references(() => orders.id, { onDelete: "cascade" }),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   status: transactionStatusEnum("status").default("PENDING"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  fromUserId: integer("from_user_id").notNull().references(() => users.id),
+  toUserId: integer("to_user_id").notNull().references(() => users.id),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });

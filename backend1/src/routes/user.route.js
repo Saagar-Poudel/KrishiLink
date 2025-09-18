@@ -1,12 +1,12 @@
 //create login and register routes
-import { Router } from 'express';
-import { UserController } from '../controllers/user.controller.js';
+import { Router } from "express";
+import { UserController } from "../controllers/user.controller.js";
 
 const userRouter = Router();
 // Register route
-userRouter.post('/register', (req, res) => UserController.register(req, res));
+userRouter.post("/register", (req, res) => UserController.register(req, res));
 // Login route
-userRouter.post('/login', (req, res) => {
+userRouter.post("/login", (req, res) => {
   UserController.login(req, res);
 });
 // Export the user router

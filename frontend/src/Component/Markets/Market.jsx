@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Store, TrendingUp, Users, Leaf } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { useAuth } from "../../contexts/Authcontext";
 import Filters from "./Filters";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
+import Chatbox from "../Chatbox";
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
 import axios from "axios";
@@ -18,6 +20,9 @@ const Market = () => {
   const { toast } = useToast();
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
+  
+  const {user} = useAuth();
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -134,7 +139,7 @@ const Market = () => {
               }
             />
           </div>
-
+          <Chatbox currentUser={user} />
           {/* Main Content */}
           <div className="lg:w-3/4">
             <div className="mb-6">

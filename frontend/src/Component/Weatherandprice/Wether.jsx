@@ -28,16 +28,16 @@ const Weather = () => {
       const forecastResult = await forecastResponse.json();
       setForecastData(forecastResult);
 
-      toast({
-        title: "Weather",
-        description: `Weather data for ${city} loaded successfully!`,
-      });
+      // toast({
+      //   title: "Weather",
+      //   description: `Weather data for ${city} loaded successfully!`,
+      // });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Could not fetch weather data. Please check the city name.",
-        variant: "destructive",
-      });
+      // toast({
+      //   title: "Error",
+      //   description: "Could not fetch weather data. Please check the city name.",
+      //   variant: "destructive",
+      // });
     } finally {
       setLoading(false);
     }
