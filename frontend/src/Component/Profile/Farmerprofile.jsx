@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function FarmerProfile() {
-  const { user } = useAuth(); // current logged-in user
+  const { user } = useAuth(); 
   const navigate = useNavigate();
   const location = useLocation();
   const { username } = useParams(); // farmerId if buyer visits /farmer/:username
@@ -24,11 +24,10 @@ export default function FarmerProfile() {
   const defaultAvatar =
     "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=400&fit=crop&crop=face";
 
-    const [farmer, setFarmer] = useState(null); // farmer info
+    const [farmer, setFarmer] = useState(null); 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // check if this is farmer's own profile or buyer viewing
     const isFarmerOwner = user?.role === "farmer" && (!username || user?.username === username);
 
       // Fetch farmer info
