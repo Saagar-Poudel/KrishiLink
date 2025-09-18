@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 export const getProducts = async (_req, res) => {
   try {
     const result = await db.select().from(products);
+  
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch products" });

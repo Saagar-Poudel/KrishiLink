@@ -56,6 +56,11 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       document.body.appendChild(form);
       form.submit();
     };
+
+    const khaltiCall = (data) => {
+      window.location.href = data.payment_url;
+    }
+
     if (!customerInfo.email || !customerInfo.phone || !customerInfo.address) {
       toast({
         title: t("missingInfoTitle"),
@@ -80,8 +85,8 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       });
       return;
     }
-    if (paymentMethod === "esewa") {
-      try {
+
+    try {
         const response = await axios.post(url, {
           userId: user.id,
           contactName: user.username,
@@ -89,19 +94,31 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
           email: customerInfo.email,
           location: customerInfo.address,
           notes: customerInfo.note,
+          payment_method: paymentMethod,
           items: cartItems.map((item) => ({
             productId: item.id,
             quantity: item.cartQuantity,
             price: item.price,
           })),
         });
-        console.log("Full Response:", response);
-        console.log("Message:", response.data.message);
-        console.log("Order:", response.data.order);
-        console.log("Esewa Form Data:", response.data.formData);
-
+        // console.log("Full Response:", response);
+        // console.log("Message:", response.data.message);
+        // console.log("Order:", response.data.order);
+      // console.log("Esewa Form Data:", response.data.formData);
+      if (paymentMethod === "esewa") {
         // ✅ Now safe to call Esewa
-        esewaCall(response.data.formData);
+        esewaCall(response.data.esewa);
+    } else if (paymentMethod === "khalti") {
+        khaltiCall(response.data)
+    } else {
+      setTimeout(() => {
+        setIsOrderPlaced(true);
+        toast({
+          title: t("Order Placed Successfully"),
+          description: t("Your order has been placed successfully."),
+        });
+      }, 500);
+    }
 
         toast({
           title: "Order Placed Successfully",
@@ -117,18 +134,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
           variant: "destructive",
         });
       }
-    } else if (paymentMethod === "khalti") {
-      window.location.href = "https://khalti.com/#/home";
-      return;
-    } else {
-      setTimeout(() => {
-        setIsOrderPlaced(true);
-        toast({
-          title: t("Order Placed Successfully"),
-          description: t("Your order has been placed successfully."),
-        });
-      }, 500);
-    }
+
   };
 
   const downloadBill = () => {

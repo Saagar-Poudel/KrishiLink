@@ -26,7 +26,9 @@ export default function FarmerProfile() {
 
     const [farmer, setFarmer] = useState(null); 
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
     const isFarmerOwner = user?.role === "farmer" && (!username || user?.username === username);
 
@@ -53,6 +55,8 @@ export default function FarmerProfile() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+       
+
         const { data } = await axios.get("http://localhost:3000/api/products");
         let farmerProducts;
         if (isFarmerOwner) {
@@ -71,27 +75,25 @@ export default function FarmerProfile() {
     fetchProducts();
   }, [username, isFarmerOwner, user]);
 
-  // dummy orders (only visible to farmer owner)
-  const [orders] = useState([
-    {
-      id: "ORD001",
-      buyer: "Rahul Sharma",
-      product: "Organic Tomatoes",
-      quantity: 10,
-      total: 1200,
-      status: "pending",
-      date: "2024-01-15",
-    },
-    {
-      id: "ORD002",
-      buyer: "Priya Patel",
-      product: "Green Vegetables",
-      quantity: 5,
-      total: 400,
-      status: "confirmed",
-      date: "2024-01-14",
-    },
-  ]);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+      console.log("sellerName:", user.username);
+      const { data } = await axios.get(
+        `http://localhost:3000/api/orders/${user.username}`
+      );
+      
+      setOrders(data);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      toast.error("Failed to load orders!");
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  fetchOrders();
+}, []);
 
   const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
@@ -309,7 +311,13 @@ export default function FarmerProfile() {
         {isFarmerOwner && activeTab === "orders" && (
           <div className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Order Management</h3>
-            {orders.map((o) => (
+            {
+              ordersLoading ? (
+              <p className="text-gray-500">Loading orders...</p>
+              ) : orders.length === 0 ? (
+              <p className="text-gray-500">No orders found.</p>
+              ): (
+                orders.map((o) => (
               <div
                 key={o.id}
                 className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
@@ -332,7 +340,9 @@ export default function FarmerProfile() {
                   </div>
                 )}
               </div>
-            ))}
+            ))
+              )
+            }
           </div>
         )}
       </div>

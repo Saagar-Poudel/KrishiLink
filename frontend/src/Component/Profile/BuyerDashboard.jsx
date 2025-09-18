@@ -143,7 +143,7 @@ const BuyerProfile = () => {
         {/* Orders Tab */}
         {activeTab === 'orders' && (
           <div className="space-y-4 mt-4">
-            <h3 className="text-lg font-semibold">Your Orders</h3>
+            <h3 className="text-lg font-semibold ml-3">Your Orders</h3>
             <div className="grid gap-4">
               {orderHistory.map(order => (
                 <div key={order.id} className="p-6 shadow rounded bg-white dark:bg-zinc-800">

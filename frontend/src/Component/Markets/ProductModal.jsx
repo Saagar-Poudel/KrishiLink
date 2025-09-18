@@ -27,6 +27,10 @@ const ProductModal = ({
     { id: 3, user: "Krishna Thapa", rating: 5, comment: "Best seller in the area. Highly recommended!", date: "2 weeks ago" }
   ];
 
+  const handleChat = () => {
+    console.log(product);
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto">
       <div className="relative bg-white max-w-4xl w-full max-h-[90vh] rounded-lg shadow-lg overflow-y-auto p-6 dark:bg-[#12241A] dark:text-[#F9FAFB]">
@@ -155,7 +159,7 @@ const ProductModal = ({
                 <button className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 dark:hover:bg-[#FACC15] transition dark:border-[#374151] dark:text-[#F9FAFB]">
                   <Phone className="w-4 h-4 mr-2" /> Contact for Bulk Order
                 </button>
-                <button className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 dark:hover:bg-[#FACC15] transition dark:border-[#374151] dark:text-[#F9FAFB]">
+                <button onClick={handleChat()} className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 dark:hover:bg-[#FACC15] transition dark:border-[#374151] dark:text-[#F9FAFB]">
                   <MessageCircle className="w-4 h-4 mr-2" /> Chat with Seller
                 </button>
               </div>
