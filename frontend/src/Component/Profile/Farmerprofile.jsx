@@ -56,13 +56,6 @@ export default function FarmerProfile() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-<<<<<<< HEAD
-        const {data} = await axios.get("http://localhost:3000/api/products");
-        // Filter products belonging to the logged-in farmer
-        const farmerProducts = data.filter(
-          (p) => p.sellerName?.toLowerCase() === user?.username?.toLowerCase()
-        );
-=======
         const { data } = await axios.get("http://localhost:3000/api/products");
         let farmerProducts;
         if (isFarmerOwner) {
@@ -70,7 +63,6 @@ export default function FarmerProfile() {
         } else {
           farmerProducts = data.filter(p => p.sellerName?.toLowerCase() === username?.toLowerCase());
         }
->>>>>>> 7dcea379048b3ff235c82932e37449dcf6bc7054
         setProducts(farmerProducts);
       } catch (err) {
         console.error(err);
@@ -82,7 +74,6 @@ export default function FarmerProfile() {
     fetchProducts();
   }, [username, isFarmerOwner, user]);
 
-<<<<<<< HEAD
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -103,30 +94,6 @@ export default function FarmerProfile() {
   fetchOrders();
 }, []);
 
-=======
-  // dummy orders (only visible to farmer owner)
-  const [orders] = useState([
-    {
-      id: "ORD001",
-      buyer: "Rahul Sharma",
-      product: "Organic Tomatoes",
-      quantity: 10,
-      total: 1200,
-      status: "pending",
-      date: "2024-01-15",
-    },
-    {
-      id: "ORD002",
-      buyer: "Priya Patel",
-      product: "Green Vegetables",
-      quantity: 5,
-      total: 400,
-      status: "confirmed",
-      date: "2024-01-14",
-    },
-  ]);
-
->>>>>>> 7dcea379048b3ff235c82932e37449dcf6bc7054
   const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
   const [activeTab, setActiveTab] = useState("products");
