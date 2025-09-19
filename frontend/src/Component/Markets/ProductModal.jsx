@@ -63,8 +63,9 @@ const ProductModal = ({
               <span className={`text-sm px-2 py-1 rounded ${product.isAvailable ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
                 {product.isAvailable ? "In Stock" : "Out of Stock"}
               </span>
-            </div>
+            </div>     
           </div>
+          
 
           {/* Right: Details */}
           <div className="space-y-4">
@@ -107,7 +108,7 @@ const ProductModal = ({
                 </div>
               )}
             </div>
-
+           
             <hr className="border-gray-300 dark:border-[#374151]" />
 
             {/* Order Section */}
@@ -130,7 +131,7 @@ const ProductModal = ({
                 </div>
               </div>
             </div>
-
+   
             <div className="flex gap-2">
                <button
         onClick={() => navigate(`/farmer/${product.username || product.sellerName}`)}
