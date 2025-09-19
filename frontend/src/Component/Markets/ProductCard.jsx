@@ -20,7 +20,7 @@ const ProductCard = ({
       <div className="relative">
         <div className="aspect-square overflow-hidden">
           <img
-            src={product.image}
+            src={product.image || null}
             alt={product.name}
             className={`w-full h-full object-cover transition-all duration-300 hover:scale-105 ${!imageLoaded && "bg-gray-200 dark:bg-[#374151] animate-pulse"}`}
             onLoad={() => setImageLoaded(true)}

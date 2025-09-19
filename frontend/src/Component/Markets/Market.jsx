@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/Authcontext";
 import Filters from "./Filters";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
+import FarmerChatBox from '../FarmerChatbox'
 import Chatbox from "../Chatbox";
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
@@ -22,9 +23,11 @@ const Market = () => {
   const { toast } = useToast();
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
-  
-  const {user} = useAuth();
 
+  const { user } = useAuth();
+
+  const[farmerChatOpen, setFarmerChatOpen] = useState(false);
+  const [chatFarmer, setChatFarmer] = useState(null);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -38,13 +41,13 @@ const Market = () => {
     fetchProducts();
   }, []);
 
-useEffect(()=>{
-  const params = new URLSearchParams(location.search);
-  const categoryFromUrl = params.get("category");
-  if (categoryFromUrl) {
-    setFilters((prev) => ({ ...prev, category: categoryFromUrl }));
-  }
-},[location.search]);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryFromUrl = params.get("category");
+    if (categoryFromUrl) {
+      setFilters((prev) => ({ ...prev, category: categoryFromUrl }));
+    }
+  }, [location.search]);
 
   useEffect(() => {
     filterProducts();
@@ -59,10 +62,10 @@ useEffect(()=>{
     if (filters.searchTerm) {
       filtered = filtered.filter(
         (product) =>
-           (product.name || "")
+          (product.name || "")
             .toLowerCase()
             .includes(filters.searchTerm.toLowerCase()) ||
-         (product.category || "")
+          (product.category || "")
             .toLowerCase()
             .includes(filters.searchTerm.toLowerCase()) ||
           (product.sellerName || "")
@@ -131,6 +134,12 @@ useEffect(()=>{
     });
   };
 
+  const handleChatWithSeller = (farmerData) => {
+    setChatFarmer(farmerData); // set seller data
+    setFarmerChatOpen(true); // open FarmerChatBox
+    setTimeout(() => setSelectedProduct(null)); // close modal
+  };
+
   const stats = [
     { icon: Store, label: t("Active Sellers"), value: "2,500+" },
     { icon: Leaf, label: t("Organic Products"), value: "1,200+" },
@@ -143,17 +152,16 @@ useEffect(()=>{
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
-         <div className="lg:w-1/4">
-           <div className="sticky top-30">
+          <div className="lg:w-1/4">
+            <div className="sticky top-30">
               <Filters
-              onFiltersChange={(newFilter) =>
-              setFilters((prev) => ({ ...prev, ...newFilter }))
-               }
-             />
+                onFiltersChange={(newFilter) =>
+                  setFilters((prev) => ({ ...prev, ...newFilter }))
+                }
+              />
             </div>
           </div>
           <Chatbox currentUser={user} />
-
 
           {/* Main Content */}
           <div className="lg:w-3/4">
@@ -211,6 +219,7 @@ useEffect(()=>{
             ? wishlistedProducts.includes(selectedProduct.id)
             : false
         }
+        onChatWithSeller={handleChatWithSeller}
       />
 
       {/* Stats Section */}
@@ -230,6 +239,14 @@ useEffect(()=>{
           </div>
         </div>
       </div>
+      {farmerChatOpen && chatFarmer && (
+        <FarmerChatBox
+          currentUser={user} // buyer
+          otherUser={chatFarmer} // farmer
+          isOpen={farmerChatOpen}
+          onClose={() => setFarmerChatOpen(false)}
+        />
+      )}
     </div>
   );
 };

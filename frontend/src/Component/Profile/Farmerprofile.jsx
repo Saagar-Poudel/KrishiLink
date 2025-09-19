@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
-  Edit,
-  MapPin,
-  Phone,
-  Mail,
-  Star,
-  Plus,
-  TrendingUp,
-  Trash2,
-  MoreVertical,
-} from "lucide-react";
+  Edit, MapPin, Phone, Mail, Star, Plus, TrendingUp, Trash2, MoreVertical, Save,  MessageCircle} from "lucide-react";
 import { useAuth } from "../../contexts/Authcontext";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -18,7 +9,6 @@ import axios from "axios";
 export default function FarmerProfile() {
   const { user } = useAuth(); 
   const navigate = useNavigate();
-  const location = useLocation();
   const { username } = useParams(); // farmerId if buyer visits /farmer/:username
 
   const defaultAvatar =
@@ -30,7 +20,7 @@ export default function FarmerProfile() {
   const [loading, setLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
-    const isFarmerOwner = user?.role === "farmer" && (!username || user?.username === username);
+   const isFarmerOwner = user?.role === "farmer" && (!username || user?.username === username);
 
       // Fetch farmer info
    useEffect(() => {
@@ -55,8 +45,6 @@ export default function FarmerProfile() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-       
-
         const { data } = await axios.get("http://localhost:3000/api/products");
         let farmerProducts;
         if (isFarmerOwner) {
@@ -136,6 +124,7 @@ export default function FarmerProfile() {
               {farmer?.farmName && (
                 <p className="font-medium text-lg">{farmer.farmName}</p>
               )}
+              
               <div className="flex items-center gap-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -151,6 +140,17 @@ export default function FarmerProfile() {
               </div>
             </div>
           </div>
+  {!isFarmerOwner && user?.role === "buyer" && (
+      <div>
+        <button
+          onClick={() => navigate(`/chat/${farmer.username}`)}
+          className="bg-white text-green-700 px-4 py-2 rounded flex items-center gap-2"
+        >
+          <MessageCircle className="w-4 h-4" /> Chat with Farmer
+        </button>
+      </div>
+    )}
+
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
           <div className="flex items-center gap-3">
