@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from '../../contexts/Authcontext';
+import { useAuth } from "../../contexts/Authcontext";
 
 const ProductModal = ({
   product,
@@ -24,16 +24,34 @@ const ProductModal = ({
   isWishlisted = false,
   onChatWithSeller,
 }) => {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [farmer, setFarmer] = useState("");
   const [reviews, setReviews] = useState([
-     { id: 1, user: "Ram Sharma", rating: 5, comment: "Excellent quality products. Fresh and organic!", date: "2 days ago", },
-    { id: 2, user: "Sita Gurung", rating: 4, comment: "Good quality but delivery was slightly delayed.", date: "1 week ago", },
-    { id: 3, user: "Krishna Thapa", rating: 5, comment: "Best seller in the area. Highly recommended!", date: "2 weeks ago", },
+    {
+      id: 1,
+      user: "Ram Sharma",
+      rating: 5,
+      comment: "Excellent quality products. Fresh and organic!",
+      date: "2 days ago",
+    },
+    {
+      id: 2,
+      user: "Sita Gurung",
+      rating: 4,
+      comment: "Good quality but delivery was slightly delayed.",
+      date: "1 week ago",
+    },
+    {
+      id: 3,
+      user: "Krishna Thapa",
+      rating: 5,
+      comment: "Best seller in the area. Highly recommended!",
+      date: "2 weeks ago",
+    },
   ]);
 
-   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
+  const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
   const navigate = useNavigate();
 
   const displayName = product?.name;
@@ -56,25 +74,24 @@ const ProductModal = ({
 
   if (!product || !isOpen) return <></>;
 
-  const handleReviewSubmit =(e)=>{
+  const handleReviewSubmit = (e) => {
     e.preventDefault();
-      if (!newReview.comment || newReview.rating === 0) return;
+    if (!newReview.comment || newReview.rating === 0) return;
 
     const reviewToAdd = {
       id: Date.now(),
-      user: user?.username, // replace with logged-in user
+      user: user?.username,
       rating: newReview.rating,
       comment: newReview.comment,
       date: "Just now",
     };
-     setReviews([reviewToAdd, ...reviews]);
+    setReviews([reviewToAdd, ...reviews]);
     setNewReview({ rating: 0, comment: "" });
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto">
       <div className="relative bg-white max-w-4xl w-full max-h-[90vh] rounded-lg shadow-lg overflow-y-auto p-6 dark:bg-[#12241A] dark:text-[#F9FAFB]">
-        {/* Close Button */}
         <button
           className="absolute top-4 right-4 text-gray-600 hover:text-black dark:text-[#D1D5DB] dark:hover:text-[#F9FAFB]"
           onClick={onClose}
@@ -82,13 +99,11 @@ const ProductModal = ({
           <X size={30} />
         </button>
 
-        {/* Title */}
         <h2 className="text-2xl font-bold mb-6 dark:text-[#F9FAFB]">
           {displayName}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left: Image */}
           <div className="relative aspect-square overflow-hidden rounded-lg">
             <img
               src={product.image}
@@ -180,7 +195,6 @@ const ProductModal = ({
 
             <hr className="border-gray-300 dark:border-[#374151]" />
 
-            {/* Order Section */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1 dark:text-[#D1D5DB]">
@@ -191,9 +205,22 @@ const ProductModal = ({
                   min="1"
                   max={product.quantity}
                   value={quantity}
-                  onChange={(e) =>
-                    setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "") {
+                      setQuantity("");
+                    } else {
+                      const num = parseInt(val, 10);
+                      if (!isNaN(num)) {
+                        setQuantity(
+                          Math.min(Math.max(1, num), product.quantity)
+                        );
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    if (!quantity || quantity < 1) setQuantity(1);
+                  }}
                   className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB]"
                 />
               </div>
@@ -208,14 +235,6 @@ const ProductModal = ({
             </div>
 
             <div className="flex gap-2">
-              <button
-                onClick={() =>
-                  navigate(`/farmer/${product.username || product.sellerName}`)
-                }
-                className="text-green-600 hover:underline text-sm"
-              >
-                View Farmer Profile
-              </button>
               <button
                 className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:text-yellow-300 dark:bg-[#34D399] dark:hover:bg-[#059669]"
                 onClick={() => onAddToCart(product, quantity)}
@@ -251,7 +270,6 @@ const ProductModal = ({
           </div>
         </div>
 
-        {/* Description */}
         <hr className="my-6 border-gray-300 dark:border-[#374151]" />
         <div className="space-y-2">
           <h3 className="text-lg font-semibold dark:text-[#F9FAFB]">
@@ -268,14 +286,12 @@ const ProductModal = ({
           </p>
         </div>
 
-        {/* Reviews */}
         <hr className="my-6 border-gray-300 dark:border-[#374151]" />
         <div className="space-y-4">
           <h3 className="text-lg font-semibold dark:text-[#F9FAFB]">
             Customer Reviews
           </h3>
 
-          {/* Review Form */}
           <form onSubmit={handleReviewSubmit} className="space-y-3">
             <div className="flex gap-2">
               {[...Array(5)].map((_, i) => (
@@ -308,7 +324,6 @@ const ProductModal = ({
             </button>
           </form>
 
-          {/* Render Reviews */}
           {reviews.map((review) => (
             <div key={review.id} className="space-y-1 border-b pb-2">
               <div className="flex justify-between items-center">

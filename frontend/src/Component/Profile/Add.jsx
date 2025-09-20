@@ -20,7 +20,8 @@ export default function AddProduct() {
     sellerName: user.username,
     location: "Chitwan",
     category: "",
-    image: ""
+    image: "",
+    estimatedDelivery: "",
   });
 
   const [uploading, setUploading] = useState(false);
@@ -163,6 +164,18 @@ export default function AddProduct() {
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+             <label className="font-medium">Delivery *</label>
+            <input name="estimatedDelivery" placeholder="Estimated Delivery (e.g. 2-3 days)" onChange={onChange} className="border p-2 w-full" />
+          </div>
+          <div>
+             <label className="flex items-center gap-2">
+          <input name="isBulkAvailable" type="checkbox" onChange={onChange} /> Chat
+        </label>
+         <label className="flex items-center gap-2">
+          <input name="hasDelivery" type="checkbox" onChange={onChange} /> Delivery
+        </label>
           </div>
           <div>
             <label className="font-medium">Product Image</label>

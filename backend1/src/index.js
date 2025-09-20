@@ -9,6 +9,8 @@ import orderRouter from './routes/order.route.js';
 import esewaRouter from './routes/esewa.route.js';
 import khaltiRouter from './routes/khalti.route.js';
 import messageRouter from './routes/message.route.js';
+import newsRouter from './routes/news.route.js';
+
 
 dotenv.config();
 
@@ -30,6 +32,8 @@ app.use('/api/orders', orderRouter);
 app.use('/api/esewa', esewaRouter);
 app.use('/api/khalti', khaltiRouter);
 app.use("/api/messages", messageRouter);
+app.use('/api/news', newsRouter);
+
 
 // Server
 const server = http.createServer(app);
