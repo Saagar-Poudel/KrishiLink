@@ -94,6 +94,7 @@ const Header = () => {
                 </span>
               )}
             </button>
+             <Thems />
              <ProfileMenu />
           </div>
 

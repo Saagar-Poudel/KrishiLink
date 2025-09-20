@@ -12,7 +12,7 @@ const Home = () => {
       <Landing />
       <WeatherAndPrices />
       <Marketplace />
-      <NewsSection />
+      {/* <NewsSection /> */}
       <ReviewSection />
     </div>
   );

@@ -6,6 +6,12 @@ function Thems() {
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
+  // const [darkMode, setDarkMode] = useState(()=>{
+  //   const savedTheme = localStorage.getItem("theme");
+  //   if(savedTheme) return savedTheme ==="dark";
+  //    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  // });
+
 
   useEffect(() => {
     if (darkMode) {
@@ -21,15 +27,21 @@ function Thems() {
 
   return (
    <button
-  onClick={toggleTheme}
-  className="flex items-center gap-2 px-3 py-2 rounded-lg 
-             bg-yellow-200 dark:bg-zinc-700 
-             hover:bg-yellow-300 dark:hover:bg-zinc-600
-             text-black"
->
-  {darkMode ? <LucideSun size={20} /> : <LucideMoon size={20} />}
-  <span>{darkMode ? "Light" : "Dark"}</span>
-</button>
+      onClick={toggleTheme}
+      className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors duration-300
+        ${darkMode ? "bg-green-900" : "bg-yellow-400"}`}
+    >
+      <div
+        className={`w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-md transform transition-transform duration-300
+          ${darkMode ? "translate-x-6" : "translate-x-0"}`}
+      >
+        {darkMode ? (
+          <LucideMoon size={16} className="text-blue-900" />
+        ) : (
+          <LucideSun size={16} className="text-yellow-500" />
+        )}
+      </div>
+    </button>
 
   );
 }

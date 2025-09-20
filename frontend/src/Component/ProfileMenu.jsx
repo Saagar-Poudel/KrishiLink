@@ -65,10 +65,6 @@ const ProfileMenu = () => {
             <Languages className="h-5 w-5 mr-2" />
             {language === "en" ? "नेपाली" : "English"}
           </button> 
-          <div className="px-3 py-2">
-            <Thems />
-          </div>
-
           {user ? (
             <button
               onClick={handleLogout}
