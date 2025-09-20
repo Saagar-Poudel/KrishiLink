@@ -3,12 +3,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Package } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { v4 as uuid } from "uuid"; 
+import { v4 as uuid } from "uuid";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../../contexts/Authcontext";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000"); // backend
 
 export default function AddProduct() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +23,7 @@ export default function AddProduct() {
     sellerName: user.username,
     location: "Chitwan",
     category: "",
-    image: ""
+    image: "",
   });
 
   const [uploading, setUploading] = useState(false);
@@ -56,7 +59,7 @@ export default function AddProduct() {
     const { name, value, type, checked } = e.target;
     setFormData((f) => ({
       ...f,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   }
 
@@ -67,7 +70,7 @@ export default function AddProduct() {
     "Dairy",
     "Organic",
     "Herbs",
-    "Other"
+    "Other",
   ];
 
   async function onSubmit(e) {
@@ -76,7 +79,15 @@ export default function AddProduct() {
       await axios.post("http://localhost:3000/api/products", {
         ...formData,
         price: String(formData.price),
-        stock: Number(formData.stock)
+        stock: Number(formData.stock),
+      });
+
+      // ✅ Ask backend to notify buyers
+      socket.emit("send-notification", {
+        userId: "all_buyers", // your backend can treat this specially
+        type: "product",
+        title: "New Product",
+        message: `${user.username} added a new product: ${formData.name}`,
       });
 
       toast.success("Product created");

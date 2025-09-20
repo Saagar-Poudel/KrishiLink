@@ -1,15 +1,34 @@
 import { db } from "../dbConnection/dbConnection.js";
-import { orders, orderItems, products, transaction } from "../models/schema.js";
+import {
+  orders,
+  orderItems,
+  products,
+  notifications,
+  users
+} from "../models/schema.js";
 import { eq, inArray } from "drizzle-orm";
 import crypto from "crypto";
+import { type } from "os";
+import { sendNotification } from "../utils/notification.service.js";
 
 // ✅ Create new order
 export const createOrder = async (req, res) => {
   try {
-    const { userId, items, contactName, phone, email, location, notes, payment_method } = req.body;
+    const {
+      userId,
+      items,
+      contactName,
+      phone,
+      email,
+      location,
+      notes,
+      payment_method,
+    } = req.body;
 
     if (!userId || !items || items.length === 0) {
-      return res.status(400).json({ message: "User ID and items are required" });
+      return res
+        .status(400)
+        .json({ message: "User ID and items are required" });
     }
 
     const productIds = items.map((i) => i.productId);
@@ -49,6 +68,17 @@ export const createOrder = async (req, res) => {
           0
         );
 
+        const [sellerUser] = await tx
+          .select()
+          .from(users)
+          .where(eq(users.username, sellerName));
+
+        if (!sellerUser) {
+          throw new Error(`Seller with username "${sellerName}" not found`);
+        }
+
+        const sellerId = sellerUser.id;
+
         // 4a. Insert into orders
         const [newOrder] = await tx
           .insert(orders)
@@ -75,56 +105,35 @@ export const createOrder = async (req, res) => {
           });
         }
 
-        createdOrders.push(newOrder);
+        createdOrders.push({...newOrder,sellerId});
 
-        // 4c. Prepare payment payload only once
-        if (!paymentPayload) {
-          if (payment_method === "esewa") {
-            const transaction_uuid = `order-${newOrder.id}-${Date.now()}`;
-            const amountStr = Number(totalAmount).toFixed(2);
-            const message = `total_amount=${amountStr},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`;
+        // Add notification for buyer
+        await sendNotification({
+          userId,
+          type: "order",
+          title: "Order Placed",
+          message: `Your order #${newOrder.id} has been placed successfully.`,
+        });
 
-            const hmac = crypto.createHmac("sha256", process.env.SECRET.trim());
-            hmac.update(message);
-            const signature = hmac.digest("base64");
-
-            paymentPayload = {
-              esewa: {
-                amount: amountStr,
-                transaction_uuid,
-                signature,
-                product_code: "EPAYTEST",
-                success_url: process.env.SUCCESS_URL,
-                failure_url: process.env.FAILURE_URL,
-              },
-            };
-          } else if (payment_method === "khalti") {
-            paymentPayload = {
-              khalti: {
-                return_url: "http://localhost:3000/api/khalti/callback",
-                website_url: "http://localhost:3000",
-                amount: totalAmount * 100, // in paisa
-                purchase_order_id: newOrder.id,
-                purchase_order_name: "test",
-              },
-            };
-          }
-        }
+        // Add notification for seller(s)
+        await sendNotification({
+          userId: sellerId, // if sellerId exists
+          type: "order",
+          title: "New Order",
+          message: `You have a new order for ${sellerItems.length} items.`,
+        });
       }
     });
 
-    // ✅ Final response
     res.status(201).json({
       message: "Orders created successfully",
       orders: createdOrders,
-      ...paymentPayload, // attach outside orders
     });
   } catch (err) {
     console.error("Error creating order:", err);
     res.status(500).json({ message: err.message || "Error creating order" });
   }
 };
-
 
 // ✅ Get all orders
 export const getAllOrders = async (req, res) => {
@@ -176,8 +185,7 @@ export const getAllOrdersBySellerName = async (req, res) => {
         const sellerItems = order.items.filter((item) => {
           return (
             item.product?.sellerName.toLowerCase() &&
-            item.product.sellerName.toLowerCase() ===
-            sellerName.toLowerCase()
+            item.product.sellerName.toLowerCase() === sellerName.toLowerCase()
           );
         });
 
@@ -212,6 +220,12 @@ export const updateOrderStatus = async (req, res) => {
       .where(eq(orders.id, Number(req.transaction_uuid)))
       .returning();
 
+    await sendNotification({
+      userId: updatedOrder.userId,
+      title: "Order Update",
+      message: `Your order #${updatedOrder.id} is now marked as ${updatedOrder.status}.`,
+    });
+
     if (!updatedOrder)
       return res.status(404).json({ message: "Order not found" });
 
@@ -241,7 +255,7 @@ export const deleteOrder = async (req, res) => {
   }
 };
 
-export const updateOrderAfterPayment = async (req,res,next) => {
+export const updateOrderAfterPayment = async (req, res, next) => {
   try {
     console.log(req.body);
     const [updatedOrder] = await db
@@ -249,16 +263,21 @@ export const updateOrderAfterPayment = async (req,res,next) => {
       .set("paid")
       .where(eq(orders.id, Number(req.transaction_uuid)))
       .returning();
-    
+
+    await sendNotification({
+      userId: updatedOrder.userId,
+      title: "Order Update",
+      message: `Your order #${updatedOrder.id} is now marked as ${updatedOrder.status}.`,
+    });
+
     if (!updatedOrder)
       return res.status(404).json({ message: "Order not found" });
 
     res.redirect("http://localhost:5173");
-     
   } catch (error) {
-    return res.status(400).json({error: err?.message || "No Orders Found"})
+    return res.status(400).json({ error: err?.message || "No Orders Found" });
   }
-}
+};
 
 export const createSignature = (totalAmount, transactionId, productCode) => {
   // ensure exactly 2 decimal places

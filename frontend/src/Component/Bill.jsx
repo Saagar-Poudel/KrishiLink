@@ -4,6 +4,9 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/Authcontext";
 import { User, X, CheckCircle, Download } from "lucide-react";
 import axios from "axios";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
   const { t } = useLanguage();
@@ -59,7 +62,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
 
     const khaltiCall = (data) => {
       window.location.href = data.payment_url;
-    }
+    };
 
     if (!customerInfo.email || !customerInfo.phone || !customerInfo.address) {
       toast({
@@ -87,54 +90,61 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
     }
 
     try {
-        const response = await axios.post(url, {
-          userId: user.id,
-          contactName: user.username,
-          phone: customerInfo.phone,
-          email: customerInfo.email,
-          location: customerInfo.address,
-          notes: customerInfo.note,
-          payment_method: paymentMethod,
-          items: cartItems.map((item) => ({
-            productId: item.id,
-            quantity: item.cartQuantity,
-            price: item.price,
-          })),
-        });
-        // console.log("Full Response:", response);
-        // console.log("Message:", response.data.message);
-        // console.log("Order:", response.data.order);
+      const response = await axios.post(url, {
+        userId: user.id,
+        contactName: user.username,
+        phone: customerInfo.phone,
+        email: customerInfo.email,
+        location: customerInfo.address,
+        notes: customerInfo.note,
+        payment_method: paymentMethod,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.cartQuantity,
+          price: item.price,
+        })),
+      });
+
+      // ✅ Ask backend to notify seller
+      socket.emit("send-notification", {
+        userId: response.data.order.sellerId, // make sure your order API returns sellerId
+        type: "order",
+        title: "New Order",
+        message: `New order placed by ${user.username}`,
+      });
+      // console.log("Full Response:", response);
+      // console.log("Message:", response.data.message);
+      // console.log("Order:", response.data.order);
       // console.log("Esewa Form Data:", response.data.formData);
       if (paymentMethod === "esewa") {
         // ✅ Now safe to call Esewa
         esewaCall(response.data.esewa);
-    } else if (paymentMethod === "khalti") {
-        khaltiCall(response.data)
-    } else {
-      setTimeout(() => {
-        setIsOrderPlaced(true);
-        toast({
-          title: t("Order Placed Successfully"),
-          description: t("Your order has been placed successfully."),
-        });
-      }, 500);
-    }
-
-        toast({
-          title: "Order Placed Successfully",
-          description: response.data.message,
-        });
-
-        setIsOrderPlaced(true);
-      } catch (error) {
-        console.error("Error placing order:", error);
-        toast({
-          title: t("orderErrorTitle"),
-          description: t("orderErrorDesc"),
-          variant: "destructive",
-        });
+      } else if (paymentMethod === "khalti") {
+        khaltiCall(response.data);
+      } else {
+        setTimeout(() => {
+          setIsOrderPlaced(true);
+          toast({
+            title: t("Order Placed Successfully"),
+            description: t("Your order has been placed successfully."),
+          });
+        }, 500);
       }
 
+      toast({
+        title: "Order Placed Successfully",
+        description: response.data.message,
+      });
+
+      setIsOrderPlaced(true);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast({
+        title: t("orderErrorTitle"),
+        description: t("orderErrorDesc"),
+        variant: "destructive",
+      });
+    }
   };
 
   const downloadBill = () => {
