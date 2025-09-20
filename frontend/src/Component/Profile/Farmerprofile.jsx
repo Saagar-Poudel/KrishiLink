@@ -10,48 +10,55 @@ import {
   TrendingUp,
   Trash2,
   MoreVertical,
+  Save,
+  MessageCircle,
+  ShoppingCart,
 } from "lucide-react";
 import { useAuth } from "../../contexts/Authcontext";
+import { useCart } from "../../contexts/CartContex"; 
 import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function FarmerProfile() {
-  const { user } = useAuth(); // current logged-in user
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { username } = useParams(); // farmerId if buyer visits /farmer/:username
+  const { username } = useParams();
+  const { addToCart } = useCart();
+
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   const defaultAvatar =
     "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=400&fit=crop&crop=face";
 
-    const [farmer, setFarmer] = useState(null); // farmer info
+  const [farmer, setFarmer] = useState(null);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
-  // check if this is farmer's own profile or buyer viewing
-    const isFarmerOwner = user?.role === "farmer" && (!username || user?.username === username);
+  const isFarmerOwner =
+    user?.role === "farmer" && (!username || user?.username === username);
 
-      // Fetch farmer info
-   useEffect(() => {
-  const fetchFarmer = async () => {
-    try {
-      if (isFarmerOwner) {
-        setFarmer(user);
-      } else {
-        const { data } = await axios.get(
-          `http://localhost:3000/api/users/by-username/${username}`
-        );
-        setFarmer(data);
+  // Fetch farmer info
+  useEffect(() => {
+    const fetchFarmer = async () => {
+      try {
+        if (isFarmerOwner) {
+          setFarmer(user);
+        } else {
+          const { data } = await axios.get(
+            `http://localhost:3000/api/users/by-username/${username}`
+          );
+          setFarmer(data);
+        }
+      } catch (err) {
+        // console.error(err);
+        toast.error("Failed to load farmer info");
       }
-    } catch (err) {
-      // console.error(err);
-      toast.error("Failed to load farmer info");
-    }
-  };
-  fetchFarmer();
-}, [user, username, isFarmerOwner]);
+    };
+    fetchFarmer();
+  }, [user, username, isFarmerOwner]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -59,9 +66,13 @@ export default function FarmerProfile() {
         const { data } = await axios.get("http://localhost:3000/api/products");
         let farmerProducts;
         if (isFarmerOwner) {
-          farmerProducts = data.filter(p => p.sellerName?.toLowerCase() === user?.username?.toLowerCase());
+          farmerProducts = data.filter(
+            (p) => p.sellerName?.toLowerCase() === user?.username?.toLowerCase()
+          );
         } else {
-          farmerProducts = data.filter(p => p.sellerName?.toLowerCase() === username?.toLowerCase());
+          farmerProducts = data.filter(
+            (p) => p.sellerName?.toLowerCase() === username?.toLowerCase()
+          );
         }
         setProducts(farmerProducts);
       } catch (err) {
@@ -77,41 +88,51 @@ export default function FarmerProfile() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-      console.log("sellerName:", user.username);
-      const { data } = await axios.get(
-        `http://localhost:3000/api/orders/${user.username}`
-      );
-      
-      setOrders(data);
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-      toast.error("Failed to load orders!");
-    } finally {
-      setOrdersLoading(false);
-    }
-  };
+        console.log("sellerName:", user.username);
+        const { data } = await axios.get(
+          `http://localhost:3000/api/orders/${user.username}`
+        );
 
-  fetchOrders();
-}, []);
+        setOrders(data);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        toast.error("Failed to load orders!");
+      } finally {
+        setOrdersLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
   const [activeTab, setActiveTab] = useState("products");
   const [openMenu, setOpenMenu] = useState(null);
 
-  const handleDelete = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-    toast("Product deleted successfully!");
+  const handleDelete = async (productId) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/products/${productId}`);
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      toast.success("product deleted sucessfully");
+    } catch (err) {
+      console.log("error deleting product:", err);
+      toast.error("failed to delete product.");
+    } finally {
+      setDeleteModal(false);
+      setProductToDelete(null);
+    }
   };
 
   const handleAddToCart = (product) => {
+      addToCart(product, 1);
     toast.success(`${product.name} added to cart`);
-    // integrate with your CartContext here if available
   };
- if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
+  
+  if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
   return (
     <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
-      {/* Profile Header */}
+  
       <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow p-8">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex items-center gap-6">
@@ -135,6 +156,7 @@ export default function FarmerProfile() {
               {farmer?.farmName && (
                 <p className="font-medium text-lg">{farmer.farmName}</p>
               )}
+
               <div className="flex items-center gap-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -150,6 +172,16 @@ export default function FarmerProfile() {
               </div>
             </div>
           </div>
+          {!isFarmerOwner && user?.role === "buyer" && (
+            <div>
+              <button
+                onClick={() => navigate(`/chat/${farmer.username}`)}
+                className="bg-white text-green-700 px-4 py-2 rounded flex items-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" /> Chat with Farmer
+              </button>
+            </div>
+          )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
           <div className="flex items-center gap-3">
@@ -164,7 +196,7 @@ export default function FarmerProfile() {
         </div>
       </div>
 
-      {/* Earnings Overview (Farmer only) */}
+   
       {isFarmerOwner && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded shadow p-6">
@@ -195,7 +227,7 @@ export default function FarmerProfile() {
         </div>
       )}
 
-      {/* Tabs */}
+     
       <div className="bg-white rounded shadow">
         <div className="flex border-b">
           <button
@@ -223,7 +255,7 @@ export default function FarmerProfile() {
           )}
         </div>
 
-        {/* Products Tab */}
+     
         {activeTab === "products" && (
           <div className="p-6 space-y-4">
             <div className="flex justify-between items-center">
@@ -261,7 +293,6 @@ export default function FarmerProfile() {
                   </div>
 
                   {isFarmerOwner ? (
-                    // Edit/Delete menu for farmer
                     <div className="relative">
                       <button
                         onClick={() =>
@@ -276,14 +307,20 @@ export default function FarmerProfile() {
                         <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
                           <button
                             onClick={() =>
-                              navigate("/editproduct", { state: { product: p } })
+                              navigate("/editproduct", {
+                                state: { product: p },
+                              })
                             }
                             className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm"
                           >
                             <Edit className="w-4 h-4" /> Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(p.id)}
+                            onClick={() => {
+                              setProductToDelete(p);
+                              setDeleteModal(true);  
+                              setOpenMenu(null);
+                            }}
                             className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm text-red-600"
                           >
                             <Trash2 className="w-4 h-4" /> Delete
@@ -292,12 +329,12 @@ export default function FarmerProfile() {
                       )}
                     </div>
                   ) : (
-                    // Add to Cart button for buyer
                     <button
                       onClick={() => handleAddToCart(p)}
                       className="bg-green-600 text-white px-3 py-2 rounded"
                     >
-                      Add to Cart
+                    <ShoppingCart className="w-4 h-4 mr-2 inline" />
+                     Add to Cart
                     </button>
                   )}
                 </div>
@@ -306,42 +343,71 @@ export default function FarmerProfile() {
           </div>
         )}
 
-        {/* Orders Tab (Farmer only) */}
+
         {isFarmerOwner && activeTab === "orders" && (
           <div className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Order Management</h3>
-            {
-              ordersLoading ? (
+            {ordersLoading ? (
               <p className="text-gray-500">Loading orders...</p>
-              ) : orders.length === 0 ? (
+            ) : orders.length === 0 ? (
               <p className="text-gray-500">No orders found.</p>
-              ): (
-                orders.map((o) => (
-              <div
-                key={o.id}
-                className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
-              >
-                <div>
-                  <h4 className="font-semibold">
-                    #{o.id} - {o.product}
-                  </h4>
-                  <p className="text-sm text-gray-500">
-                    Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total} •
-                    Date: {o.date}
-                  </p>
-                </div>
-                {o.status === "pending" && (
-                  <div className="flex gap-2">
-                    <button className="bg-green-500 text-white px-3 py-1 rounded">
-                      Accept
-                    </button>
-                    <button className="border px-3 py-1 rounded">Decline</button>
+            ) : (
+              orders.map((o) => (
+                <div
+                  key={o.id}
+                  className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
+                >
+                  <div>
+                    <h4 className="font-semibold">
+                      #{o.id} - {o.product}
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                      Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total}{" "}
+                      • Date: {o.date}
+                    </p>
                   </div>
-                )}
+                  {o.status === "pending" && (
+                    <div className="flex gap-2">
+                      <button className="bg-green-500 text-white px-3 py-1 rounded">
+                        Accept
+                      </button>
+                      <button className="border px-3 py-1 rounded">
+                        Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+
+        {deleteModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+              <h2 className="text-lg font-semibold mb-2">Confirm Deletion</h2>
+              <p className="text-sm text-gray-600">
+                Are you sure you want to delete{" "}
+                <span className="font-bold">{productToDelete?.name}</span>? This
+                action cannot be undone.
+              </p>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => setDeleteModal(false)}
+                  className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(productToDelete?.id)}
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                >
+                  Delete
+                </button>
               </div>
-            ))
-              )
-            }
+            </div>
           </div>
         )}
       </div>

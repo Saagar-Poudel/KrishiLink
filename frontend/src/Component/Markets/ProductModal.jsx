@@ -7,13 +7,13 @@ import {
   Truck,
   ShoppingCart,
   Heart,
-  Phone,
   MessageCircle,
   Shield,
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../contexts/Authcontext";
 
 const ProductModal = ({
   product,
@@ -24,31 +24,10 @@ const ProductModal = ({
   isWishlisted = false,
   onChatWithSeller,
 }) => {
+  const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [farmer, setFarmer] = useState("");
-  const navigate = useNavigate();
-
-  const displayName = product?.name;
-  const totalPrice = product?.price * quantity;
-
-  useEffect(() => {
-      if (!product?.sellerName) return;
-    const fetchFarmer = async () => {
-      try {
-        const { data } = await axios.get(
-          `http://localhost:3000/api/users/by-username/${product.sellerName}`
-        );
-        setFarmer(data);
-      } catch (err) {
-        console.error("Error fetching farmer:", err);
-      }
-    };
-    fetchFarmer();
-  }, [product]);
-
-  if (!product || !isOpen) return <></>;
-
-  const reviews = [
+  const [reviews, setReviews] = useState([
     {
       id: 1,
       user: "Ram Sharma",
@@ -70,12 +49,49 @@ const ProductModal = ({
       comment: "Best seller in the area. Highly recommended!",
       date: "2 weeks ago",
     },
-  ];
+  ]);
+
+  const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
+  const navigate = useNavigate();
+
+  const displayName = product?.name;
+  const totalPrice = product?.price * quantity;
+
+  useEffect(() => {
+    if (!product?.sellerName) return;
+    const fetchFarmer = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:3000/api/users/by-username/${product.sellerName}`
+        );
+        setFarmer(data);
+      } catch (err) {
+        console.error("Error fetching farmer:", err);
+      }
+    };
+    fetchFarmer();
+  }, [product]);
+
+  if (!product || !isOpen) return <></>;
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!newReview.comment || newReview.rating === 0) return;
+
+    const reviewToAdd = {
+      id: Date.now(),
+      user: user?.username,
+      rating: newReview.rating,
+      comment: newReview.comment,
+      date: "Just now",
+    };
+    setReviews([reviewToAdd, ...reviews]);
+    setNewReview({ rating: 0, comment: "" });
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto">
       <div className="relative bg-white max-w-4xl w-full max-h-[90vh] rounded-lg shadow-lg overflow-y-auto p-6 dark:bg-[#12241A] dark:text-[#F9FAFB]">
-        {/* Close Button */}
         <button
           className="absolute top-4 right-4 text-gray-600 hover:text-black dark:text-[#D1D5DB] dark:hover:text-[#F9FAFB]"
           onClick={onClose}
@@ -83,13 +99,11 @@ const ProductModal = ({
           <X size={30} />
         </button>
 
-        {/* Title */}
         <h2 className="text-2xl font-bold mb-6 dark:text-[#F9FAFB]">
           {displayName}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left: Image */}
           <div className="relative aspect-square overflow-hidden rounded-lg">
             <img
               src={product.image}
@@ -157,26 +171,30 @@ const ProductModal = ({
                 <MapPin className="w-5 h-5" />
                 <span>{product.location}</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-700 dark:text-[#D1D5DB]">
-                <User className="w-5 h-5" />
-                <span>{product.sellerName}</span>
-                {product.isVerified && (
-                  <span className="text-sm flex items-center bg-green-100 text-green-700 border border-green-600 px-2 py-1 rounded dark:bg-green-700 dark:text-green-200 dark:border-green-400">
-                    <Shield className="w-3 h-3 mr-1" /> Verified Seller
-                  </span>
-                )}
-              </div>
               {product.hasDelivery && (
                 <div className="flex items-center gap-3 text-gray-700 dark:text-[#D1D5DB]">
                   <Truck className="w-5 h-5" />
                   <span>Delivery: {product.estimatedDelivery}</span>
                 </div>
               )}
+
+              <div className="flex items-center gap-3 text-gray-700 dark:text-[#D1D5DB]">
+                <button
+                  onClick={() =>
+                    navigate(
+                      `/farmer/${product.username || product.sellerName}`
+                    )
+                  }
+                  className="flex items-center gap-2 text-green-600 hover:underline text-xl font-bold"
+                >
+                  <User className="w-7 h-7" />
+                  <span> {product.sellerName} </span>
+                </button>
+              </div>
             </div>
 
             <hr className="border-gray-300 dark:border-[#374151]" />
 
-            {/* Order Section */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1 dark:text-[#D1D5DB]">
@@ -187,9 +205,22 @@ const ProductModal = ({
                   min="1"
                   max={product.quantity}
                   value={quantity}
-                  onChange={(e) =>
-                    setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "") {
+                      setQuantity("");
+                    } else {
+                      const num = parseInt(val, 10);
+                      if (!isNaN(num)) {
+                        setQuantity(
+                          Math.min(Math.max(1, num), product.quantity)
+                        );
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    if (!quantity || quantity < 1) setQuantity(1);
+                  }}
                   className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#34D399] dark:bg-[#0B1A12] dark:border-[#374151] dark:text-[#F9FAFB]"
                 />
               </div>
@@ -204,14 +235,6 @@ const ProductModal = ({
             </div>
 
             <div className="flex gap-2">
-              <button
-                onClick={() =>
-                  navigate(`/farmer/${product.username || product.sellerName}`)
-                }
-                className="text-green-600 hover:underline text-sm"
-              >
-                View Farmer Profile
-              </button>
               <button
                 className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:text-yellow-300 dark:bg-[#34D399] dark:hover:bg-[#059669]"
                 onClick={() => onAddToCart(product, quantity)}
@@ -236,11 +259,8 @@ const ProductModal = ({
 
             {product.isBulkAvailable && (
               <div className="space-y-2">
-                <button className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 dark:hover:bg-[#FACC15] transition dark:border-[#374151] dark:text-[#F9FAFB]">
-                  <Phone className="w-4 h-4 mr-2" /> Contact for Bulk Order
-                </button>
                 <button
-                  onClick={()=>onChatWithSeller(farmer)}
+                  onClick={() => onChatWithSeller(farmer)}
                   className="w-full border rounded px-4 py-2 flex items-center justify-center hover:bg-yellow-300 dark:hover:bg-[#FACC15] transition dark:border-[#374151] dark:text-[#F9FAFB]"
                 >
                   <MessageCircle className="w-4 h-4 mr-2" /> Chat with Seller
@@ -250,7 +270,6 @@ const ProductModal = ({
           </div>
         </div>
 
-        {/* Description */}
         <hr className="my-6 border-gray-300 dark:border-[#374151]" />
         <div className="space-y-2">
           <h3 className="text-lg font-semibold dark:text-[#F9FAFB]">
@@ -267,19 +286,49 @@ const ProductModal = ({
           </p>
         </div>
 
-        {/* Reviews */}
         <hr className="my-6 border-gray-300 dark:border-[#374151]" />
         <div className="space-y-4">
           <h3 className="text-lg font-semibold dark:text-[#F9FAFB]">
             Customer Reviews
           </h3>
+
+          <form onSubmit={handleReviewSubmit} className="space-y-3">
+            <div className="flex gap-2">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-6 h-6 cursor-pointer ${
+                    i < newReview.rating
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300 dark:text-[#9CA3AF]"
+                  }`}
+                  onClick={() =>
+                    setNewReview((prev) => ({ ...prev, rating: i + 1 }))
+                  }
+                />
+              ))}
+            </div>
+            <textarea
+              value={newReview.comment}
+              onChange={(e) =>
+                setNewReview((prev) => ({ ...prev, comment: e.target.value }))
+              }
+              className="w-full border rounded p-2 dark:bg-[#0B1A12] dark:border-[#374151]"
+              placeholder="Write your review..."
+            />
+            <button
+              type="submit"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Submit Review
+            </button>
+          </form>
+
           {reviews.map((review) => (
-            <div key={review.id} className="space-y-1">
+            <div key={review.id} className="space-y-1 border-b pb-2">
               <div className="flex justify-between items-center">
                 <div className="flex gap-2 items-center">
-                  <span className="font-medium dark:text-[#F9FAFB]">
-                    {review.user}
-                  </span>
+                  <span className="font-medium">{review.user}</span>
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -293,13 +342,9 @@ const ProductModal = ({
                     ))}
                   </div>
                 </div>
-                <span className="text-sm text-gray-500 dark:text-[#9CA3AF]">
-                  {review.date}
-                </span>
+                <span className="text-sm text-gray-500">{review.date}</span>
               </div>
-              <p className="text-sm text-gray-600 dark:text-[#D1D5DB]">
-                {review.comment}
-              </p>
+              <p className="text-sm">{review.comment}</p>
             </div>
           ))}
         </div>

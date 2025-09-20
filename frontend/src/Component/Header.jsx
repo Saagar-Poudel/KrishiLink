@@ -174,7 +174,8 @@ const Header = () => {
                 </span>
               )}
             </button>
-            <ProfileMenu />
+             <Thems />
+             <ProfileMenu />
           </div>
 
           {/* Mobile Menu Toggle */}
