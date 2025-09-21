@@ -180,7 +180,7 @@ const Market = () => {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3  gap-9">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}

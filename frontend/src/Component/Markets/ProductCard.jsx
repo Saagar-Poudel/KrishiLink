@@ -35,11 +35,11 @@ const ProductCard = ({
               {t("Organic")}
             </span>
           )}
-          {product.isBulkAvailable && (
+          {/* {product.isBulkAvailable && (
             <span className="bg-white bg-opacity-90 px-2 py-1 rounded text-sm border dark:bg-[#12241A] dark:text-[#F9FAFB] dark:border-[#374151]">
               {t("Bulk Available")}
             </span>
-          )}
+          )} */}
         </div>
 
         {/* Availability badge */}
@@ -91,19 +91,19 @@ const ProductCard = ({
           <div className="flex items-center gap-2 text-sm dark:text-[#F9FAFB]">
             <User className="w-4 h-4" />
             <span>{t(product.sellerName)}</span>
-            {product.isVerified && (
+            {/* {product.isVerified && (
               <span className="bg-green-100 dark:bg-[#34D399] text-green-600 dark:text-[#0B1A12] border border-green-600 dark:border-[#059669] px-2 py-1 rounded text-xs flex items-center">
                 ✓ {t("Verified")}
               </span>
-            )}
+            )} */}
           </div>
 
-          {product.hasDelivery && product.estimatedDelivery && (
+          {/* {product.hasDelivery && product.estimatedDelivery && (
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#D1D5DB]">
               <Truck className="w-4 h-4" />
               <span>{t("Delivery")}: {t(product.estimatedDelivery)}</span>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -121,11 +121,11 @@ const ProductCard = ({
             {product.isAvailable ? t("Add to Cart") : t("Out of Stock")}
           </button>
          
-          {product.isBulkAvailable && (
+          {/* {product.isBulkAvailable && (
             <button className="w-full border rounded-md px-4 py-2 text-sm hover:bg-yellow-300 dark:hover:bg-[#F59E0B] transition-colors flex items-center justify-center cursor-pointer">
               {t("Contact for Bulk Order")}
             </button>
-          )}
+          )} */}
         </div>
       </div>
     </div>
