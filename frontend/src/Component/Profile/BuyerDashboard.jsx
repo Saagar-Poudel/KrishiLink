@@ -100,7 +100,7 @@ const BuyerProfile = () => {
 
         <div className="p-4 shadow rounded bg-white dark:bg-zinc-800">
           <div className="flex items-center justify-between pb-2">
-            <h3 className="text-sm font-medium">Active Orders</h3>
+            <h3 className="text-sm font-medium">Total Orders</h3>
             <Package className="h-5 w-5 text-blue-600" />
           </div>
           <div className="text-2xl font-bold">{pendingOrders}</div>
