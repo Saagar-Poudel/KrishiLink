@@ -2,6 +2,7 @@
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Link } from "react-router-dom"; // ✅ use Link instead of href
+import Chatbot from "./chatbot/Chatbot";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -162,13 +163,12 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
       {/* Floating Back to Top */}
       <button
         onClick={scrollToTop}
         className="fixed bottom-6 right-6 group flex items-center justify-center p-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-full shadow-lg transition duration-300 transform hover:scale-110"
       >
-        <ArrowUp className="h-5 w-5 group-hover:-translate-y-1 transition-transform duration-300" />
+        <Chatbot />
       </button>
     </footer>
   );

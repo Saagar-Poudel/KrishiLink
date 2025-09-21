@@ -1,12 +1,14 @@
+import { type } from "os";
 import { db } from "../dbConnection/dbConnection.js";
-import { products } from "../models/schema.js";
+import { products, users } from "../models/schema.js";
 import { eq } from "drizzle-orm";
+import { sendNotification } from "../utils/notification.service.js";
 
 // ✅ Get all products
 export const getProducts = async (_req, res) => {
   try {
     const result = await db.select().from(products);
-  
+
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch products" });
@@ -17,7 +19,10 @@ export const getProducts = async (_req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const [result] = await db.select().from(products).where(eq(products.id, id));
+    const [result] = await db
+      .select()
+      .from(products)
+      .where(eq(products.id, id));
     if (!result) return res.status(404).json({ error: "Product not found" });
     res.json(result);
   } catch (error) {
@@ -28,12 +33,60 @@ export const getProductById = async (req, res) => {
 // ✅ Create product
 export const createProduct = async (req, res) => {
   try {
-    const { name, nameNepali, category, price, unit, quantity, location, sellerName, image, isVerified, isAvailable, hasDelivery, rating, reviewCount, isOrganic, isBulkAvailable, estimatedDelivery } = req.body;
-    const [newProduct] = await db.insert(products).values({
-      name, nameNepali, category, price, unit, quantity, location, sellerName, image, isVerified, isAvailable, hasDelivery, rating, reviewCount, isOrganic, isBulkAvailable, estimatedDelivery
-    }).returning();
+    const {
+      name,
+      nameNepali,
+      category,
+      price,
+      unit,
+      quantity,
+      location,
+      sellerName,
+      image,
+      isVerified,
+      isAvailable,
+      hasDelivery,
+      rating,
+      reviewCount,
+      isOrganic,
+      isBulkAvailable,
+      estimatedDelivery,
+    } = req.body;
+    const [newProduct] = await db
+      .insert(products)
+      .values({
+        name,
+        nameNepali,
+        category,
+        price,
+        unit,
+        quantity,
+        location,
+        sellerName,
+        image,
+        isVerified,
+        isAvailable,
+        hasDelivery,
+        rating,
+        reviewCount,
+        isOrganic,
+        isBulkAvailable,
+        estimatedDelivery,
+      })
+      .returning();
+
+    const buyers = await db.select().from(users).where(eq(users.role, "buyer"));
+    for (const buyer of buyers) {
+      await sendNotification({
+        userId: buyer.id,
+        type: "product",
+        title: "New Product",
+        message: `A new product "${name}" has been added!`,
+      });
+    }
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Failed to create product" });
   }
 };
@@ -43,11 +96,22 @@ export const updateProduct = async (req, res) => {
   try {
     const id = Number(req.params.id);
     const { name, price } = req.body;
-    const [updatedProduct] = await db.update(products)
+    const [updatedProduct] = await db
+      .update(products)
       .set({ name, price })
       .where(eq(products.id, id))
       .returning();
-    if (!updatedProduct) return res.status(404).json({ error: "Product not found" });
+
+    // updateProduct
+    await sendNotification({
+      userId: sellerId,
+      type: "product",
+      title: "Product Updated",
+      message: `Your product "${name}" has been updated.`,
+    });
+
+    if (!updatedProduct)
+      return res.status(404).json({ error: "Product not found" });
     res.json(updatedProduct);
   } catch (error) {
     res.status(500).json({ error: "Failed to update product" });
@@ -58,7 +122,10 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const [deleted] = await db.delete(products).where(eq(products.id, id)).returning();
+    const [deleted] = await db
+      .delete(products)
+      .where(eq(products.id, id))
+      .returning();
     if (!deleted) return res.status(404).json({ error: "Product not found" });
     res.json({ message: "Product deleted successfully" });
   } catch (error) {

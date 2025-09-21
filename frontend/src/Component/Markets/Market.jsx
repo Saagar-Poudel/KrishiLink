@@ -221,6 +221,7 @@ const Market = () => {
         }
         onChatWithSeller={handleChatWithSeller}
       />
+      
 
       {/* Stats Section */}
       <div className="bg-primary dark:bg-[#12241A] text-primary-foreground dark:text-[#F9FAFB] py-12">
