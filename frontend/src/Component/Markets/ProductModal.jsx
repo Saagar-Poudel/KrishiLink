@@ -116,11 +116,11 @@ const ProductModal = ({
                   Organic Certified
                 </span>
               )}
-              {product.isBulkAvailable && (
+              {/* {product.isBulkAvailable && (
                 <span className="bg-gray-100 text-sm px-2 py-1 rounded border dark:bg-[#12241A] dark:text-[#F9FAFB] dark:border-[#374151]">
                   Bulk Orders Available
                 </span>
-              )}
+              )} */}
             </div>
             <div className="absolute top-4 right-4">
               <span

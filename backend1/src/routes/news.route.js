@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getNepalAgriNews } from "../controllers/newsController.js";
+import { getNepalAgriNews } from "../controllers/news.controller.js";
 
 const router = Router();
 

@@ -33,7 +33,7 @@ import EditProduct from "./Component/Profile/Edit";
 import AccountSettings from "./Component/AccountSetting";
 import Success from "./Component/ESewa/Success";
 import Failure from "./Component/ESewa/Failure";
-import AboutUsPage from "./Component/Aboutuspage";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,7 +45,6 @@ const router = createBrowserRouter(
         <Route path="/weather" element={<WeatherAndPrices />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/aboutus" element={<AboutUsPage/>} />
         <Route path="/training" element={<Training />} />
         <Route path="/storage" element={<Storage />} />
         <Route path="/dashboard" element={<Dashboard />} />
