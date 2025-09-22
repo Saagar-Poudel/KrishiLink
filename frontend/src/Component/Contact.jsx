@@ -179,7 +179,7 @@ const ContactUs = () => {
                 <li>Buying and Selling Agricultural Products</li>
                 <li>Provide training videos</li>
                 <li>Crop Advisory Services</li>
-                <li>Soil Health Monitoring</li>
+                {/* <li>Soil Health Monitoring</li> */}
               </ul>
             </div>
           </div>

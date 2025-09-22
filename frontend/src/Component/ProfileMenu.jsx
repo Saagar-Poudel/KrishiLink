@@ -33,12 +33,12 @@ const ProfileMenu = () => {
       {/* Profile Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center space-x-2 px-3 py-2 border rounded-md 
-                   hover:bg-gray-100 dark:border-[#374151] dark:hover:bg-[#12241A]"
+        className="flex items-center space-x-2 px-3 py-2  rounded-md bg-green-300
+                   hover:bg-green-700 dark:border-[#374151] dark:hover:bg-[#12241A]"
       >
-        <User className="h-5 w-5" />
+        <User className="h-5 w-5 " />
         {/* <span className="hidden sm:block">{user ? user.username : "Guest"}</span> */}
-        <span className="hidden sm:block">Profile</span>
+        <span className="hidden sm:block ">Profile</span>
       </button>
 
       {/* Dropdown Menu */}

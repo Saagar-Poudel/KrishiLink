@@ -4,6 +4,7 @@ import ReviewSection from './Review';
 import WeatherAndPrices from '../Weatherandprice/WeatherAndPrices';
 import NewsSection from '../NewsSection';
 import Marketplace from './Marketplace';
+import Experts from './Expert';
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <WeatherAndPrices />
       <Marketplace />
       {/* <NewsSection /> */}
+      <Experts />
       <ReviewSection />
     </div>
   );

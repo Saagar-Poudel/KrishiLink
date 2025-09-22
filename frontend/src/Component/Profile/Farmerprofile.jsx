@@ -212,6 +212,7 @@ export default function FarmerProfile() {
   };
 
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
       <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow p-8">
@@ -260,6 +261,9 @@ export default function FarmerProfile() {
                 className="bg-white text-green-700 px-4 py-2 rounded flex items-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" /> Chat with Farmer
+              </button>
+              <button className="px-4 py-2 rounded flex items-center gap-2 bg-white text-green-700 border border-green-700">
+                <Save className="w-4 h-4" /> Save Seller
               </button>
             </div>
           )}

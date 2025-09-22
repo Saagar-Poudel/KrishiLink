@@ -1,9 +1,11 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 const ReviewSection = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const reviews = [
     {
       id: 1,
@@ -157,7 +159,9 @@ const ReviewSection = () => {
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">{t("ctaSubtitle")}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button className="bg-green-600 dark:bg-[#34D399] text-white px-6 py-2 rounded-md hover:bg-green-700 dark:hover:bg-[#059669] transition-colors">
+              <button 
+              onClick={()=>navigate("/login")}
+              className="bg-green-600 dark:bg-[#34D399] text-white px-6 py-2 rounded-md hover:bg-green-700 dark:hover:bg-[#059669] transition-colors">
                 {t("ctaGetStarted")}
               </button>
               <button className="border border-green-400 dark:border-[#34D399] text-green-700 dark:text-[#D1D5DB] px-6 py-2 rounded-md hover:bg-green-100 dark:hover:bg-[#059669] transition-colors">

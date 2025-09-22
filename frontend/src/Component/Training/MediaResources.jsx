@@ -119,21 +119,23 @@ const mediaResources = [
 const MediaResources = () => {
   const [activeCard, setActiveCard] = useState(null);
 
-  const Card = ({ title, description, icon, onClick }) => (
+ const Card = ({ title, description, icon, onClick }) => (
     <div
       onClick={onClick}
-      className={`p-6 bg-white shadow-md rounded-xl cursor-pointer flex flex-col items-center text-center gap-3 hover:shadow-lg transition
-        ${activeCard === title ? "ring-2 ring-green-500" : ""}`}
+      className={`p-6 bg-white dark:bg-[#12241A] shadow-md rounded-xl cursor-pointer flex flex-col items-center text-center gap-3 hover:shadow-lg transition
+        ${activeCard === title ? "ring-2 ring-green-500 dark:ring-[#34D399]" : ""}`}
     >
       {icon}
-      <h3 className="font-semibold text-lg text-gray-800">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
+      <h3 className="font-semibold text-lg text-gray-800 dark:text-[#F9FAFB]">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-300 text-sm">{description}</p>
     </div>
   );
 
   return (
-    <div className="p-6 bg-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">Media Resources</h1>
+    <div className="p-6 bg-gray-100 dark:bg-[#0B1A12] min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-[#F9FAFB] text-center">
+        Media Resources
+      </h1>
 
       {/* Main cards */}
       <div className="grid md:grid-cols-3 gap-6">
@@ -156,10 +158,11 @@ const MediaResources = () => {
             ?.items.map((item, idx) => (
               <div
                 key={idx}
-                className="p-4 bg-white shadow-md rounded-xl flex flex-col items-center text-center gap-3 hover:shadow-lg transition"
+                className="p-4 bg-white dark:bg-[#12241A] shadow-md rounded-xl flex flex-col items-center text-center gap-3 hover:shadow-lg transition"
               >
                 {item.icon}
-                <h3 className="font-semibold text-lg text-gray-800">{item.name}</h3>
+                <h3 className="font-semibold text-lg text-gray-800 dark:text-[#F9FAFB]">{item.name}</h3>
+
                 {item.type === "video" && (
                   <iframe
                     className="w-full h-48 rounded-md"
@@ -169,32 +172,33 @@ const MediaResources = () => {
                     allowFullScreen
                   ></iframe>
                 )}
-               {item.type === "pdf" && (
-  <div className="flex flex-col gap-2 w-full">
-    <a
-      href={item.src}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition text-center"
-    >
-      View PDF
-    </a>
-    <a
-      href={item.src}
-      download
-      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-center"
-    >
-      Download PDF
-    </a>
-  </div>
-)}
+
+                {item.type === "pdf" && (
+                  <div className="flex flex-col gap-2 w-full">
+                    <a
+                      href={item.src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-green-600 dark:bg-[#34D399] text-white dark:text-[#0B1A12] rounded-md hover:bg-green-700 dark:hover:bg-[#059669] transition text-center"
+                    >
+                      View PDF
+                    </a>
+                    <a
+                      href={item.src}
+                      download
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-center"
+                    >
+                      Download PDF
+                    </a>
+                  </div>
+                )}
 
                 {item.type === "blog" && (
                   <a
                     href={item.src}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition"
+                    className="mt-2 px-4 py-2 bg-yellow-500 dark:bg-yellow-400 text-white dark:text-[#0B1A12] rounded-md hover:bg-yellow-600 dark:hover:bg-yellow-500 transition"
                   >
                     Read Blog
                   </a>

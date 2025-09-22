@@ -1,9 +1,11 @@
 
 import { ArrowRight, Users, TrendingUp, MapPin, Bot } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   return (
     <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden ">
@@ -30,11 +32,15 @@ const Landing = () => {
               {t('heroSubtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-md hover:bg-yellow-500 transition-colors flex items-center justify-center">
+              <button
+              onClick={()=> navigate("/market")}
+              className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-md hover:bg-yellow-500 transition-colors flex items-center justify-center">
                 {t('getStarted')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </button>
-              <button className="px-6 py-3 bg-transparent border border-white text-white rounded-md hover:bg-white hover:text-green-700 transition-colors">
+              <button 
+              onClick={()=> navigate("/about")}
+              className="px-6 py-3 bg-transparent border border-white text-white rounded-md hover:bg-white hover:text-green-700 transition-colors">
                 {t('learnMore')}
               </button>
             </div>

@@ -111,18 +111,18 @@ const irrigationTools = [
 
 
   const Card = ({ title, description, icon, onClick }) => (
-    <div
+     <div
       onClick={onClick}
-      className="p-5 bg-white shadow-md rounded-xl cursor-pointer flex flex-col items-center gap-3 hover:shadow-lg transition"
+      className="p-6 bg-white dark:bg-[#12241A] shadow-md dark:shadow-lg rounded-2xl cursor-pointer flex flex-col items-center gap-3 hover:scale-105 transform transition-all duration-300"
     >
       {icon}
-      <h3 className="font-semibold text-lg text-gray-800">{title}</h3>
-      <p className="text-gray-600 text-sm text-center">{description}</p>
+      <h3 className="font-semibold text-lg text-gray-800 dark:text-green-200">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-300 text-center text-sm">{description}</p>
     </div>
   );
 
   return (
-    <div className="p-6 bg-white">
+     <div className="p-6 bg-gray-50 dark:bg-[#0B1A12] min-h-screen transition-colors duration-500">
       {/* Cards */}
       <div className="grid md:grid-cols-3 gap-6 mb-8">
         <Card
@@ -146,96 +146,166 @@ const irrigationTools = [
       </div>
 
       {/* Dynamic Content */}
-      <div className="mt-6">
+      <div className="mt-6 space-y-10">
         {activeCard === "calendar" && <CropCalendar />}
 
 {activeCard === "fertilizers" && (
   <div className="flex flex-col gap-10">
     {/* Fertilizers */}
-    <div>
-      <h2 className="text-2xl font-bold text-green-700 mb-4">Fertilizers</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-green-100">
-              <th className="px-4 py-2 font-semibold text-green-800">Name</th>
-              <th className="px-4 py-2 font-semibold text-green-800">Usage / Stage</th>
-              <th className="px-4 py-2 font-semibold text-green-800">Benefits</th>
-              <th className="px-4 py-2 font-semibold text-green-800">Dosage</th>
-              <th className="px-4 py-2 font-semibold text-green-800">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fertilizers.map((f, i) => (
-              <tr key={i} className="hover:bg-green-50 transition">
-                <td className="px-4 py-2 border-b">{f.name}</td>
-                <td className="px-4 py-2 border-b">{f.usage}</td>
-                <td className="px-4 py-2 border-b">{f.benefits}</td>
-                <td className="px-4 py-2 border-b">{f.dosage}</td>
-                <td className="px-4 py-2 border-b">{f.notes}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div>
+  <h2 className="text-3xl font-extrabold text-green-700 dark:text-green-400 mb-6 tracking-wide">
+    Fertilizers
+  </h2>
 
-    {/* Irrigation Tools */}
-    <div>
-      <h2 className="text-2xl font-bold text-blue-700 mb-4">Irrigation Tools</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-blue-100">
-              <th className="px-4 py-2 font-semibold text-blue-800">Name</th>
-              <th className="px-4 py-2 font-semibold text-blue-800">Usage / Purpose</th>
-              <th className="px-4 py-2 font-semibold text-blue-800">Advantages</th>
-              <th className="px-4 py-2 font-semibold text-blue-800">Best For</th>
-              <th className="px-4 py-2 font-semibold text-blue-800">Tips</th>
-            </tr>
-          </thead>
-          <tbody>
-            {irrigationTools.map((t, i) => (
-              <tr key={i} className="hover:bg-blue-50 transition">
-                <td className="px-4 py-2 border-b">{t.name}</td>
-                <td className="px-4 py-2 border-b">{t.usage}</td>
-                <td className="px-4 py-2 border-b">{t.advantages}</td>
-                <td className="px-4 py-2 border-b">{t.bestFor}</td>
-                <td className="px-4 py-2 border-b">{t.tips}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-)}
-
- {activeCard === "tips" && (
-  <div className="overflow-x-auto">
+  <div className="overflow-x-auto rounded-xl shadow-lg">
     <table className="w-full text-left border-collapse">
       <thead>
-        <tr className="bg-yellow-100">
-          <th className="px-4 py-2 font-semibold text-yellow-800">Tip / Practice</th>
-          <th className="px-4 py-2 font-semibold text-yellow-800">Description</th>
-          <th className="px-4 py-2 font-semibold text-yellow-800">Benefits</th>
-          <th className="px-4 py-2 font-semibold text-yellow-800">Best For / Crops</th>
-          <th className="px-4 py-2 font-semibold text-yellow-800">Practical Advice / Notes</th>
+        <tr className="bg-green-200 dark:bg-green-700">
+          <th className="px-6 py-3 font-semibold text-green-900 dark:text-green-100">
+            Name
+          </th>
+          <th className="px-6 py-3 font-semibold text-green-900 dark:text-green-100">
+            Usage / Stage
+          </th>
+          <th className="px-6 py-3 font-semibold text-green-900 dark:text-green-100">
+            Benefits
+          </th>
+          <th className="px-6 py-3 font-semibold text-green-900 dark:text-green-100">
+            Dosage
+          </th>
+          <th className="px-6 py-3 font-semibold text-green-900 dark:text-green-100">
+            Notes
+          </th>
         </tr>
       </thead>
       <tbody>
-        {farmingTips.map((tip, i) => (
-          <tr key={i} className="hover:bg-yellow-50 transition">
-            <td className="px-4 py-2 border-b">{tip.title}</td>
-            <td className="px-4 py-2 border-b">{tip.description}</td>
-            <td className="px-4 py-2 border-b">{tip.benefits}</td>
-            <td className="px-4 py-2 border-b">{tip.bestFor}</td>
-            <td className="px-4 py-2 border-b">{tip.notes}</td>
+       {fertilizers.map((f, i) => (
+  <tr
+    key={i}
+    className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
+  >
+    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+      {f.name}
+    </td>
+    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+      {f.usage}
+    </td>
+    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+      {f.benefits}
+    </td>
+    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+      {f.dosage}
+    </td>
+    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+      {f.notes}
+    </td>
+  </tr>
+))}
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+    {/* Irrigation Tools */}
+   <div>
+  <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-8 mb-4">
+    Irrigation Tools
+  </h2>
+  <div className="overflow-x-auto">
+    <table className="w-full text-left border-collapse transition-colors duration-500">
+      <thead>
+        <tr className="bg-blue-100 dark:bg-blue-900">
+          <th className="px-4 py-2 font-semibold text-blue-800 dark:text-blue-300">
+            Name
+          </th>
+          <th className="px-4 py-2 font-semibold text-blue-800 dark:text-blue-300">
+            Usage / Purpose
+          </th>
+          <th className="px-4 py-2 font-semibold text-blue-800 dark:text-blue-300">
+            Advantages
+          </th>
+          <th className="px-4 py-2 font-semibold text-blue-800 dark:text-blue-300">
+            Best For
+          </th>
+          <th className="px-4 py-2 font-semibold text-blue-800 dark:text-blue-300">
+            Tips
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {irrigationTools.map((t, i) => (
+          <tr
+            key={i}
+            className="hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-300"
+          >
+            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+              {t.name}
+            </td>
+            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+              {t.usage}
+            </td>
+            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+              {t.advantages}
+            </td>
+            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+              {t.bestFor}
+            </td>
+            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+              {t.tips}
+            </td>
           </tr>
         ))}
       </tbody>
     </table>
   </div>
+</div>
+
+  </div>
+)}
+
+ {activeCard === "tips" && (
+<div className="overflow-x-auto">
+  <table className="w-full text-left border-collapse transition-colors duration-500">
+    <thead>
+      <tr className="bg-yellow-100 dark:bg-yellow-900">
+        <th className="px-4 py-2 font-semibold text-yellow-800 dark:text-yellow-300">Tip / Practice</th>
+        <th className="px-4 py-2 font-semibold text-yellow-800 dark:text-yellow-300">Description</th>
+        <th className="px-4 py-2 font-semibold text-yellow-800 dark:text-yellow-300">Benefits</th>
+        <th className="px-4 py-2 font-semibold text-yellow-800 dark:text-yellow-300">Best For / Crops</th>
+        <th className="px-4 py-2 font-semibold text-yellow-800 dark:text-yellow-300">Practical Advice / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {farmingTips.map((tip, i) => (
+        <tr
+          key={i}
+          className="hover:bg-yellow-50 dark:hover:bg-yellow-800 transition-colors duration-300"
+        >
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+            {tip.title}
+          </td>
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+            {tip.description}
+          </td>
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+            {tip.benefits}
+          </td>
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+            {tip.bestFor}
+          </td>
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+            {tip.notes}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 )}
 
       </div>

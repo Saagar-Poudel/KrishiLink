@@ -48,7 +48,8 @@ const Header = () => {
     { name: t("Market"), path: "/market" },
     { name: t("News"), path: "/news" },
     { name: t("Training"), path: "/training" },
-    { name: t("Storage"), path: "/storage" },
+    // { name: t("Storage"), path: "/storage" },
+    { name: t("Contact"), path:"/contact"}
   ];
 
   // Format timestamp -> "x minutes ago"
@@ -134,7 +135,7 @@ const Header = () => {
               <button
                 onClick={() => setOpenNotif(!openNotif)}
                 className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors
-     dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
+                 dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
               >
                 <Bell className="h-5 w-5" />
                 {notifications.filter((n) => !n.isRead).length > 0 && (
@@ -147,67 +148,181 @@ const Header = () => {
                 )}
               </button>
 
-              {/* Dropdown */}
               {openNotif && (
-                <div className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg z-50 dark:bg-[#0B1A12]">
-                  <div className="p-2 font-semibold border-b dark:border-[#1F2937]">
-                    Notifications
+                <div className="absolute right-0 mt-3 w-96 bg-white border-0 rounded-xl shadow-2xl z-50 dark:bg-[#0F1F17] backdrop-blur-lg">
+                  {/* Header */}
+                  <div className="p-4 border-b dark:border-[#1F2E25] bg-gradient-to-r from-gray-50 to-green-50 dark:from-[#0F1F17] dark:to-[#14281E] rounded-t-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-gray-900 dark:text-white">
+                            Notifications
+                          </h3>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {notifications.length} unread
+                            {notifications.length !== 1 ? "s" : ""}
+                          </p>
+                        </div>
+                      </div>
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={() => markAllAsRead()}
+                          className="text-xs text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="max-h-60 overflow-y-auto">
+
+                  {/* Notifications List */}
+                  <div className="max-h-80 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <p className="p-2 text-sm text-gray-500">
-                        No notifications
-                      </p>
+                      <div className="flex flex-col items-center justify-center p-8 text-center">
+                        <div className="w-16 h-16 bg-gray-100 dark:bg-[#1F2E25] rounded-full flex items-center justify-center mb-3">
+                          <svg
+                            className="w-8 h-8 text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium">
+                          No notifications
+                        </p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                          We'll notify you when something arrives
+                        </p>
+                      </div>
                     ) : (
                       notifications.map((n, i) => (
                         <div
                           key={i}
                           onClick={() => handleOpenDialog(n)}
-                          className={`p-3 text-sm border-b dark:border-[#1F2937] cursor-pointer 
-      ${
-        !n.isRead
-          ? "bg-gray-100 dark:bg-[#1a2b22]"
-          : "bg-white dark:bg-[#0B1A12]"
-      }`}
+                          className={`group p-4 border-b dark:border-[#1F2E25] cursor-pointer transition-all duration-200 hover:bg-green-50 dark:hover:bg-[#1A2B22] ${
+                            !n.isRead
+                              ? "bg-green-50 dark:bg-[#1A2B22] border-l-4 border-l-green-500"
+                              : "bg-white dark:bg-[#0F1F17] hover:bg-gray-50 dark:hover:bg-[#1A2B22]"
+                          }`}
                         >
-                          <div className="flex items-start justify-between">
-                            {/* Message text */}
-                            <div className="flex-1">
-                              <p
-                                className={`truncate max-w-[230px] ${
+                          <div className="flex items-start gap-3">
+                            {/* Status Indicator */}
+                            <div className="flex flex-col items-center gap-2">
+                              {!n.isRead && (
+                                <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0 mt-1.5"></span>
+                              )}
+                              <div
+                                className={`w-1 h-1 rounded-full ${
                                   !n.isRead
-                                    ? "font-medium text-gray-900 dark:text-white"
-                                    : "text-gray-600 dark:text-gray-300"
+                                    ? "bg-green-200"
+                                    : "bg-gray-300 dark:bg-gray-600"
                                 }`}
-                              >
-                                {n.message}
-                              </p>
-                              {/* Timestamp below message */}
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {timeAgo(n.createdAt)}
-                              </span>
+                              ></div>
+                              <div
+                                className={`w-1 h-1 rounded-full ${
+                                  !n.isRead
+                                    ? "bg-green-200"
+                                    : "bg-gray-300 dark:bg-gray-600"
+                                }`}
+                              ></div>
                             </div>
 
-                            {/* Blue dot for unread */}
-                            {!n.isRead && (
-                              <span className="ml-2 mt-1 h-2 w-2 rounded-full bg-blue-500"></span>
-                            )}
+                            {/* Content */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between mb-1">
+                                <p
+                                  className={`text-sm leading-relaxed ${
+                                    !n.isRead
+                                      ? "font-semibold text-gray-900 dark:text-white"
+                                      : "text-gray-700 dark:text-gray-300"
+                                  }`}
+                                >
+                                  {n.message}
+                                </p>
+                                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                                  {!n.isRead && (
+                                    <span className="px-1.5 py-0.5 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">
+                                      New
+                                    </span>
+                                  )}
+                                  <svg
+                                    className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 5l7 7-7 7"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+
+                              {/* Metadata */}
+                              <div className="flex items-center justify-between mt-2">
+                                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                  <svg
+                                    className="w-3 h-3"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                  {timeAgo(n.createdAt)}
+                                </span>
+                                {n.type && (
+                                  <span className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                                    {n.type}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))
                     )}
                   </div>
+
+                  {/* Footer */}
+                  {notifications.length > 0 && (
+                    <div className="p-3 border-t dark:border-[#1F2E25] bg-gray-50 dark:bg-[#0A1911] rounded-b-xl">
+                      <button className="w-full text-center text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors font-medium">
+                        View all notifications
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-            {/* Cart Button (DESKTOP) */}
+
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center px-3 py-1 border rounded text-sm
+              className="relative flex items-center px-3 py-1 border rounded text-sm hover:bg-gray-300
                          dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
             >
               <ShoppingCart className="w-4 h-4" />
-              <span className="ml-2">{t("cart")}</span>
+              <span className="ml-2 ">{t("cart")}</span>
               {totalItems > 0 && (
                 <span
                   className="absolute -top-2 -right-2 h-5 w-5 rounded-full 
@@ -259,79 +374,7 @@ const Header = () => {
                 </NavLink>
               ))}
 
-              <div className="border-t border-gray-200 dark:border-[#1F2937] my-2"></div>
-
-              {/* Mobile Actions */}
-              <div className="flex flex-col space-y-2">
-                <button
-                  onClick={toggleLanguage}
-                  className="w-full px-3 py-2 text-sm font-medium border border-gray-300 rounded-md 
-                             hover:bg-gray-100 transition-colors flex items-center justify-center
-                             dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
-                >
-                  <Languages className="h-4 w-4 mr-1" />
-                  {language === "en" ? "नेपाली" : "English"}
-                </button>
-
-                <button
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex justify-center
-                                   dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
-                >
-                  <Bell className="h-5 w-5 mr-2" />
-                  Notifications
-                </button>
-
-                <button
-                  onClick={() => {
-                    setIsCartOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                  className="relative flex items-center justify-center px-3 py-2 border rounded text-sm
-                             dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  {t("cart")}
-                  {totalItems > 0 && (
-                    <span className="ml-2 h-5 w-5 rounded-full bg-[#EF4444] text-white text-xs flex items-center justify-center">
-                      {totalItems}
-                    </span>
-                  )}
-                </button>
-
-                <button
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex justify-center
-                                   dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
-                >
-                  <User className="h-5 w-5 mr-2" />
-                  Profile
-                </button>
-
-                {/* Login / Logout for Mobile */}
-                {user ? (
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all text-center
-                               dark:bg-red-500 dark:hover:bg-red-600"
-                  >
-                    {t("logout")}
-                  </button>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-all text-center
-                               dark:bg-[#34D399] dark:hover:bg-[#059669] dark:text-[#0B1A12]"
-                  >
-                    {t("login")}
-                  </Link>
-                )}
-                <div className="flex justify-center pt-2">
-                  <Thems />
-                </div>
-              </div>
+              <div className="border-t border-gray-200 dark:border-[#1F2937] my-2"></div>              
             </div>
           </div>
         )}
