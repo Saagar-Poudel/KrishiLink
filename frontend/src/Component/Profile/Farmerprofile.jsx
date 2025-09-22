@@ -73,7 +73,7 @@ export default function FarmerProfile() {
         const { data } = await axios.get(
           `http://localhost:3000/api/profile/${farmerId}/stats`
         );
-            console.log("fetch:",data)
+        console.log("fetch:", data);
         setStats(data);
       } catch (err) {
         console.error("Error fetching stats:", err);
@@ -143,6 +143,66 @@ export default function FarmerProfile() {
     } finally {
       setDeleteModal(false);
       setProductToDelete(null);
+    }
+  };
+
+  const handleAcceptOrder = async (orderId) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/orders/${orderId}/status`, {
+        action: "accept",
+      });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: "accepted" } : o))
+      );
+      toast.success("Order accepted ✅");
+    } catch (err) {
+      console.error("Error accepting order:", err);
+      toast.error("Failed to accept order.");
+    }
+  };
+
+  const handleDeclineOrder = async (orderId) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/orders/${orderId}/status`, {
+        action: "declined",
+      });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: "declined" } : o))
+      );
+      toast.success("Order declined ❌");
+    } catch (err) {
+      console.error("Error declining order:", err);
+      toast.error("Failed to decline order.");
+    }
+  };
+
+  const handleShipOrder = async (orderId) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/orders/${orderId}/status`, {
+        action: "ship",
+      });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: "shipping" } : o))
+      );
+      toast.success("Order sent to shipping 🚚");
+    } catch (err) {
+      console.error("Error shipping order:", err);
+      toast.error("Failed to update order.");
+    }
+  };
+
+  const handleDeliverOrder = async (orderId) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/orders/${orderId}/status`, {
+        action: "deliver",
+      });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: "delivered" } : o))
+      );
+      toast.success("Order delivered 📦");
+    } catch (err) {
+      console.error("Error delivering order:", err);
+      toast.error("Failed to update order.");
     }
   };
 
@@ -386,17 +446,59 @@ export default function FarmerProfile() {
                       Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total}{" "}
                       • Date: {o.date}
                     </p>
+                    <p
+                      className={`text-xs mt-1 font-medium ${
+                        o.status === "pending"
+                          ? "text-yellow-600"
+                          : o.status === "accepted" || o.status === "packing"
+                          ? "text-green-600"
+                          : o.status === "shipping"
+                          ? "text-blue-600"
+                          : o.status === "delivered"
+                          ? "text-purple-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      Status: {o.status}
+                    </p>
                   </div>
-                  {o.status === "pending" && (
-                    <div className="flex gap-2">
-                      <button className="bg-green-500 text-white px-3 py-1 rounded">
-                        Accept
+
+                  <div className="flex gap-2">
+                    {o.status === "pending" && (
+                      <>
+                        <button
+                          onClick={() => handleAcceptOrder(o.id)}
+                          className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => handleDeclineOrder(o.id)}
+                          className="border px-3 py-1 rounded hover:bg-gray-200"
+                        >
+                          Decline
+                        </button>
+                      </>
+                    )}
+
+                    {o.status === "packing" && (
+                      <button
+                        onClick={() => handleShipOrder(o.id)}
+                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      >
+                        Send to Shipping
                       </button>
-                      <button className="border px-3 py-1 rounded">
-                        Decline
+                    )}
+
+                    {o.status === "shipping" && (
+                      <button
+                        onClick={() => handleDeliverOrder(o.id)}
+                        className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600"
+                      >
+                        Mark as Delivered
                       </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               ))
             )}

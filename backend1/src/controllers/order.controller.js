@@ -4,12 +4,12 @@ import {
   orderItems,
   products,
   notifications,
-  users
+  users,
 } from "../models/schema.js";
 import { eq, inArray } from "drizzle-orm";
 import crypto from "crypto";
-import { type } from "os";
 import { sendNotification } from "../utils/notification.service.js";
+import { callKhalti } from "./khalti.controller.js";
 
 // ✅ Create new order
 export const createOrder = async (req, res) => {
@@ -58,7 +58,6 @@ export const createOrder = async (req, res) => {
     }, {});
 
     const createdOrders = [];
-    let paymentPayload = null;
 
     // 4. Transaction
     await db.transaction(async (tx) => {
@@ -105,29 +104,39 @@ export const createOrder = async (req, res) => {
           });
         }
 
-        createdOrders.push({...newOrder,sellerId});
-
-        // Add notification for buyer
-        await sendNotification({
-          userId,
-          type: "order",
-          title: "Order Placed",
-          message: `Your order #${newOrder.id} has been placed successfully.`,
-        });
-
-        // Add notification for seller(s)
-        await sendNotification({
-          userId: sellerId, // if sellerId exists
-          type: "order",
-          title: "New Order",
-          message: `You have a new order for ${sellerItems.length} items.`,
-        });
+        createdOrders.push({ ...newOrder, sellerId });
+        const signature = createSignature(`total_amount=${newOrder.totalAmount},transaction_uuid=${newOrder.id},product_code=EPAYTEST`)
+        if (payment_method === "esewa") {
+          const formData = {
+            amount: newOrder.totalAmount,
+            failure_url: "http://localhost:5173",
+            product_delivery_charge: "0",
+            product_service_charge: "0",
+            product_code: "EPAYTEST",
+            signature: signature,
+            signed_field_names: "total_amount,transaction_uuid,product_code",
+            success_url: "http://localhost:3000/api/esewa/success",
+            tax_amount: "0",
+            total_amount: newOrder.totalAmount,
+            transaction_uuid: newOrder.id,
+          };
+          res.json({
+            message: "Order Created Sucessfully",
+            newOrder,
+            payment_method: "esewa",
+            formData,
+          });
+        } else if (payment_method === "khalti") {
+          const formData = {
+            return_url: "http://localhost:3000/api/khalti/callback",
+            website_url: "http://localhost:3000",
+            amount: totalAmount * 100, // in paisa
+            purchase_order_id: newOrder.id,
+            purchase_order_name: "test",
+          };
+          callKhalti(formData, req, res);
+        }
       }
-    });
-
-    res.status(201).json({
-      message: "Orders created successfully",
-      orders: createdOrders,
     });
   } catch (err) {
     console.error("Error creating order:", err);
@@ -246,27 +255,88 @@ export const getAllOrdersBySellerName = async (req, res) => {
   }
 };
 
-// ✅ Update order status
 export const updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { action } = req.body; // "accept", "decline", "ship", "deliver"
+
   try {
-    const [updatedOrder] = await db
+    // Get order first
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(eq(orders.id, orderId));
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    let newStatus;
+    let notificationMessage;
+
+    switch (action) {
+      case "accept":
+        if (order.status !== "pending")
+          return res
+            .status(400)
+            .json({ error: "Only pending orders can be accepted" });
+        newStatus = "packing";
+        notificationMessage =
+          "Your order has been accepted and is being packed.";
+        break;
+
+      case "decline":
+        if (order.status !== "pending")
+          return res
+            .status(400)
+            .json({ error: "Only pending orders can be declined" });
+        newStatus = "declined";
+        notificationMessage = "Unfortunately, your order has been declined.";
+        break;
+
+      case "ship":
+        if (order.status !== "packing")
+          return res
+            .status(400)
+            .json({ error: "Only packing orders can be shipped" });
+        newStatus = "shipped";
+        notificationMessage = "Your order is on the way 🚚.";
+        break;
+
+      case "deliver":
+        if (order.status !== "shipped")
+          return res
+            .status(400)
+            .json({ error: "Only shipped orders can be delivered" });
+        newStatus = "delivered";
+        notificationMessage = "Your order has been delivered ✅.";
+        break;
+
+      default:
+        return res.status(400).json({ error: "Invalid action" });
+    }
+
+    // Update order status
+    const updated = await db
       .update(orders)
-      .set("paid")
-      .where(eq(orders.id, Number(req.transaction_uuid)))
+      .set({ status: newStatus, updatedAt: new Date() })
+      .where(eq(orders.id, orderId))
       .returning();
 
+    // 🔔 Send notification to the buyer
     await sendNotification({
-      userId: updatedOrder.userId,
+      userId: order.userId, // buyer ID
+      type: "order",
       title: "Order Update",
-      message: `Your order #${updatedOrder.id} is now marked as ${updatedOrder.status}.`,
+      message: notificationMessage,
     });
 
-    if (!updatedOrder)
-      return res.status(404).json({ message: "Order not found" });
-
-    res.redirect("http://localhost:5173");
+    return res.json({
+      message: "Order updated successfully",
+      order: updated[0],
+    });
   } catch (err) {
-    res.status(500).json({ message: "Error updating order" });
+    console.error("Error updating order status:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -295,14 +365,16 @@ export const updateOrderAfterPayment = async (req, res, next) => {
     console.log(req.body);
     const [updatedOrder] = await db
       .update(orders)
-      .set("paid")
+      .set({ status: "paid", updatedAt: new Date() })
       .where(eq(orders.id, Number(req.transaction_uuid)))
       .returning();
+    console.log(updatedOrder);
 
     await sendNotification({
       userId: updatedOrder.userId,
+      type: "order",
       title: "Order Update",
-      message: `Your order #${updatedOrder.id} is now marked as ${updatedOrder.status}.`,
+      message: `Your order #${updatedOrder.id} Payment is Successful.`,
     });
 
     if (!updatedOrder)
@@ -310,18 +382,17 @@ export const updateOrderAfterPayment = async (req, res, next) => {
 
     res.redirect("http://localhost:5173");
   } catch (error) {
-    return res.status(400).json({ error: err?.message || "No Orders Found" });
+    return res.status(400).json({ error: error?.message || "No Orders Found" });
   }
 };
 
-export const createSignature = (totalAmount, transactionId, productCode) => {
-  // ensure exactly 2 decimal places
-  const amountStr = Number(totalAmount).toFixed(2);
-
-  // build string exactly in order of signed_field_names
-  const message = `total_amount=${amountStr},transaction_uuid=${transactionId},product_code=${productCode}`;
-
-  const hmac = crypto.createHmac("sha256", process.env.SECRET.trim());
+export const createSignature = (message) => {
+  const secret = "8gBm/:&EnhH.1/q";
+  // Create an HMAC-SHA256 hash
+  const hmac = crypto.createHmac("sha256", secret);
   hmac.update(message);
-  return hmac.digest("base64").toString();
+
+  // Get the digest in base64 format
+  const hashInBase64 = hmac.digest("base64");
+  return hashInBase64;
 };

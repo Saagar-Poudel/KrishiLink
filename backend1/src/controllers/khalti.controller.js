@@ -7,7 +7,7 @@ export const callKhalti = async (khalti, req, res) => {
       "Content-Type": "application/json",
     };
       console.log(headers);
-      const response = await axios.post("https://a.khalti.com/api/v2/epayment/lookup/", khalti, {
+      const response = await axios.post("https://a.khalti.com/api/v2/epayment/initiate/", khalti, {
           headers,
       });
       console.log(response.data);
@@ -39,7 +39,7 @@ export const handleKhaltiCallback = async (req, res, next) => {
     const response = await axios.post(
       "https://a.khalti.com/api/v2/epayment/lookup/",
       { pidx },
-      { headers, timeout: 10000 }
+      {headers}
     );
     console.log(response.data);
     if (response.data.status !== "Completed") {

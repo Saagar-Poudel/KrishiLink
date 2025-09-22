@@ -41,29 +41,6 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
 
   const handlePlaceOrder = async () => {
     const url = "http://localhost:3000/api/orders";
-    const esewaCall = (formData) => {
-      console.log(formData);
-      const path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
-      const form = document.createElement("form");
-      form.setAttribute("method", "POST");
-      form.setAttribute("action", path);
-
-      for (let key in formData) {
-        const hiddenField = document.createElement("input");
-        hiddenField.setAttribute("type", "hidden");
-        hiddenField.setAttribute("name", key);
-        hiddenField.setAttribute("value", formData[key]);
-        form.appendChild(hiddenField);
-      }
-
-      document.body.appendChild(form);
-      form.submit();
-    };
-
-    const khaltiCall = (data) => {
-      window.location.href = data.payment_url;
-    };
-
     if (!customerInfo.email || !customerInfo.phone || !customerInfo.address) {
       toast({
         title: t("missingInfoTitle"),
@@ -104,23 +81,15 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
           price: item.price,
         })),
       });
-
-      // ✅ Ask backend to notify seller
-      socket.emit("send-notification", {
-        userId: response.data.order.sellerId, // make sure your order API returns sellerId
-        type: "order",
-        title: "New Order",
-        message: `New order placed by ${user.username}`,
-      });
       // console.log("Full Response:", response);
       // console.log("Message:", response.data.message);
       // console.log("Order:", response.data.order);
       // console.log("Esewa Form Data:", response.data.formData);
       if (paymentMethod === "esewa") {
         // ✅ Now safe to call Esewa
-        esewaCall(response.data.esewa);
+        esewaCall(response.formData);
       } else if (paymentMethod === "khalti") {
-        khaltiCall(response.data);
+        khaltiCall(response.data.data);
       } else {
         setTimeout(() => {
           setIsOrderPlaced(true);
@@ -146,6 +115,29 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       });
     }
   };
+
+  const khaltiCall = (data) => {
+      window.location.href = data.payment_url;
+  };
+
+  const esewaCall = (formData) => {
+      console.log(formData);
+      const path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+      const form = document.createElement("form");
+      form.setAttribute("method", "POST");
+      form.setAttribute("action", path);
+
+      for (var key in formData) {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", key);
+        hiddenField.setAttribute("value", formData[key]);
+        form.appendChild(hiddenField);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    };
 
   const downloadBill = () => {
     const billContent = `
