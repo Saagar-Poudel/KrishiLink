@@ -6,10 +6,11 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Cart } from "./Cart";
 import { useCart } from "../contexts/CartContex";
 import LogoSVG from "../assets/logo.svg"; // ✅ updated import
-import Chatbot from "../Component/chatbot/Chatbot";
 import { useAuth } from "../contexts/Authcontext";
 import ProfileMenu from "./ProfileMenu";
 import { io } from "socket.io-client";
+import NotificationDialog from "./NotificationDialog";
+import axios from "axios";
 
 const socket = io("http://localhost:3000");
 
@@ -23,6 +24,8 @@ const Header = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [openNotif, setOpenNotif] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedNotif, setSelectedNotif] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -64,6 +67,23 @@ const Header = () => {
 
     // fallback -> show full date
     return date.toLocaleDateString();
+  };
+
+  const handleOpenDialog = (notif) => {
+    setSelectedNotif(notif);
+    setDialogOpen(true);
+  };
+
+  const handleMarkAsRead = async (id) => {
+    try {
+      await axios.put(`http://localhost:3000/api/notifications/read/${id}`);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      );
+      setDialogOpen(false);
+    } catch (err) {
+      console.error("Failed to mark notification as read:", err);
+    }
   };
 
   const handleLogout = () => {
@@ -142,14 +162,37 @@ const Header = () => {
                       notifications.map((n, i) => (
                         <div
                           key={i}
-                          className={`p-2 text-sm border-b dark:border-[#1F2937] flex justify-between items-start ${
-                            !n.isRead ? "bg-yellow-50 dark:bg-[#12241A]" : ""
-                          }`}
+                          onClick={() => handleOpenDialog(n)}
+                          className={`p-3 text-sm border-b dark:border-[#1F2937] cursor-pointer 
+      ${
+        !n.isRead
+          ? "bg-gray-100 dark:bg-[#1a2b22]"
+          : "bg-white dark:bg-[#0B1A12]"
+      }`}
                         >
-                          <span>{n.message}</span>
-                          <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-                            {timeAgo(n.createdAt)}
-                          </span>
+                          <div className="flex items-start justify-between">
+                            {/* Message text */}
+                            <div className="flex-1">
+                              <p
+                                className={`truncate max-w-[230px] ${
+                                  !n.isRead
+                                    ? "font-medium text-gray-900 dark:text-white"
+                                    : "text-gray-600 dark:text-gray-300"
+                                }`}
+                              >
+                                {n.message}
+                              </p>
+                              {/* Timestamp below message */}
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {timeAgo(n.createdAt)}
+                              </span>
+                            </div>
+
+                            {/* Blue dot for unread */}
+                            {!n.isRead && (
+                              <span className="ml-2 mt-1 h-2 w-2 rounded-full bg-blue-500"></span>
+                            )}
+                          </div>
                         </div>
                       ))
                     )}
@@ -174,8 +217,8 @@ const Header = () => {
                 </span>
               )}
             </button>
-             <Thems />
-             <ProfileMenu />
+            <Thems />
+            <ProfileMenu />
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -293,6 +336,13 @@ const Header = () => {
           </div>
         )}
       </div>
+
+      <NotificationDialog
+        open={dialogOpen}
+        notification={selectedNotif}
+        onClose={() => setDialogOpen(false)}
+        onDone={handleMarkAsRead}
+      />
 
       {/* Cart Drawer */}
       {isCartOpen && (

@@ -76,7 +76,6 @@ const expertsData = [
 
 const Experts = () => {
   const [selectedExpert, setSelectedExpert] = useState(null);
-  const [chatMessage, setChatMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
 
   const handleExpertSelect = (expert) => {
@@ -84,23 +83,7 @@ const Experts = () => {
     setChatMessages([]); // Clear previous chat when selecting a new expert
   };
 
-  const handleSendMessage = () => {
-    if (chatMessage.trim()) {
-      setChatMessages([...chatMessages, { text: chatMessage, sender: 'farmer' }]);
-      setChatMessage('');
-      
-      // Simulate expert response after a delay
-      setTimeout(() => {
-        setChatMessages(prev => [
-          ...prev, 
-          { 
-            text: `Thanks for your message! I'll help you with your ${selectedExpert.specialization.toLowerCase()} questions.`, 
-            sender: 'expert' 
-          }
-        ]);
-      }, 1500);
-    }
-  };
+  
 
   const ExpertCard = ({ expert }) => {
     const IconComponent = expert.icon;
@@ -221,28 +204,7 @@ const Experts = () => {
                     {/* Chat Section */}
                     <div className="pt-4 mt-4 border-t border-gray-200">
                       <h4 className="font-medium mb-3 text-green-800">Chat with Expert</h4>
-                      
-                      {/* Chat Messages */}
-                      <div className="max-h-48 overflow-y-auto mb-3 space-y-2 p-2 bg-gray-50 rounded-lg">
-                        {chatMessages.length > 0 ? (
-                          chatMessages.map((message, index) => (
-                            <div
-                              key={index}
-                              className={`p-3 rounded-lg max-w-xs ${
-                                message.sender === 'farmer'
-                                  ? 'bg-green-100 text-green-900 ml-auto'
-                                  : 'bg-gray-100 text-gray-900'
-                              }`}
-                            >
-                              {message.text}
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-gray-500 text-center py-4">
-                            No messages yet. Start the conversation!
-                          </p>
-                        )}
-                      </div>
+                    
 
                       {/* Chat Input */}
                      <div className="mt-6 pt-6 border-t border-gray-200">

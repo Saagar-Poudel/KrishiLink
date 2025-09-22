@@ -5,7 +5,7 @@ import { useAuth } from "../../contexts/Authcontext";
 import Filters from "./Filters";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
-import FarmerChatBox from '../FarmerChatbox'
+import FarmerChatBox from "../FarmerChatbox";
 import Chatbox from "../Chatbox";
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
@@ -26,7 +26,7 @@ const Market = () => {
 
   const { user } = useAuth();
 
-  const[farmerChatOpen, setFarmerChatOpen] = useState(false);
+  const [farmerChatOpen, setFarmerChatOpen] = useState(false);
   const [chatFarmer, setChatFarmer] = useState(null);
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,6 +39,31 @@ const Market = () => {
       }
     };
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+  const fetchWishlist = async () => {
+    if (!user?.id) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/wishlist/${user.id}`);
+      const data = await res.json();
+
+      // Normalize to array of product IDs
+      const productIds = data.map((item) => item.id);
+      setWishlistedProducts(productIds);
+    } catch (err) {
+      console.error("Failed to load wishlist:", err);
+    }
+  };
+
+  fetchWishlist();
+}, [user?.id]);
+
+  useEffect(() => {
+    fetch(`/api/wishlist/${user?.id}`)
+      .then((res) => res.json())
+      .then((data) => setWishlistedProducts(data.map((p) => p.id)));
   }, []);
 
   useEffect(() => {
@@ -107,23 +132,26 @@ const Market = () => {
   };
 
   const handleProductClick = (product) => setSelectedProduct(product);
-  const handleToggleWishlist = (productId) => {
-    if (wishlistedProducts.includes(productId)) {
-      setWishlistedProducts(
-        wishlistedProducts.filter((id) => id !== productId)
-      );
-      toast({
-        title: t("Removed from Wishlist"),
-        description: t("Product removed from your wishlist."),
+  const handleToggleWishlist = async (productId) => {
+    const isAlready = wishlistedProducts.includes(productId);
+
+    if (isAlready) {
+      await fetch("http://localhost:3000/api/wishlist/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, productId }),
       });
+      setWishlistedProducts((prev) => prev.filter((id) => id !== productId));
     } else {
-      setWishlistedProducts([...wishlistedProducts, productId]);
-      toast({
-        title: t("Added to Wishlist"),
-        description: t("Product added to your wishlist."),
+      await fetch("http://localhost:3000/api/wishlist/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, productId }),
       });
+      setWishlistedProducts((prev) => [...prev, productId]);
     }
   };
+
   const handleAddToCart = (product, quantity = 1) => {
     addToCart(product, quantity);
     toast({
@@ -214,14 +242,9 @@ const Market = () => {
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
-        isWishlisted={
-          selectedProduct
-            ? wishlistedProducts.includes(selectedProduct.id)
-            : false
-        }
+        isWishlisted={wishlistedProducts.includes(selectedProduct?.id)}
         onChatWithSeller={handleChatWithSeller}
       />
-      
 
       {/* Stats Section */}
       <div className="bg-primary dark:bg-[#12241A] text-primary-foreground dark:text-[#F9FAFB] py-12">

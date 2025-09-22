@@ -12,7 +12,8 @@ import messageRouter from "./routes/message.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import { sendNotification } from "./utils/notification.service.js";
 import newsRouter from './routes/news.route.js';
-
+import profileRouter from './routes/profile.route.js'
+import wishlistRouter from './routes/wishlist.route.js'
 
 dotenv.config();
 
@@ -38,6 +39,8 @@ app.use("/api/khalti", khaltiRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/notifications", notificationRouter);
 app.use('/api/news', newsRouter);
+app.use("/api/profile", profileRouter);
+app.use('/api/wishlist', wishlistRouter)
 
 
 // Server

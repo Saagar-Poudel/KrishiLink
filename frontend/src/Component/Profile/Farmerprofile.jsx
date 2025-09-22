@@ -15,7 +15,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { useAuth } from "../../contexts/Authcontext";
-import { useCart } from "../../contexts/CartContex"; 
+import { useCart } from "../../contexts/CartContex";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -36,6 +36,9 @@ export default function FarmerProfile() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(true);
+
+  const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   const isFarmerOwner =
     user?.role === "farmer" && (!username || user?.username === username);
@@ -59,6 +62,29 @@ export default function FarmerProfile() {
     };
     fetchFarmer();
   }, [user, username, isFarmerOwner]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // get farmerId from fetched farmer data or logged-in user
+        const farmerId = isFarmerOwner ? user?.id : farmer?.id;
+        if (!farmerId) return;
+
+        const { data } = await axios.get(
+          `http://localhost:3000/api/profile/${farmerId}/stats`
+        );
+            console.log("fetch:",data)
+        setStats(data);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+        toast.error("Failed to load profile stats!");
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [user, farmer, isFarmerOwner]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -92,7 +118,6 @@ export default function FarmerProfile() {
         const { data } = await axios.get(
           `http://localhost:3000/api/orders/${user.username}`
         );
-
         setOrders(data);
       } catch (err) {
         console.error("Error fetching orders:", err);
@@ -101,11 +126,8 @@ export default function FarmerProfile() {
         setOrdersLoading(false);
       }
     };
-
     fetchOrders();
   }, []);
-
-  const earnings = { total: 45280, monthly: 8560, growth: 12.5 };
 
   const [activeTab, setActiveTab] = useState("products");
   const [openMenu, setOpenMenu] = useState(null);
@@ -125,14 +147,13 @@ export default function FarmerProfile() {
   };
 
   const handleAddToCart = (product) => {
-      addToCart(product, 1);
+    addToCart(product, 1);
     toast.success(`${product.name} added to cart`);
   };
-  
+
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
   return (
     <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
-  
       <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow p-8">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex items-center gap-6">
@@ -196,38 +217,40 @@ export default function FarmerProfile() {
         </div>
       </div>
 
-   
       {isFarmerOwner && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded shadow p-6">
             <p className="text-sm text-gray-500">Total Earnings</p>
             <p className="text-3xl font-bold text-green-600">
-              ₹{earnings.total.toLocaleString()}
+              {statsLoading
+                ? "..."
+                : `₹${stats?.totalEarnings?.toLocaleString()}`}
             </p>
           </div>
           <div className="bg-white rounded shadow p-6">
             <p className="text-sm text-gray-500">Monthly Revenue</p>
             <p className="text-3xl font-bold">
-              ₹{earnings.monthly.toLocaleString()}
+              {statsLoading
+                ? "..."
+                : `₹${stats?.thisMonthRevenue?.toLocaleString()}`}
             </p>
             <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-              <TrendingUp className="w-3 h-3" /> +{earnings.growth}% from last
-              month
+              <TrendingUp className="w-3 h-3" />
+              {statsLoading ? "..." : stats?.growthText}
             </p>
           </div>
           <div className="bg-white rounded shadow p-6">
             <p className="text-sm text-gray-500">Active Products</p>
             <p className="text-3xl font-bold">
-              {products.filter((p) => p.status === "active").length}
+              {statsLoading ? "..." : stats?.activeProducts}
             </p>
             <p className="text-xs text-gray-500">
-              {products.length} total products
+              {statsLoading ? "..." : `${stats?.totalProducts} total products`}
             </p>
           </div>
         </div>
       )}
 
-     
       <div className="bg-white rounded shadow">
         <div className="flex border-b">
           <button
@@ -255,7 +278,6 @@ export default function FarmerProfile() {
           )}
         </div>
 
-     
         {activeTab === "products" && (
           <div className="p-6 space-y-4">
             <div className="flex justify-between items-center">
@@ -318,7 +340,7 @@ export default function FarmerProfile() {
                           <button
                             onClick={() => {
                               setProductToDelete(p);
-                              setDeleteModal(true);  
+                              setDeleteModal(true);
                               setOpenMenu(null);
                             }}
                             className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 w-full text-left text-sm text-red-600"
@@ -333,8 +355,8 @@ export default function FarmerProfile() {
                       onClick={() => handleAddToCart(p)}
                       className="bg-green-600 text-white px-3 py-2 rounded"
                     >
-                    <ShoppingCart className="w-4 h-4 mr-2 inline" />
-                     Add to Cart
+                      <ShoppingCart className="w-4 h-4 mr-2 inline" />
+                      Add to Cart
                     </button>
                   )}
                 </div>
@@ -342,7 +364,6 @@ export default function FarmerProfile() {
             </div>
           </div>
         )}
-
 
         {isFarmerOwner && activeTab === "orders" && (
           <div className="p-6 space-y-4">
@@ -381,7 +402,6 @@ export default function FarmerProfile() {
             )}
           </div>
         )}
-
 
         {deleteModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
