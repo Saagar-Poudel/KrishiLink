@@ -147,25 +147,60 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
-// ✅ Get order by ID
-export const getOrderById = async (req, res) => {
+export const getUserOrders = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
 
-    const order = await db.query.orders.findFirst({
-      where: eq(orders.id, Number(id)),
-      with: { user: true, items: { with: { product: true } } },
+    // fetch orders with joined items & products
+    const rows = await db
+      .select({
+        orderId: orders.id,
+        status: orders.status,
+        totalAmount: orders.totalAmount,
+        createdAt: orders.createdAt,
+        sellerName: products.sellerName,
+        productId: products.id,
+        productName: products.name,
+        quantity: orderItems.quantity,
+        price: orderItems.price,
+      })
+      .from(orders)
+      .innerJoin(orderItems, eq(orderItems.orderId, orders.id))
+      .innerJoin(products, eq(orderItems.productId, products.id))
+      .where(eq(orders.userId, Number(userId)));
+
+    // group orders
+    const grouped = {};
+    rows.forEach((row) => {
+      if (!grouped[row.orderId]) {
+        grouped[row.orderId] = {
+          orderId: row.orderId,
+          status: row.status,
+          totalAmount: row.totalAmount,
+          createdAt: row.createdAt,
+          sellerName: row.sellerName,
+          products: [],
+          totalQuantity: 0,
+        };
+      }
+
+      grouped[row.orderId].products.push({
+        id: row.productId,
+        name: row.productName,
+        quantity: row.quantity,
+        price: row.price,
+      });
+
+      grouped[row.orderId].totalQuantity += row.quantity;
     });
 
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    res.json(order);
+    res.json(Object.values(grouped));
   } catch (err) {
-    res.status(500).json({ message: "Error fetching order" });
+    console.error("Error fetching orders:", err);
+    res.status(500).json({ error: "Failed to fetch orders" });
   }
 };
 
-// controllers/order.controller.js
 export const getAllOrdersBySellerName = async (req, res) => {
   try {
     const { sellerName } = req.params;

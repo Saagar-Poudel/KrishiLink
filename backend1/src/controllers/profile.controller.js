@@ -98,3 +98,55 @@ export const getFarmerProfileStats = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Get Buyer Profile Stats
+export const getBuyerProfileStats = async (req, res) => {
+  try {
+    const { buyerId } = req.params;
+
+    // 1. Check buyer exists
+    const buyer = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.id, buyerId), eq(users.role, "buyer")));
+
+    if (!buyer.length) {
+      return res.status(404).json({ message: "Buyer not found" });
+    }
+
+
+    // 2. Fetch all orders by this buyer
+    const buyerOrders = await db
+      .select({
+        id: orders.id,
+        status: orders.status,
+        totalAmount: orders.totalAmount,
+        createdAt: orders.createdAt,
+      })
+      .from(orders)
+      .where(eq(orders.userId, buyerId));
+
+    // 3. Total spent = sum of complete orders
+    const totalSpent = buyerOrders
+      .filter((o) => o.status.toLowerCase() === "complete" || o.status.toLowerCase() === "delivered")
+      .reduce((sum, o) => sum + Number(o.totalAmount), 0);
+
+    // 4. Count orders by status
+    const statusCounts = buyerOrders.reduce((acc, order) => {
+      const status = order.status.toLowerCase();
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {});
+
+    // 5. Response
+    res.json({
+      buyerId,
+      totalSpent,
+      totalOrders: buyerOrders.length,
+      statusCounts, // e.g. { pending: 2, shipped: 1, complete: 3 }
+    });
+  } catch (err) {
+    console.error("Error in getBuyerProfileStats:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

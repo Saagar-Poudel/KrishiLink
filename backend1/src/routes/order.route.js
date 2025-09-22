@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder, getAllOrdersBySellerName } from "../controllers/order.controller.js";
+import { createOrder, getAllOrders, updateOrderStatus, deleteOrder, getAllOrdersBySellerName, getUserOrders } from "../controllers/order.controller.js";
 
 const router = Router();
 
@@ -9,8 +9,7 @@ router.post("/", createOrder);
 // GET /api/orders - Get all orders
 router.get("/", getAllOrders);
 
-// // GET /api/orders/:id - Get single order
-// router.get("/:id", getOrderById);
+router.get("/buyer/:userId", getUserOrders);
 
 //GET /api/orders/:sellerName - get orders by seller name
 router.get("/:sellerName", getAllOrdersBySellerName);
