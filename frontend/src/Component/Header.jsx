@@ -48,7 +48,8 @@ const Header = () => {
     { name: t("Market"), path: "/market" },
     { name: t("News"), path: "/news" },
     { name: t("Training"), path: "/training" },
-    { name: t("Storage"), path: "/storage" },
+    // { name: t("Storage"), path: "/storage" },
+    { name: t("Contact"), path:"/contact"}
   ];
 
   // Format timestamp -> "x minutes ago"

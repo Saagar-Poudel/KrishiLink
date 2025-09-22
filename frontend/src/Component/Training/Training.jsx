@@ -3,16 +3,16 @@ import { motion } from "framer-motion";
 import LearningHub from "./LearningHub";
 import CropCalendar from "./CropCalendar";
 import MediaResources from "./mediaResources";
-import CommunityHub from "./communityHub";
+// import CommunityHub from "./communityHub";
 import SupportAndFAQ from "./supportAndFAQ";
 import { BookOpen, Calendar, Video, Users, HelpCircle } from "lucide-react";
 
 const tabs = [
   { name: "LearningHub", label: "Learning Hub", icon: <BookOpen /> },
-  { name: "CropCalendar", label: "Crop Calendar", icon: <Calendar /> },
+  // { name: "CropCalendar", label: "Crop Calendar", icon: <Calendar /> },
   { name: "MediaResources", label: "Media Resources", icon: <Video /> },
-  { name: "CommunityHub", label: "Community Hub", icon: <Users /> },
-  { name: "SupportAndFAQ", label: "Support & FAQ", icon: <HelpCircle /> },
+  // { name: "CommunityHub", label: "Community Hub", icon: <Users /> },
+  // { name: "SupportAndFAQ", label: "Support & FAQ", icon: <HelpCircle /> },
 ];
 
 const Training = () => {
@@ -54,41 +54,57 @@ const Training = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0B1A12] transition-colors duration-500">
+      
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center text-center py-16 px-6 bg-white shadow-md">
+      <section className="relative flex flex-col items-center justify-center text-center py-16 px-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-[#0B1A12] dark:to-[#123223] shadow-md rounded-b-3xl transition-colors duration-500">
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-5xl font-bold mb-4 text-gray-800"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-800 dark:text-green-200"
         >
           Smart Agricultural Training
         </motion.h1>
-        <p className="max-w-2xl text-lg text-gray-600">
+        <motion.p
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="max-w-2xl text-lg sm:text-xl text-gray-600 dark:text-gray-300"
+        >
           Explore our learning hub, crop calendar, resources, and community to grow your farming skills. Selecting a crop will dynamically update all sections.
-        </p>
+        </motion.p>
       </section>
 
       {/* Tabs Navigation */}
-      <nav className="flex flex-wrap justify-center gap-4 mt-6">
+      <nav className="flex flex-wrap justify-center gap-4 mt-6 px-4 md:px-0">
         {tabs.map((tab) => (
           <button
             key={tab.name}
             onClick={() => setActiveTab(tab.name)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 shadow-md ${
               activeTab === tab.name
-                ? "bg-green-600 text-white shadow-md"
-                : "bg-white text-gray-800 hover:bg-gray-100"
+                ? "bg-green-600 text-white dark:bg-green-700"
+                : "bg-white dark:bg-[#1F2937] text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2B3A2B]"
             }`}
           >
-            {tab.icon} {tab.label}
+            <span className="w-5 h-5">{tab.icon}</span>
+            {tab.label}
           </button>
         ))}
       </nav>
 
       {/* Active Tab Content */}
-      <div className="mt-8 px-4 md:px-8">{renderActiveTab()}</div>
+      <div className="mt-8 px-4 md:px-8">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {renderActiveTab()}
+        </motion.div>
+      </div>
     </div>
   );
 };
