@@ -178,7 +178,7 @@ const Marketplace = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-700 dark:text-green-700 mb-4">
             {t("marketplaceTitle")}
           </h2>
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -188,7 +188,7 @@ const Marketplace = () => {
 
         {/* Category Section */}
         <div className="mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4 uppercase tracking-wide">
+          <h2 className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-gray-100 mb-4 uppercase tracking-wide">
             {t("Category")}
           </h2>
 

@@ -134,7 +134,7 @@ const Header = () => {
               <button
                 onClick={() => setOpenNotif(!openNotif)}
                 className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors
-     dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
+                 dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
               >
                 <Bell className="h-5 w-5" />
                 {notifications.filter((n) => !n.isRead).length > 0 && (
@@ -164,11 +164,11 @@ const Header = () => {
                           key={i}
                           onClick={() => handleOpenDialog(n)}
                           className={`p-3 text-sm border-b dark:border-[#1F2937] cursor-pointer 
-      ${
-        !n.isRead
-          ? "bg-gray-100 dark:bg-[#1a2b22]"
-          : "bg-white dark:bg-[#0B1A12]"
-      }`}
+                             ${
+                               !n.isRead
+                                 ? "bg-gray-100 dark:bg-[#1a2b22]"
+                                 : "bg-white dark:bg-[#0B1A12]"
+                             }`}
                         >
                           <div className="flex items-start justify-between">
                             {/* Message text */}
@@ -203,11 +203,11 @@ const Header = () => {
             {/* Cart Button (DESKTOP) */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center px-3 py-1 border rounded text-sm
+              className="relative flex items-center px-3 py-1 border rounded text-sm hover:bg-gray-300
                          dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
             >
               <ShoppingCart className="w-4 h-4" />
-              <span className="ml-2">{t("cart")}</span>
+              <span className="ml-2 ">{t("cart")}</span>
               {totalItems > 0 && (
                 <span
                   className="absolute -top-2 -right-2 h-5 w-5 rounded-full 
@@ -263,7 +263,7 @@ const Header = () => {
 
               {/* Mobile Actions */}
               <div className="flex flex-col space-y-2">
-                <button
+                {/* <button
                   onClick={toggleLanguage}
                   className="w-full px-3 py-2 text-sm font-medium border border-gray-300 rounded-md 
                              hover:bg-gray-100 transition-colors flex items-center justify-center
@@ -271,17 +271,17 @@ const Header = () => {
                 >
                   <Languages className="h-4 w-4 mr-1" />
                   {language === "en" ? "नेपाली" : "English"}
-                </button>
+                </button> */}
 
-                <button
+                {/* <button
                   className="w-full px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex justify-center
                                    dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
                 >
                   <Bell className="h-5 w-5 mr-2" />
                   Notifications
-                </button>
+                </button> */}
 
-                <button
+                {/* <button
                   onClick={() => {
                     setIsCartOpen(true);
                     setIsMenuOpen(false);
@@ -296,18 +296,18 @@ const Header = () => {
                       {totalItems}
                     </span>
                   )}
-                </button>
+                </button> */}
 
-                <button
+                {/* <button
                   className="w-full px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex justify-center
                                    dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
                 >
                   <User className="h-5 w-5 mr-2" />
                   Profile
-                </button>
+                </button> */}
 
                 {/* Login / Logout for Mobile */}
-                {user ? (
+                {/* {user ? (
                   <button
                     onClick={() => {
                       handleLogout();
@@ -327,11 +327,11 @@ const Header = () => {
                   >
                     {t("login")}
                   </Link>
-                )}
-                <div className="flex justify-center pt-2">
+                )} */}
+                {/* <div className="flex justify-center pt-2">
                   <Thems />
-                </div>
-              </div>
+                </div> */}
+               </div>
             </div>
           </div>
         )}
