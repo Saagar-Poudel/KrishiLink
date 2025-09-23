@@ -177,72 +177,66 @@ const AboutUs = () => {
       </AnimatedSection>
 
       {/* Features */}
-      <AnimatedSection className="py-20 px-4">
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-green-700 dark:text-green-400 mb-4">Why Choose Krishi Link</h2>
-          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">Comprehensive solutions for modern agriculture challenges</p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <motion.div key={index} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.05, y: -5 }} transition={{ duration: 0.6, delay: index * 0.1 }} className="group bg-white dark:bg-gray-800 border border-green-100 dark:border-green-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300">
-              <div className="w-16 h-16 bg-green-600 dark:bg-green-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <feature.icon className="w-8 h-8 text-white dark:text-gray-900" />
-              </div>
-              <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-3">{feature.title}</h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{feature.description}</p>
-            </motion.div>
-          ))}
+     <AnimatedSection className="py-20 mx-6 md:mx-20">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-green-700 dark:text-green-400 text-center mb-16">Why Choose Krishi Link</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div key={index} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.05, y: -5 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group bg-white dark:bg-gray-900 border border-green-100 rounded-2xl p-6 shadow-md hover:shadow-xl">
+                <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mb-4">
+                  <feature.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-3">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </AnimatedSection>
 
       {/* Team */}
-      <AnimatedSection className="py-20 px-4 bg-green-50 dark:bg-gray-900">
-        <div className="max-w-6xl mx-auto text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-green-700 dark:text-green-400 mb-4">Meet Our Team</h2>
-          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">Passionate individuals working to revolutionize agriculture</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {teamMembers.map((member, index) => (
-            <motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: index * 0.1 }} whileHover={{ y: -10 }} className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
-              <div className="h-56 overflow-hidden mb-4">
-                <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-green-800 dark:text-green-400">{member.name}</h3>
-                <p className="text-green-600 dark:text-green-300 font-medium">{member.role}</p>
-                <p className="text-gray-700 dark:text-gray-300 mt-2">{member.bio}</p>
-              </div>
-            </motion.div>
-          ))}
+      <AnimatedSection className="py-20 bg-green-50 dark:bg-gray-800 mx-6 md:mx-20 rounded-2xl">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-green-700 dark:text-green-400 text-center mb-16">Meet Our Team</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {teamMembers.map((member, index) => (
+              <motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -10 }}
+                className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                <div className="h-72 overflow-hidden"> {/* bigger image */}
+                  <img src={member.image} alt={member.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-green-800 dark:text-green-400">{member.name}</h3>
+                  <p className="text-green-600 dark:text-green-300 font-medium">{member.role}</p>
+                  <p className="text-gray-700 dark:text-gray-300 mt-2">{member.bio}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </AnimatedSection>
 
       {/* Stats */}
-      <AnimatedSection className="py-20 px-4 bg-gradient-to-r from-green-700 to-green-500 dark:from-green-900 dark:to-green-700">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {stats.map((stat, index) => (
-            <motion.div key={index} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: index * 0.1 }} className="bg-white/10 dark:bg-gray-800 backdrop-blur-md rounded-2xl p-6 border border-green-200/30 dark:border-green-700 shadow-md">
-              <Counter end={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-              <p className="text-green-100 dark:text-green-400 text-lg mt-2 font-medium">{stat.label}</p>
-            </motion.div>
-          ))}
+      <AnimatedSection className="py-20 bg-gradient-to-r from-green-700 to-green-500 mx-6 md:mx-20 rounded-2xl">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Impact</h2>
+          <p className="text-xl text-green-100 mb-12">Numbers that reflect our commitment</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <motion.div key={index} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-green-200/30 shadow-md">
+                <Counter end={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+                <p className="text-green-100 text-lg mt-2">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </AnimatedSection>
-
-      {/* CTA */}
-      <AnimatedSection className="py-20 px-4 bg-gradient-to-r from-green-700 to-green-500 dark:from-green-900 dark:to-green-700">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Join the Agriculture Revolution</h2>
-          <p className="text-xl text-green-100 dark:text-green-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Be part of the change. Connect with us today and transform your farming journey with smart technology and direct market access.
-          </p>
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center px-8 py-4 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 font-semibold text-lg rounded-xl shadow-lg hover:bg-green-50 dark:hover:bg-green-900 hover:shadow-glow transition-all duration-300">
-            Join Krishi Link Today
-            <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="ml-2">→</motion.div>
-          </motion.button>
-        </div>
-      </AnimatedSection>
-
     </div>
   );
 };
