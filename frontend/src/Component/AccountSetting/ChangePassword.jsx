@@ -1,30 +1,42 @@
 import React, { useState } from "react";
+import { useAuth } from "../../contexts/Authcontext";
+import axios from "axios";
 
-const ChangePassword = ({ isOpen, onClose, onSave }) => {
+const ChangePassword = ({ isOpen, onClose }) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { user } = useAuth();
 
   if (!isOpen) return null; // don’t render if not open
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (newPassword !== confirmPassword) {
       alert("New password and confirm password do not match!");
       return;
     }
-    // pass updated password back to parent
-    onSave({ currentPassword, newPassword });
-    onClose();
+    try {
+      await axios.put(
+        `http://localhost:3000/api/users/change-password/${user.id}`,
+        { currentPassword, newPassword }
+      );
+
+      alert("Password changed successfully!");
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.error || "Failed to change password");
+    }
   };
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      onClick={onClose} // close when clicking outside
+      onClick={onClose}
     >
       <div
         className="bg-white dark:bg-[#0B1A12] rounded-lg shadow-lg p-6 w-full max-w-md"
-        onClick={(e) => e.stopPropagation()} // stop close when clicking inside
+        onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-[#F9FAFB]">
           Change Password

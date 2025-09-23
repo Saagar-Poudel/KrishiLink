@@ -13,7 +13,7 @@ import { useAuth } from '../../contexts/Authcontext';
 
 const expertsData = [
   {
-    id: 21,
+    id: 29,
     name: "Dr. Rajesh Kumar",
     username: "rajeshkumar",
     role: "Crop Specialist",
@@ -25,7 +25,7 @@ const expertsData = [
     bio: "Dr. Kumar specializes in sustainable crop production techniques, focusing on maximizing yield while maintaining soil health. He has helped over 2,000 farmers increase their crop productivity by 35% on average.",
   },
   {
-    id: 22,
+    id: 30,
     name: "Dr. Priya Sharma",
     username: "priyasharma",
     role: "Livestock Expert",
@@ -37,7 +37,7 @@ const expertsData = [
     bio: "Dr. Sharma is a renowned veterinarian with expertise in dairy farming, poultry management, and livestock health. She has successfully implemented breeding programs that increased milk production by 40% in multiple farms.",
   },
   {
-    id: 23,
+    id: 31,
     name: "Prof. Amit Patel",
     username: "amitpatel",
     role: "Soil Scientist",
@@ -49,7 +49,7 @@ const expertsData = [
     bio: "Professor Patel is an expert in soil chemistry and fertility management. His innovative composting techniques and soil testing methods have restored degraded farmlands across 5 states, improving soil health by 50%.",
   },
   {
-    id: 24,
+    id: 32,
     name: "Eng. Suresh Reddy",
     username: "sureshreddy",
     role: "Irrigation Specialist",
@@ -61,7 +61,7 @@ const expertsData = [
     bio: "Suresh is a water management engineer who designs efficient irrigation systems. His drip irrigation solutions have helped farmers reduce water usage by 60% while maintaining optimal crop growth.",
   },
   {
-    id: 25,
+    id: 33,
     name: "Dr. Meera Gupta",
     role: "Pest Management Expert",
     username: "meeragupta",
@@ -73,7 +73,7 @@ const expertsData = [
     bio: "Dr. Gupta specializes in eco-friendly pest management strategies. Her integrated approach has helped farmers reduce pesticide use by 70% while maintaining effective pest control through biological methods.",
   },
   {
-    id: 26,
+    id: 34,
     name: "Sh. Ramesh Singh",
     username: "rameshsingh",
     role: "Organic Farming Consultant",

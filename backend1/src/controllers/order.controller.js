@@ -304,7 +304,7 @@ export const updateOrderStatus = async (req, res) => {
         break;
 
       case "deliver":
-        if (order.status !== "shipped")
+        if (order.status !== "shipping")
           return res
             .status(400)
             .json({ error: "Only shipped orders can be delivered" });

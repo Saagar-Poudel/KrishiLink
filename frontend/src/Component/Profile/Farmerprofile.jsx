@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import DeliveryPartnerDialog from "./DeliveryPartnerDialog";
 import FarmerChatbox from "../FarmerChatbox";
+import FarmerOrderDialog from "./FarmerOrderDialog";
 
 import ProductModal from "../Markets/ProductModal";
 
@@ -40,6 +41,14 @@ export default function FarmerProfile() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(true);
+
+  const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const handleViewOrderDetails = (order) => {
+    setSelectedOrder(order);
+    setOrderDetailsOpen(true);
+  };
 
   const [chatOpen, setChatOpen] = useState(false);
   const [chatFarmer, setChatFarmer] = useState(null);
@@ -314,6 +323,23 @@ export default function FarmerProfile() {
     setIsModalOpen(true);
   };
 
+  const groupedOrders = Object.values(
+    orders.reduce((acc, order) => {
+      if (!acc[order.id]) {
+        acc[order.id] = {
+          ...order,
+          products: [],
+        };
+      }
+      acc[order.id].products.push({
+        product: order.product,
+        quantity: order.quantity,
+        total: order.total,
+      });
+      return acc;
+    }, {})
+  );
+
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
 
   return (
@@ -325,7 +351,8 @@ export default function FarmerProfile() {
             onClick={handleSaveSeller}
             className={`absolute top-4 right-4 p-2 rounded-full border transition ${
               isSaved
-                ? "bg-white text-green-700 border-green-700 hover:bg-green-50" : "bg-green-600 text-white hover:bg-green-700"
+                ? "bg-white text-green-700 border-green-700 hover:bg-green-50"
+                : "bg-green-600 text-white hover:bg-green-700"
             }`}
           >
             <Save className="w-5 h-5" />
@@ -566,21 +593,27 @@ export default function FarmerProfile() {
             ) : filteredOrders.length === 0 ? (
               <p className="text-gray-500">No orders found.</p>
             ) : (
-              filteredOrders.map((o) => (
+              groupedOrders.map((o) => (
                 <div
                   key={o.id}
-                  className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
+                  className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-start"
                 >
                   <div>
-                    <h4 className="font-semibold">
-                      #{o.id} - {o.product}
-                    </h4>
+                    <h4 className="font-semibold">Order #{o.id}</h4>
                     <p className="text-sm text-gray-500">
-                      Buyer: {o.buyer} • Qty: {o.quantity}kg • Total: ₹{o.total}{" "}
-                      • Date: {o.date}
+                      Buyer: {o.buyer} • Date: {o.date}
                     </p>
+
+                    <div className="mt-2 space-y-1">
+                      {o.products.map((p, idx) => (
+                        <p key={idx} className="text-sm text-gray-700">
+                          {p.product} • Qty: {p.quantity}kg • ₹{p.total}
+                        </p>
+                      ))}
+                    </div>
+
                     <p
-                      className={`text-xs mt-1 font-medium ${
+                      className={`text-xs mt-2 font-medium ${
                         o.status === "pending"
                           ? "text-yellow-600"
                           : o.status === "accepted" || o.status === "packing"
@@ -596,9 +629,16 @@ export default function FarmerProfile() {
                     </p>
                   </div>
 
+                  {/* Action buttons */}
                   <div className="flex gap-2">
                     {o.status === "paid" && (
                       <>
+                        <button
+                          onClick={() => handleViewOrderDetails(o)}
+                          className="border px-3 py-1 rounded hover:bg-gray-200"
+                        >
+                          View Details
+                        </button>
                         <button
                           onClick={() => handleAcceptOrder(o.id)}
                           className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
@@ -613,7 +653,6 @@ export default function FarmerProfile() {
                         </button>
                       </>
                     )}
-
                     {o.status === "packing" || o.status === "accepted" ? (
                       <button
                         onClick={() => handleOpenDeliveryDialog(o.id)}
@@ -622,7 +661,6 @@ export default function FarmerProfile() {
                         Choose Delivery Partner
                       </button>
                     ) : null}
-
                     {o.status === "shipping" && (
                       <button
                         onClick={() => handleDeliverOrder(o.id)}
@@ -690,6 +728,12 @@ export default function FarmerProfile() {
           otherUser={chatFarmer} // 👈 the farmer profile being viewed
           isOpen={chatOpen}
           onClose={() => setChatOpen(false)}
+        />
+      )}
+      {orderDetailsOpen && selectedOrder && (
+        <FarmerOrderDialog
+          order={selectedOrder}
+          onClose={() => setOrderDetailsOpen(false)}
         />
       )}
     </div>
