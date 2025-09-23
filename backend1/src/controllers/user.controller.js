@@ -1,7 +1,7 @@
 //Controllers to use the usermodel to handle login and registration database work
 import { users } from "../models/schema.js";
 import { db } from "../dbConnection/dbConnection.js";
-import { eq } from "drizzle-orm";
+import { eq, and, ne } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { generateToken } from "./auth.controller.js";
 
@@ -19,7 +19,7 @@ export class UserController {
           email,
           password: hashedPassword,
           role: role || "buyer",
-          address: address
+          address: address,
         })
         .returning();
 
@@ -85,6 +85,46 @@ export class UserController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Error fetching user" });
+    }
+  }
+  static async updateProfile(req, res) {
+    const { id } = req.params; // userId from route
+    const { username, address, image } = req.body;
+
+    try {
+      // ✅ Check if username exists for another user
+      if (username) {
+        const existingUser = await db
+          .select()
+          .from(users)
+          .where(and(eq(users.username, username), ne(users.id, id)));
+
+        if (existingUser.length > 0) {
+          return res
+            .status(400)
+            .json({ error: "Username already taken. Please choose another." });
+        }
+      }
+
+      // ✅ Update user
+      const updatedUser = await db
+        .update(users)
+        .set({
+          ...(username && { username }),
+          ...(address && { address }),
+          ...(image && { image }),
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, id))
+        .returning();
+
+      res.status(200).json({
+        message: "Profile updated successfully",
+        user: updatedUser[0],
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error updating profile" });
     }
   }
 }

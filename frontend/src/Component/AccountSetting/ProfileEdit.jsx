@@ -1,42 +1,86 @@
 import React, { useState } from "react";
+import { v4 as uuid } from "uuid";
+import { supabase } from "../../lib/supabaseClient";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-const ProfileEdit = ({ isOpen, onClose, onSave, currentName, currentPic, currentAddress }) => {
-  const [username, setUsername] = useState(currentName || "Your Username");
-  const [address, setAddress] = useState(currentAddress || "Your Address");
-  const [profilePic, setProfilePic] = useState(null);
+const ProfileEdit = ({
+  isOpen,
+  onClose,
+  onSave,
+  currentName,
+  currentPic,
+  currentAddress,
+  userId,
+}) => {
+  const [username, setUsername] = useState(currentName || "");
+  const [address, setAddress] = useState(currentAddress || "");
+  const [profilePic, setProfilePic] = useState(currentPic || "");
+  const [uploading, setUploading] = useState(false);
 
-  if (!isOpen) return null; // don’t render if not open
+  if (!isOpen) return null;
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfilePic(URL.createObjectURL(file));
+  async function handleImageUpload(file) {
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${uuid()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("profile-pictures")
+        .upload(filePath, file, { upsert: true, cacheControl: "3600" });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from("profile-pictures")
+        .getPublicUrl(filePath);
+
+      setProfilePic(data.publicUrl);
+      toast.success("Profile picture updated");
+    } catch (err) {
+      toast.error(err.message || "Image upload failed");
+    } finally {
+      setUploading(false);
     }
-  };
+  }
 
-  const handleSave = () => {
-    // pass updated values back to parent
-    onSave({ username, address, profilePic });
-    onClose();
-  };
+  async function handleSave() {
+    try {
+      const { data } = await axios.put(
+        `http://localhost:3000/api/users/profile/${userId}`,
+        {
+          username,
+          address,
+          image: profilePic,
+        }
+      );
+      console.log("id:", userId);
+
+      toast.success("Profile updated successfully!");
+      onSave(data.user);
+      onClose();
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Failed to update profile");
+    }
+  }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      onClick={onClose} // close when clicking outside
+      onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-[#0B1A12] rounded-lg shadow-lg p-6 w-full max-w-md"
-        onClick={(e) => e.stopPropagation()} // stop close when clicking inside
+        className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-[#F9FAFB]">
-          Edit Profile
-        </h2>
+        <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
 
         {/* Profile Picture */}
         <div className="flex flex-col items-center mb-6">
           <img
-            src={profilePic || currentPic || "https://via.placeholder.com/120"}
+            src={profilePic || "https://via.placeholder.com/120"}
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover border-2 border-green-500"
           />
@@ -45,49 +89,51 @@ const ProfileEdit = ({ isOpen, onClose, onSave, currentName, currentPic, current
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageChange}
+              onChange={(e) =>
+                e.target.files && handleImageUpload(e.target.files[0])
+              }
               className="hidden"
             />
           </label>
+          {uploading && (
+            <p className="text-xs text-gray-500 mt-1">Uploading...</p>
+          )}
         </div>
 
-        {/* Username Input */}
+        {/* Username */}
         <div className="mb-6">
-          <label className="block text-gray-700 dark:text-[#E5E7EB] mb-2 text-sm">
-            Username
-          </label>
+          <label className="block mb-2 text-sm font-medium">Username</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#12241A] dark:text-white text-sm"
+            className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-green-500 text-sm"
           />
         </div>
 
-        {/* Address Input */}
+        {/* Address */}
         <div className="mb-6">
-          <label className="block text-gray-700 dark:text-[#E5E7EB] mb-2 text-sm">
-            Address
-          </label>
+          <label className="block mb-2 text-sm font-medium">Address</label>
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#12241A] dark:text-white text-sm"
+            className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-green-500 text-sm"
           />
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 dark:bg-[#1F2937] dark:text-[#E5E7EB]"
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            disabled={uploading}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
           >
             Save
           </button>

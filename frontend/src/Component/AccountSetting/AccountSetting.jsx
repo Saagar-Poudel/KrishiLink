@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import ProfileEdit from "./ProfileEdit";
 import ChangePassword from "./ChangePassword"; // import your ChangePassword component
+import { useAuth } from "../../contexts/Authcontext";
 
 const AccountSettings = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isChangeOpen, setIsChangeOpen] = useState(false); // state for change password modal
+  const { user } = useAuth();
   const [userData, setUserData] = useState({
-    name: "John Doe",
-    pic: "https://via.placeholder.com/120",
+    username: user.username,
+    pic: user.image,
+    address: user.address,
+    userId: user.id,
   });
 
   const handleSaveProfile = (updatedData) => {
     setUserData({
-      name: updatedData.name,
+      name: updatedData.username,
       pic: updatedData.profilePic || userData.pic,
     });
     alert("Profile updated successfully!");
@@ -121,9 +125,11 @@ const AccountSettings = () => {
       <ProfileEdit
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        onSave={handleSaveProfile}
-        currentName={userData.name}
-        currentPic={userData.pic}
+        onSave={(updatedUser) => setUserData(updatedUser)}
+        currentUsername={userData?.username}
+        currentPic={userData?.image}
+        currentAddress={userData?.address}
+        userId={userData?.userId}
       />
 
       {/* Change Password Modal */}

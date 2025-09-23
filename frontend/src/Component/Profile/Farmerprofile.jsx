@@ -335,7 +335,7 @@ export default function FarmerProfile() {
           <div className="flex items-center gap-6">
             <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white">
               <img
-                src={defaultAvatar}
+                src={user.image}
                 alt={farmer?.username}
                 className="w-full h-full object-cover"
               />
