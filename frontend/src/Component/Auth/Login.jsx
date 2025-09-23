@@ -13,7 +13,8 @@ const AuthForm = () => {
     username: "",
     email: "",
     password: "",
-    role: "buyer", //default role
+    role: "",
+    address: "",
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,6 +68,14 @@ const AuthForm = () => {
       } else if (!validatePassword(formData.password)) {
         newErrors.password =
           "Password must be at least 6 characters with letters, numbers, and special characters";
+      }
+
+      if (!formData.role) {
+        newErrors.role = "Please select a role";
+      }
+
+      if (!formData.address) {
+        newErrors.address = "Address is required";
       }
     }
 
@@ -133,7 +142,8 @@ const AuthForm = () => {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          role: formData.role, // send role
+          role: formData.role,
+          address: formData.address,
         };
 
         console.log("Registration data:", submitData);
@@ -157,19 +167,6 @@ const AuthForm = () => {
         });
         console.log("Registration response:", data);
       }
-
-      // if (isLogin) {
-      //   // Navigate to homepage
-      //   navigate('/');
-      // } else {
-      //   setIsLogin(true);
-
-      //   // Keep email and password for convenience, clear username
-      //   setFormData(prev => ({
-      //     ...prev,
-      //     username: ''
-      //   }));
-      // }
     } catch (error) {
       console.error("Submission error:", error);
       toast.error("An error occurred. Please try again.");
@@ -184,7 +181,8 @@ const AuthForm = () => {
       username: "",
       email: "",
       password: "",
-      role: "farmer", // reset to default role
+      role: "",
+      address: "",
     });
     setErrors({});
   };
@@ -350,11 +348,45 @@ const AuthForm = () => {
                       onChange={(e) =>
                         handleInputChange("role", e.target.value)
                       }
-                      className="w-full h-12 pl-4 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                      className={`w-full h-12 pl-4 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 ${
+                        errors.role ? "border-red-500" : "border-gray-200"
+                      }`}
                     >
+                      <option value="">Select a role</option>
                       <option value="farmer">Farmer</option>
                       <option value="buyer">Buyer</option>
                     </select>
+                    {errors.role && (
+                      <p className="text-red-500 text-xs mt-1 ml-2">
+                        {errors.role}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Address Field (only for registration) */}
+                  <div
+                    className={`relative transition-all duration-500 ease-in-out ${
+                      !isLogin
+                        ? "opacity-100 max-h-20 translate-y-0"
+                        : "opacity-0 max-h-0 -translate-y-2 overflow-hidden"
+                    }`}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Address"
+                      value={formData.address}
+                      onChange={(e) =>
+                        handleInputChange("address", e.target.value)
+                      }
+                      className={`w-full pl-4 h-12 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 ${
+                        errors.address ? "border-red-500" : "border-gray-200"
+                      }`}
+                    />
+                    {errors.address && (
+                      <p className="text-red-500 text-xs mt-1 ml-2">
+                        {errors.address}
+                      </p>
+                    )}
                   </div>
 
                   {/* Forgot Password (only for login) */}

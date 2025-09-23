@@ -8,7 +8,7 @@ import { generateToken } from "./auth.controller.js";
 export class UserController {
   // Register a new user
   static async register(req, res) {
-    const { username, email, password, role } = req.body;
+    const { username, email, password, role, address } = req.body;
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,6 +19,7 @@ export class UserController {
           email,
           password: hashedPassword,
           role: role || "buyer",
+          address: address
         })
         .returning();
 
