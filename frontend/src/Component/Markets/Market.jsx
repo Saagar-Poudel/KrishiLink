@@ -180,7 +180,7 @@ const Market = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:w-1/4">
+          <div className="lg:w-1/5">
             <div className="sticky top-30">
               <Filters
                 onFiltersChange={(newFilter) =>
@@ -192,7 +192,7 @@ const Market = () => {
           <Chatbox currentUser={user} />
 
           {/* Main Content */}
-          <div className="lg:w-3/4">
+          <div className="lg:w-4/5">
             <div className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold dark:text-[#F9FAFB]">
@@ -208,7 +208,7 @@ const Market = () => {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3  gap-9">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-4">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}

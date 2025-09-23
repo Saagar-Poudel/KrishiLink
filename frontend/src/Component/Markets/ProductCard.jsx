@@ -24,7 +24,7 @@ const ProductCard = ({
 
   return (
     <div
-      className="rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer group bg-white dark:bg-[#12241A] dark:text-[#F9FAFB]"
+      className="rounded-lg border border-gray-300 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer group bg-white dark:bg-[#12241A] dark:text-[#F9FAFB]"
       onClick={() => onProductClick(product)}
     >
       <div className="relative">

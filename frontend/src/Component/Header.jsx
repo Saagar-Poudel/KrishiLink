@@ -318,7 +318,7 @@ const Header = () => {
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center px-3 py-1 border rounded text-sm hover:bg-gray-300
+              className="relative flex items-center px-3 py-1 border-gray-300 border rounded text-sm hover:bg-gray-300
                          dark:border-[#374151] dark:hover:bg-[#12241A] dark:text-[#D1D5DB]"
             >
               <ShoppingCart className="w-4 h-4" />
