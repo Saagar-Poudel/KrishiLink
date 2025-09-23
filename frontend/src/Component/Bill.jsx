@@ -93,6 +93,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       } else {
         setTimeout(() => {
           setIsOrderPlaced(true);
+           if (onOrderComplete) onOrderComplete();
           toast({
             title: t("Order Placed Successfully"),
             description: t("Your order has been placed successfully."),
@@ -106,6 +107,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       });
 
       setIsOrderPlaced(true);
+        if (onOrderComplete) onOrderComplete();
     } catch (error) {
       console.error("Error placing order:", error);
       toast({
@@ -239,7 +241,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
                   Phone Number *
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   value={customerInfo.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 dark:bg-[#12241A] dark:text-gray-100"

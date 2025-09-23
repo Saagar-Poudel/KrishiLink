@@ -54,7 +54,9 @@ export const Cart = ({ onClose, isOpen }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/40"
+     onClick={onClose} 
+    >
       {/* Drawer */}
       <div className="w-full sm:max-w-lg h-full bg-white dark:bg-[#0B1A12] shadow-lg flex flex-col">
         

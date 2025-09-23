@@ -211,6 +211,13 @@ export default function FarmerProfile() {
     toast.success(`${product.name} added to cart`);
   };
 
+   const [filterStatus, setFilterStatus] = useState("all");
+
+const filteredOrders = orders.filter((o) =>
+  filterStatus === "all" ? true : o.status === filterStatus
+);
+
+
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
 
   return (
@@ -432,12 +439,26 @@ export default function FarmerProfile() {
         {isFarmerOwner && activeTab === "orders" && (
           <div className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Order Management</h3>
+            <select
+        value={filterStatus}
+        onChange={(e) => setFilterStatus(e.target.value)}
+        className="border rounded px-3 py-1 text-sm"
+      >
+        <option value="all">All</option>
+        {/* <option value="pending">Pending</option> */}
+        {/* <option value="accepted">Accepted</option> */}
+        <option value="shipping">Shipping</option>
+        <option value="delivered">Delivered</option>
+        <option value="paid">Paid</option>
+        {/* <option value="declined">Declined</option> */}
+      </select>
+
             {ordersLoading ? (
               <p className="text-gray-500">Loading orders...</p>
-            ) : orders.length === 0 ? (
+            ) : filteredOrders.length === 0 ? (
               <p className="text-gray-500">No orders found.</p>
             ) : (
-              orders.map((o) => (
+              filteredOrders.map((o) => (
                 <div
                   key={o.id}
                   className="p-4 rounded-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center"

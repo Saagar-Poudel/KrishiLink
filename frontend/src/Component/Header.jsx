@@ -149,7 +149,7 @@ const Header = () => {
               </button>
 
               {openNotif && (
-                <div className="absolute right-0 mt-3 w-96 bg-white border-0 rounded-xl shadow-2xl z-50 dark:bg-[#0F1F17] backdrop-blur-lg">
+                <div className="absolute right-0 mt-3 w-96 bg-white border-0 rounded-xl shadow-2xl z-50 dark:bg-[#0F1F17] backdrop-blur-lg" >
                   {/* Header */}
                   <div className="p-4 border-b dark:border-[#1F2E25] bg-gradient-to-r from-gray-50 to-green-50 dark:from-[#0F1F17] dark:to-[#14281E] rounded-t-xl">
                     <div className="flex items-center justify-between">
@@ -333,7 +333,18 @@ const Header = () => {
               )}
             </button>
             <Thems />
-            <ProfileMenu />
+
+             {user ? (
+    <ProfileMenu />
+  ) : (
+    <Link
+      to="/login"
+      className="px-3 py-2 rounded-md bg-green-500 text-white hover:bg-green-600 transition"
+    >
+      Login
+    </Link>
+  )}
+            {/* <ProfileMenu /> */}
           </div>
 
           {/* Mobile Menu Toggle */}
