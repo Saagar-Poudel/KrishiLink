@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-const ProfileEdit = ({ isOpen, onClose, onSave, currentName, currentPic }) => {
-  const [name, setName] = useState(currentName || "Your Name");
+const ProfileEdit = ({ isOpen, onClose, onSave, currentName, currentPic, currentAddress }) => {
+  const [username, setUsername] = useState(currentName || "Your Username");
+  const [address, setAddress] = useState(currentAddress || "Your Address");
   const [profilePic, setProfilePic] = useState(null);
 
   if (!isOpen) return null; // don’t render if not open
@@ -15,7 +16,7 @@ const ProfileEdit = ({ isOpen, onClose, onSave, currentName, currentPic }) => {
 
   const handleSave = () => {
     // pass updated values back to parent
-    onSave({ name, profilePic });
+    onSave({ username, address, profilePic });
     onClose();
   };
 
@@ -50,15 +51,28 @@ const ProfileEdit = ({ isOpen, onClose, onSave, currentName, currentPic }) => {
           </label>
         </div>
 
-        {/* Name Input */}
+        {/* Username Input */}
         <div className="mb-6">
           <label className="block text-gray-700 dark:text-[#E5E7EB] mb-2 text-sm">
-            Full Name
+            Username
           </label>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#12241A] dark:text-white text-sm"
+          />
+        </div>
+
+        {/* Address Input */}
+        <div className="mb-6">
+          <label className="block text-gray-700 dark:text-[#E5E7EB] mb-2 text-sm">
+            Address
+          </label>
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#12241A] dark:text-white text-sm"
           />
         </div>
