@@ -23,7 +23,6 @@ import FarmerChatbox from "../FarmerChatbox";
 
 import ProductModal from "../Markets/ProductModal";
 
-
 export default function FarmerProfile() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -57,30 +56,6 @@ export default function FarmerProfile() {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const [isSaved, setIsSaved] = useState(false);
-
-  const handleSaveSeller = async () => {
-    try {
-      if (isSaved) {
-        await axios.delete(
-          `http://localhost:3000/api/saved-farmers/unsave/${farmer.id}/${user.id}`, {
-            buyerId: user.id,
-          }
-        );
-        toast.success("Seller removed from saved list");
-        setIsSaved(false);
-      } else {
-        await axios.post("http://localhost:3000/api/saved-farmers/save", {
-          farmerId: farmer.id,
-          buyerId: user.id,
-        });
-        toast.success("Seller saved successfully");
-        setIsSaved(true);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error saving seller");
-    }
-  };
 
   const isFarmerOwner =
     user?.role === "farmer" && (!username || user?.username === username);
@@ -170,6 +145,27 @@ export default function FarmerProfile() {
     };
     fetchOrders();
   }, []);
+
+  // Fetch saved farmers on mount
+  useEffect(() => {
+    const fetchSavedFarmers = async () => {
+      if (!user?.id) return;
+      try {
+        const { data } = await axios.get(
+          `http://localhost:3000/api/saved-Farmers/my-saved/${user.id}`
+        );
+        // Check if current farmer is in the saved list
+        const isFarmerSaved = data.some(
+          (saved) => saved.farmerId === farmer?.id
+        );
+        setIsSaved(isFarmerSaved);
+      } catch (err) {
+        console.error("Error fetching saved farmers:", err);
+      }
+    };
+
+    fetchSavedFarmers();
+  }, [user?.id]);
 
   const [activeTab, setActiveTab] = useState("products");
   const [openMenu, setOpenMenu] = useState(null);
@@ -282,43 +278,60 @@ export default function FarmerProfile() {
     addToCart(product, 1);
     toast.success(`${product.name} added to cart`);
   };
+  const handleSaveSeller = async () => {
+    if (!farmer?.id || !user?.id) return;
+    try {
+      if (isSaved) {
+        await axios.delete(
+          `http://localhost:3000/api/saved-farmers/unsave/${farmer.id}/${user.id}`
+        );
+        toast.success("Seller removed from saved list");
+        setIsSaved(false);
+      } else {
+        await axios.post("http://localhost:3000/api/saved-farmers/save", {
+          farmerId: farmer.id,
+          buyerId: user.id,
+        });
+        toast.success("Seller saved successfully");
+        setIsSaved(true);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error saving seller");
+    }
+  };
 
   const [filterStatus, setFilterStatus] = useState("all");
 
   const filteredOrders = orders.filter((o) =>
     filterStatus === "all" ? true : o.status === filterStatus
   );
-const [selectedProduct, setSelectedProduct] = useState(null);
-const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const handleProductClick = (product) => {
-  setSelectedProduct(product);
-  setIsModalOpen(true);
-};
-
-
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
 
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
 
   return (
-   <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
-  <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow relative p-8">
-    
-    {/* Save Seller in top right */}
-    {!isFarmerOwner && user?.role === "buyer" && (
-      <button
-        onClick={handleSaveSeller}
-        className={`absolute top-4 right-4 p-2 rounded-full border transition ${
-          isSaved
-            ? "bg-green-600 text-white hover:bg-green-700"
-            : "bg-white text-green-700 border-green-700 hover:bg-green-50"
-        }`}
-      >
-        <Save className="w-5 h-5" />
-      </button>
-    )}
+    <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
+      <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow relative p-8">
+        {/* Save Seller in top right */}
+        {!isFarmerOwner && user?.role === "buyer" && (
+          <button
+            onClick={handleSaveSeller}
+            className={`absolute top-4 right-4 p-2 rounded-full border transition ${
+              isSaved
+                ? "bg-white text-green-700 border-green-700 hover:bg-green-50" : "bg-green-600 text-white hover:bg-green-700"
+            }`}
+          >
+            <Save className="w-5 h-5" />
+          </button>
+        )}
         <div className="flex flex-col md:flex-row md:items-center gap-6">
-         
           <div className="flex items-center gap-6">
             <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white">
               <img
@@ -356,24 +369,22 @@ const handleProductClick = (product) => {
               </div>
             </div>
           </div>
-         
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
           <div className="flex items-center gap-3">
             <Mail className="w-5 h-5" /> <span>{farmer?.email}</span>
           </div>
           <div className="flex items-center gap-3">
-             {!isFarmerOwner && user?.role === "buyer" && (
-            <div>
-              <button
-                onClick={handleStartChatWithFarmer}
-                className="bg-white text-green-700 px-4 py-2 rounded flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4" /> Chat with Farmer
-              </button>
-               </div>
-          )}
-           
+            {!isFarmerOwner && user?.role === "buyer" && (
+              <div>
+                <button
+                  onClick={handleStartChatWithFarmer}
+                  className="bg-white text-green-700 px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" /> Chat with Farmer
+                </button>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <MapPin className="w-5 h-5" /> <span>{farmer?.location}</span>
@@ -464,7 +475,7 @@ const handleProductClick = (product) => {
                 <div
                   key={p.id}
                   className="flex items-center gap-6 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
-                onClick={() => !isFarmerOwner && handleProductClick(p)}
+                  onClick={() => !isFarmerOwner && handleProductClick(p)}
                 >
                   <img
                     src={p.image}
@@ -518,8 +529,9 @@ const handleProductClick = (product) => {
                   ) : (
                     <button
                       onClick={(e) => {
-                         e.stopPropagation();
-                        handleAddToCart(p)}}
+                        e.stopPropagation();
+                        handleAddToCart(p);
+                      }}
                       className="bg-green-600 text-white px-3 py-2 rounded"
                     >
                       <ShoppingCart className="w-4 h-4 mr-2 inline" />
@@ -660,19 +672,17 @@ const handleProductClick = (product) => {
             </div>
           </div>
         )}
-       {isModalOpen && selectedProduct && (
-  <ProductModal
-    product={selectedProduct}
-    isOpen={isModalOpen}
-    onClose={() => setIsModalOpen(false)}
-    onAddToCart={handleAddToCart}
-    // onToggleWishlist={handleToggleWishlist} // optional if you support wishlist
-    isWishlisted={false} // you can pass real data later
-    onChatWithSeller={() => {}} // pass your chat function if available
-  />
-)}
-
-
+        {isModalOpen && selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onAddToCart={handleAddToCart}
+            // onToggleWishlist={handleToggleWishlist} // optional if you support wishlist
+            isWishlisted={false} // you can pass real data later
+            onChatWithSeller={() => {}} // pass your chat function if available
+          />
+        )}
       </div>
       {chatOpen && chatFarmer && (
         <FarmerChatbox
