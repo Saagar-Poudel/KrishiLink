@@ -149,8 +149,12 @@ const BuyerProfile = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 px-6 md:px-20 py-10 space-y-6">
       {/* Buyer Info */}
       <div className="bg-white dark:bg-zinc-800 shadow-md rounded-2xl p-6 flex items-center gap-6">
-        <div className="w-20 h-20 rounded-full bg-blue-200 dark:bg-blue-700 flex items-center justify-center text-2xl font-bold text-blue-800 dark:text-blue-100">
-          {user?.username?.charAt(0)}
+        <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white">
+          <img
+            src={user.image}
+            alt={user?.username}
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="flex-1">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -160,7 +164,7 @@ const BuyerProfile = () => {
             <Mail size={16} /> {user?.email}
           </p>
           <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-            <MapPin size={16} /> {user?.location}
+            <MapPin size={16} /> {user?.address}
           </p>
         </div>
       </div>
@@ -391,7 +395,10 @@ const BuyerProfile = () => {
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => navigate(`/farmer/${seller.username}`)} className="px-3 py-1 border rounded text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <button
+                          onClick={() => navigate(`/farmer/${seller.username}`)}
+                          className="px-3 py-1 border rounded text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
                           View Profile
                         </button>
                       </div>

@@ -387,7 +387,7 @@ export default function FarmerProfile() {
             )}
           </div>
           <div className="flex items-center gap-3">
-            <MapPin className="w-5 h-5" /> <span>{farmer?.location}</span>
+            <MapPin className="w-5 h-5" /> <span>{farmer?.address}</span>
           </div>
         </div>
       </div>

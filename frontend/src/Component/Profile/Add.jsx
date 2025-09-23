@@ -19,6 +19,7 @@ export default function AddProduct() {
     name: "",
     description: "",
     price: "",
+    unit: 'kg',
     quantity: 0,
     sellerName: user.username,
     location: "Chitwan",
@@ -80,7 +81,7 @@ export default function AddProduct() {
       await axios.post("http://localhost:3000/api/products", {
         ...formData,
         price: String(formData.price),
-        stock: Number(formData.stock),
+        quantity: Number(formData.quantity),
       });
 
       // ✅ Ask backend to notify buyers
@@ -150,9 +151,9 @@ export default function AddProduct() {
               className="border rounded-md px-3 py-2"
             />
             <input
-              name="stock"
+              name="quantity"
               type="number"
-              value={formData.stock}
+              value={formData.quantity}
               onChange={onChange}
               placeholder="Stock Quantity"
               required
