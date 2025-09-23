@@ -8,63 +8,77 @@ import {
   Tractor,
   Leaf,
 } from "lucide-react";
+import FarmerChatbox from '../FarmerChatbox'
+import { useAuth } from '../../contexts/Authcontext';
 
 const expertsData = [
   {
-    id: 1,
+    id: 21,
     name: "Dr. Rajesh Kumar",
+    username: "rajeshkumar",
     role: "Crop Specialist",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     icon: Wheat,
     specialization: "Rice & Wheat Cultivation",
     experience: "15+ years in crop optimization and yield improvement",
     bio: "Dr. Kumar specializes in sustainable crop production techniques, focusing on maximizing yield while maintaining soil health. He has helped over 2,000 farmers increase their crop productivity by 35% on average.",
   },
   {
-    id: 2,
+    id: 22,
     name: "Dr. Priya Sharma",
+    username: "priyasharma",
     role: "Livestock Expert",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     icon: Users,
     specialization: "Dairy & Poultry Management",
     experience: "12+ years in animal husbandry and veterinary care",
     bio: "Dr. Sharma is a renowned veterinarian with expertise in dairy farming, poultry management, and livestock health. She has successfully implemented breeding programs that increased milk production by 40% in multiple farms.",
   },
   {
-    id: 3,
+    id: 23,
     name: "Prof. Amit Patel",
+    username: "amitpatel",
     role: "Soil Scientist",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     icon: Tractor,
     specialization: "Soil Health & Fertility",
     experience: "20+ years in soil analysis and management",
     bio: "Professor Patel is an expert in soil chemistry and fertility management. His innovative composting techniques and soil testing methods have restored degraded farmlands across 5 states, improving soil health by 50%.",
   },
   {
-    id: 4,
+    id: 24,
     name: "Eng. Suresh Reddy",
+    username: "sureshreddy",
     role: "Irrigation Specialist",
-    image: "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     icon: Droplets,
     specialization: "Water Management Systems",
     experience: "18+ years in irrigation design and water conservation",
     bio: "Suresh is a water management engineer who designs efficient irrigation systems. His drip irrigation solutions have helped farmers reduce water usage by 60% while maintaining optimal crop growth.",
   },
   {
-    id: 5,
+    id: 25,
     name: "Dr. Meera Gupta",
     role: "Pest Management Expert",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    username: "meeragupta",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     icon: Bug,
     specialization: "Integrated Pest Management",
     experience: "14+ years in sustainable pest control",
     bio: "Dr. Gupta specializes in eco-friendly pest management strategies. Her integrated approach has helped farmers reduce pesticide use by 70% while maintaining effective pest control through biological methods.",
   },
   {
-    id: 6,
+    id: 26,
     name: "Sh. Ramesh Singh",
+    username: "rameshsingh",
     role: "Organic Farming Consultant",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    image:
+      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     icon: Leaf,
     specialization: "Organic Certification & Methods",
     experience: "25+ years in organic farming practices",
@@ -74,9 +88,17 @@ const expertsData = [
 
 const Experts = () => {
   const [selectedExpert, setSelectedExpert] = useState(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatExpert, setChatExpert] = useState(null);
+  const { user } = useAuth();
 
   const handleExpertSelect = (expert) => {
     setSelectedExpert(expert);
+  };
+
+  const handleStartChat = (expert) => {
+    setChatExpert(expert);
+    setChatOpen(true);
   };
 
   const ExpertCard = ({ expert }) => {
@@ -105,9 +127,15 @@ const Experts = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">{expert.name}</h3>
-            <p className="text-green-600 dark:text-[#34D399] font-medium">{expert.role}</p>
-            <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{expert.specialization}</p>
+            <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+              {expert.name}
+            </h3>
+            <p className="text-green-600 dark:text-[#34D399] font-medium">
+              {expert.role}
+            </p>
+            <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+              {expert.specialization}
+            </p>
           </div>
 
           <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-[#1F2937] px-3 py-1 rounded-full">
@@ -127,8 +155,9 @@ const Experts = () => {
             Connect with Agricultural Experts
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Click on expert cards to learn more about them and start a conversation. 
-            Get personalized advice from certified agricultural professionals.
+            Click on expert cards to learn more about them and start a
+            conversation. Get personalized advice from certified agricultural
+            professionals.
           </p>
         </div>
 
@@ -182,21 +211,32 @@ const Experts = () => {
                   {/* Expert Details */}
                   <div className="flex-1 space-y-6">
                     <div>
-                      <h4 className="font-medium mb-2 text-green-800 dark:text-[#34D399]">Experience</h4>
-                      <p className="text-gray-600 dark:text-gray-300">{selectedExpert.experience}</p>
+                      <h4 className="font-medium mb-2 text-green-800 dark:text-[#34D399]">
+                        Experience
+                      </h4>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        {selectedExpert.experience}
+                      </p>
                     </div>
 
                     <div>
-                      <h4 className="font-medium mb-2 text-green-800 dark:text-[#34D399]">About</h4>
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{selectedExpert.bio}</p>
+                      <h4 className="font-medium mb-2 text-green-800 dark:text-[#34D399]">
+                        About
+                      </h4>
+                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {selectedExpert.bio}
+                      </p>
                     </div>
-                    
+
                     {/* Chat Section */}
                     <div className="pt-4 mt-4 border-t border-gray-200 dark:border-[#374151]">
-                      <h4 className="font-medium mb-3 text-green-800 dark:text-[#34D399]">Chat with Expert</h4>
+                      <h4 className="font-medium mb-3 text-green-800 dark:text-[#34D399]">
+                        Chat with Expert
+                      </h4>
 
                       <div className="mt-6 pt-6 border-t border-gray-200 dark:border-[#374151]">
                         <button
+                          onClick={() => handleStartChat(selectedExpert)}
                           className="w-full bg-green-600 dark:bg-[#34D399] hover:bg-green-700 dark:hover:bg-[#059669] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition"
                         >
                           <MessageCircle className="w-5 h-5" />
@@ -217,7 +257,8 @@ const Experts = () => {
                         No expert selected
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Click on an expert card to view their details and start a conversation
+                        Click on an expert card to view their details and start
+                        a conversation
                       </p>
                     </div>
                   </div>
@@ -227,6 +268,14 @@ const Experts = () => {
           </div>
         </div>
       </div>
+      {chatOpen && chatExpert && (
+        <FarmerChatbox
+          currentUser={user} // 👈 replace with real logged-in user
+          otherUser={chatExpert}
+          isOpen={chatOpen}
+          onClose={() => setChatOpen(false)}
+        />
+      )}
     </div>
   );
 };
