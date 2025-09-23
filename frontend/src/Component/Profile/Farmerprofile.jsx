@@ -301,9 +301,24 @@ const handleProductClick = (product) => {
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
-      <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow p-8">
+   <div className="min-h-screen bg-gray-50 p-4 space-y-6 mx-20">
+  <div className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow relative p-8">
+    
+    {/* Save Seller in top right */}
+    {!isFarmerOwner && user?.role === "buyer" && (
+      <button
+        onClick={handleSaveSeller}
+        className={`absolute top-4 right-4 p-2 rounded-full border transition ${
+          isSaved
+            ? "bg-green-600 text-white hover:bg-green-700"
+            : "bg-white text-green-700 border-green-700 hover:bg-green-50"
+        }`}
+      >
+        <Save className="w-5 h-5" />
+      </button>
+    )}
         <div className="flex flex-col md:flex-row md:items-center gap-6">
+         
           <div className="flex items-center gap-6">
             <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white">
               <img
@@ -341,7 +356,14 @@ const handleProductClick = (product) => {
               </div>
             </div>
           </div>
-          {!isFarmerOwner && user?.role === "buyer" && (
+         
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
+          <div className="flex items-center gap-3">
+            <Mail className="w-5 h-5" /> <span>{farmer?.email}</span>
+          </div>
+          <div className="flex items-center gap-3">
+             {!isFarmerOwner && user?.role === "buyer" && (
             <div>
               <button
                 onClick={handleStartChatWithFarmer}
@@ -349,26 +371,9 @@ const handleProductClick = (product) => {
               >
                 <MessageCircle className="w-4 h-4" /> Chat with Farmer
               </button>
-              <button
-                onClick={handleSaveSeller}
-                className={`px-4 py-2 rounded flex items-center gap-2 border ${
-                  isSaved
-                    ? "bg-green-700 text-white"
-                    : "bg-white text-green-700 border-green-700"
-                }`}
-              >
-                <Save className="w-4 h-4" />
-                {isSaved ? "Saved" : "Save Seller"}
-              </button>
-            </div>
+               </div>
           )}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/30">
-          <div className="flex items-center gap-3">
-            <Mail className="w-5 h-5" /> <span>{farmer?.email}</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Phone className="w-5 h-5" /> <span>{farmer?.phone}</span>
+           
           </div>
           <div className="flex items-center gap-3">
             <MapPin className="w-5 h-5" /> <span>{farmer?.location}</span>
