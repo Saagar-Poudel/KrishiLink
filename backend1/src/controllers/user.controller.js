@@ -127,4 +127,46 @@ export class UserController {
       res.status(500).json({ error: "Error updating profile" });
     }
   }
+
+  // Inside UserController
+  static async changePassword(req, res) {
+    const { id } = req.params; // userId from URL
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+      // ✅ Find user
+      const user = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, Number(id)))
+        .limit(1);
+
+      if (user.length === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // ✅ Check current password
+      const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user[0].password
+      );
+      if (!isPasswordValid) {
+        return res.status(401).json({ error: "Current password is incorrect" });
+      }
+
+      // ✅ Hash new password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      // ✅ Update password
+      await db
+        .update(users)
+        .set({ password: hashedNewPassword, updatedAt: new Date() })
+        .where(eq(users.id, Number(id)));
+
+      res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error changing password" });
+    }
+  }
 }

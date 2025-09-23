@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import { supabase } from "../../lib/supabaseClient";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useAuth } from "../../contexts/Authcontext";
 
 const ProfileEdit = ({
   isOpen,
@@ -17,7 +18,8 @@ const ProfileEdit = ({
   const [address, setAddress] = useState(currentAddress || "");
   const [profilePic, setProfilePic] = useState(currentPic || "");
   const [uploading, setUploading] = useState(false);
-
+  const { updateUser } = useAuth();
+ 
   if (!isOpen) return null;
 
   async function handleImageUpload(file) {
@@ -56,7 +58,11 @@ const ProfileEdit = ({
           image: profilePic,
         }
       );
-      console.log("id:", userId);
+      if (data.user) {
+        updateUser(data.user); // <-- update context + localStorage
+        toast.success("Profile updated successfully!");
+        onClose();
+      }
 
       toast.success("Profile updated successfully!");
       onSave(data.user);
@@ -135,7 +141,7 @@ const ProfileEdit = ({
             disabled={uploading}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
           >
-            Save
+            Update
           </button>
         </div>
       </div>
