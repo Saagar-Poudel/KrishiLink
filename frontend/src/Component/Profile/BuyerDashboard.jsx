@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/Authcontext";
 import { useCart } from "../../contexts/CartContex";
+import { useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
   Heart,
@@ -20,8 +21,10 @@ const BuyerProfile = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [activeTab, setActiveTab] = useState("orders");
   const [showAllOrders, setShowAllOrders] = useState(false);
+  const [savedSellers, setSavedSellers] = useState([]);
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   const [wishlist, setWishlist] = useState([]);
   const [stats, setStats] = useState({
@@ -44,6 +47,22 @@ const BuyerProfile = () => {
       }
     };
     fetchOrders();
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const fetchSavedSellers = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/saved-Farmers/my-saved/${user.id}`
+        );
+        const data = await res.json();
+        setSavedSellers(data);
+      } catch (err) {
+        console.error("Failed to fetch saved sellers:", err);
+      }
+    };
+    fetchSavedSellers();
   }, [user?.id]);
 
   useEffect(() => {
@@ -128,7 +147,6 @@ const BuyerProfile = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 px-6 md:px-20 py-10 space-y-6">
-
       {/* Buyer Info */}
       <div className="bg-white dark:bg-zinc-800 shadow-md rounded-2xl p-6 flex items-center gap-6">
         <div className="w-20 h-20 rounded-full bg-blue-200 dark:bg-blue-700 flex items-center justify-center text-2xl font-bold text-blue-800 dark:text-blue-100">
@@ -249,8 +267,7 @@ const BuyerProfile = () => {
                         <span>Total Qty: {order.totalQuantity}</span>
                         <span>Total: ₹{order.totalAmount}</span>
                         <span>
-                          Date:{" "}
-                          {new Date(order.createdAt).toLocaleDateString()}
+                          Date: {new Date(order.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
@@ -263,7 +280,7 @@ const BuyerProfile = () => {
                       </button>
                       {order.status === "delivered" && (
                         <button className="px-3 py-1 border rounded text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                          Rate & Review
+                          Feedback
                         </button>
                       )}
                     </div>
@@ -345,46 +362,44 @@ const BuyerProfile = () => {
             <h3 className="text-lg font-semibold ml-3 text-gray-800 dark:text-gray-100">
               Your Favorite Sellers
             </h3>
-            <div className="grid gap-4">
-              {savedSellers?.map((seller) => (
-                <div
-                  key={seller.id}
-                  className="p-6 shadow rounded bg-white dark:bg-zinc-800 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
-                          {seller.name}
-                        </h4>
-                        <span className="bg-blue-200 dark:bg-blue-600 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">
-                          🌾 Farmer
-                        </span>
-                      </div>
-                      <p className="text-green-600 dark:text-green-400 font-medium">
-                        {seller.farmName}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                        <span>{seller.location}</span>
-                        <span>{seller.products} products</span>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-500" />
-                          <span>{seller.rating}</span>
+            {savedSellers.length === 0 ? (
+              <p className="ml-3 text-gray-500 dark:text-gray-400">
+                No saved sellers yet.
+              </p>
+            ) : (
+              <div className="grid gap-4">
+                {savedSellers.map((seller) => (
+                  <div
+                    key={seller.id}
+                    className="p-6 shadow rounded bg-white dark:bg-zinc-800 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                          <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
+                            {seller.username}
+                          </h4>
+                          <span className="bg-blue-200 dark:bg-blue-600 text-blue-800 dark:text-blue-100 px-2 py-1 rounded">
+                            🌾 Farmer
+                          </span>
                         </div>
+                        {/* <p className="text-green-600 dark:text-green-400 font-medium">
+                          {seller.location || "Location not set"}
+                        </p> */}
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {seller.email}
+                        </p>
                       </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="px-3 py-1 border rounded text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        View Products
-                      </button>
-                      <button className="px-3 py-1 border rounded flex items-center text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <Heart className="w-4 h-4 text-red-600" />
-                      </button>
+                      <div className="flex gap-2">
+                        <button onClick={() => navigate(`/farmer/${seller.username}`)} className="px-3 py-1 border rounded text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                          View Profile
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

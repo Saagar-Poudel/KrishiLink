@@ -1,5 +1,5 @@
 import { db } from "../dbConnection/dbConnection.js";
-import { savedFarmers } from "../models/schema.js";
+import { savedFarmers, users } from "../models/schema.js";
 import { eq, and } from "drizzle-orm";
 
 export const saveFarmer = async (req, res) => {
@@ -55,12 +55,18 @@ export const unsaveFarmer = async (req, res) => {
 };
 
 export const getSavedFarmers = async (req, res) => {
-  const buyerId = req.user.id;
+  const { buyerId } = req.params;
 
   try {
     const saved = await db
-      .select()
+      .select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        createdAt: savedFarmers.createdAt,
+      })
       .from(savedFarmers)
+      .innerJoin(users, eq(savedFarmers.farmerId, users.id))
       .where(eq(savedFarmers.buyerId, buyerId));
 
     res.json(saved);
