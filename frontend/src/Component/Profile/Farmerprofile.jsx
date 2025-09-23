@@ -20,6 +20,9 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import DeliveryPartnerDialog from "./DeliveryPartnerDialog";
 
+import ProductModal from "../Markets/ProductModal";
+
+
 export default function FarmerProfile() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -250,6 +253,15 @@ export default function FarmerProfile() {
 const filteredOrders = orders.filter((o) =>
   filterStatus === "all" ? true : o.status === filterStatus
 );
+const [selectedProduct, setSelectedProduct] = useState(null);
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+const handleProductClick = (product) => {
+  setSelectedProduct(product);
+  setIsModalOpen(true);
+};
+
+
 
 
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
@@ -405,6 +417,7 @@ const filteredOrders = orders.filter((o) =>
                 <div
                   key={p.id}
                   className="flex items-center gap-6 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                onClick={() => !isFarmerOwner && handleProductClick(p)}
                 >
                   <img
                     src={p.image}
@@ -457,7 +470,9 @@ const filteredOrders = orders.filter((o) =>
                     </div>
                   ) : (
                     <button
-                      onClick={() => handleAddToCart(p)}
+                      onClick={(e) => {
+                         e.stopPropagation();
+                        handleAddToCart(p)}}
                       className="bg-green-600 text-white px-3 py-2 rounded"
                     >
                       <ShoppingCart className="w-4 h-4 mr-2 inline" />
@@ -598,6 +613,19 @@ const filteredOrders = orders.filter((o) =>
             </div>
           </div>
         )}
+       {isModalOpen && selectedProduct && (
+  <ProductModal
+    product={selectedProduct}
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    onAddToCart={handleAddToCart}
+    // onToggleWishlist={handleToggleWishlist} // optional if you support wishlist
+    isWishlisted={false} // you can pass real data later
+    onChatWithSeller={() => {}} // pass your chat function if available
+  />
+)}
+
+
       </div>
     </div>
   );
