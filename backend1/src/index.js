@@ -15,6 +15,7 @@ import newsRouter from './routes/news.route.js';
 import profileRouter from './routes/profile.route.js'
 import wishlistRouter from './routes/wishlist.route.js'
 import reviewRouter from "./routes/review.route.js"
+import savedFarmersRouter from './routes/savedFarmers.route.js'
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/news', newsRouter);
 app.use("/api/profile", profileRouter);
 app.use('/api/wishlist', wishlistRouter);
 app.use('/api/reviews', reviewRouter);
+app.use("/api/saved-farmers", savedFarmersRouter);
 
 
 // Server

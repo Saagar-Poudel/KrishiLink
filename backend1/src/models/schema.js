@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, serial, text, integer, boolean, numeric, timestamp, varchar, real } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, serial, text, integer, boolean, numeric, timestamp, varchar, real, uniqueIndex } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 //Create user credentials model for login and registration
@@ -175,3 +175,17 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+export const savedFarmers = pgTable("saved_farmers", {
+  id: serial("id").primaryKey(),
+  buyerId: integer("buyer_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  farmerId: integer("farmer_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (t) => ({
+  uniqBuyerFarmer: uniqueIndex("uniq_buyer_farmer").on(t.buyerId, t.farmerId),
+}));
+

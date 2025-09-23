@@ -19,6 +19,7 @@ import { useCart } from "../../contexts/CartContex";
 import toast from "react-hot-toast";
 import axios from "axios";
 import DeliveryPartnerDialog from "./DeliveryPartnerDialog";
+import FarmerChatbox from "../FarmerChatbox";
 
 export default function FarmerProfile() {
   const { user } = useAuth();
@@ -38,11 +39,45 @@ export default function FarmerProfile() {
   const [loading, setLoading] = useState(true);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatFarmer, setChatFarmer] = useState(null);
+
+  const handleStartChatWithFarmer = () => {
+    setChatFarmer(farmer);
+    setChatOpen(true);
+  };
+
   const [stats, setStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
   const [deliveryDialogOpen, setDeliveryDialogOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const [isSaved, setIsSaved] = useState(false);
+
+  const handleSaveSeller = async () => {
+    try {
+      if (isSaved) {
+        await axios.delete(
+          `http://localhost:3000/api/saved-farmers/unsave/${farmer.id}/${user.id}`, {
+            buyerId: user.id,
+          }
+        );
+        toast.success("Seller removed from saved list");
+        setIsSaved(false);
+      } else {
+        await axios.post("http://localhost:3000/api/saved-farmers/save", {
+          farmerId: farmer.id,
+          buyerId: user.id,
+        });
+        toast.success("Seller saved successfully");
+        setIsSaved(true);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error saving seller");
+    }
+  };
 
   const isFarmerOwner =
     user?.role === "farmer" && (!username || user?.username === username);
@@ -245,12 +280,11 @@ export default function FarmerProfile() {
     toast.success(`${product.name} added to cart`);
   };
 
-   const [filterStatus, setFilterStatus] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
 
-const filteredOrders = orders.filter((o) =>
-  filterStatus === "all" ? true : o.status === filterStatus
-);
-
+  const filteredOrders = orders.filter((o) =>
+    filterStatus === "all" ? true : o.status === filterStatus
+  );
 
   if (!farmer) return <p className="p-6">Loading farmer profile...</p>;
 
@@ -298,13 +332,21 @@ const filteredOrders = orders.filter((o) =>
           {!isFarmerOwner && user?.role === "buyer" && (
             <div>
               <button
-                onClick={() => navigate(`/chat/${farmer.username}`)}
+                onClick={handleStartChatWithFarmer}
                 className="bg-white text-green-700 px-4 py-2 rounded flex items-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" /> Chat with Farmer
               </button>
-              <button className="px-4 py-2 rounded flex items-center gap-2 bg-white text-green-700 border border-green-700">
-                <Save className="w-4 h-4" /> Save Seller
+              <button
+                onClick={handleSaveSeller}
+                className={`px-4 py-2 rounded flex items-center gap-2 border ${
+                  isSaved
+                    ? "bg-green-700 text-white"
+                    : "bg-white text-green-700 border-green-700"
+                }`}
+              >
+                <Save className="w-4 h-4" />
+                {isSaved ? "Saved" : "Save Seller"}
               </button>
             </div>
           )}
@@ -474,18 +516,18 @@ const filteredOrders = orders.filter((o) =>
           <div className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Order Management</h3>
             <select
-        value={filterStatus}
-        onChange={(e) => setFilterStatus(e.target.value)}
-        className="border rounded px-3 py-1 text-sm"
-      >
-        <option value="all">All</option>
-        {/* <option value="pending">Pending</option> */}
-        {/* <option value="accepted">Accepted</option> */}
-        <option value="shipping">Shipping</option>
-        <option value="delivered">Delivered</option>
-        <option value="paid">Paid</option>
-        {/* <option value="declined">Declined</option> */}
-      </select>
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="border rounded px-3 py-1 text-sm"
+            >
+              <option value="all">All</option>
+              {/* <option value="pending">Pending</option> */}
+              {/* <option value="accepted">Accepted</option> */}
+              <option value="shipping">Shipping</option>
+              <option value="delivered">Delivered</option>
+              <option value="paid">Paid</option>
+              {/* <option value="declined">Declined</option> */}
+            </select>
 
             {ordersLoading ? (
               <p className="text-gray-500">Loading orders...</p>
@@ -599,6 +641,14 @@ const filteredOrders = orders.filter((o) =>
           </div>
         )}
       </div>
+      {chatOpen && chatFarmer && (
+        <FarmerChatbox
+          currentUser={user} // 👈 logged-in buyer from useAuth
+          otherUser={chatFarmer} // 👈 the farmer profile being viewed
+          isOpen={chatOpen}
+          onClose={() => setChatOpen(false)}
+        />
+      )}
     </div>
   );
 }
