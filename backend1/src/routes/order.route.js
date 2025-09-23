@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createOrder, getAllOrders, updateOrderStatus, deleteOrder, getAllOrdersBySellerName, getUserOrders } from "../controllers/order.controller.js";
+import { assignDeliveryPartner } from "../controllers/order.controller.js";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ router.get("/:sellerName", getAllOrdersBySellerName);
 
 // PATCH /api/orders/:orderId/status
 router.patch("/:orderId/status", updateOrderStatus);
+
+router.patch("/:orderId/delivery", assignDeliveryPartner);
 
 // DELETE /api/orders/:id - Delete order
 router.delete("/:id", deleteOrder);

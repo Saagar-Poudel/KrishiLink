@@ -27,29 +27,7 @@ const ProductModal = ({
   const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [farmer, setFarmer] = useState("");
-  const [reviews, setReviews] = useState([
-    {
-      id: 1,
-      user: "Ram Sharma",
-      rating: 5,
-      comment: "Excellent quality products. Fresh and organic!",
-      date: "2 days ago",
-    },
-    {
-      id: 2,
-      user: "Sita Gurung",
-      rating: 4,
-      comment: "Good quality but delivery was slightly delayed.",
-      date: "1 week ago",
-    },
-    {
-      id: 3,
-      user: "Krishna Thapa",
-      rating: 5,
-      comment: "Best seller in the area. Highly recommended!",
-      date: "2 weeks ago",
-    },
-  ]);
+  const [reviews, setReviews] = useState([]);
 
   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
   const navigate = useNavigate();
@@ -72,21 +50,49 @@ const ProductModal = ({
     fetchFarmer();
   }, [product]);
 
+  useEffect(() => {
+    if (!product?.id) return;
+    const fetchReviews = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:3000/api/reviews/${product.id}`
+        );
+        setReviews(data);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    };
+    fetchReviews();
+  }, [product]);
+
   if (!product || !isOpen) return <></>;
 
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!newReview.comment || newReview.rating === 0) return;
+    if (!newReview.comment.trim()) {
+    alert("Review cannot be empty");
+    return;
+  }
+  if (newReview.rating === 0) {
+    alert("Please give at least 1 star");
+    return;
+  }
 
-    const reviewToAdd = {
-      id: Date.now(),
-      user: user?.username,
-      rating: newReview.rating,
-      comment: newReview.comment,
-      date: "Just now",
-    };
-    setReviews([reviewToAdd, ...reviews]);
-    setNewReview({ rating: 0, comment: "" });
+    try {
+      const { data } = await axios.post("http://localhost:3000/api/reviews", {
+        productId: product.id,
+        userId: user.id,
+        rating: newReview.rating,
+        review: newReview.comment,
+      });
+
+      if (data.success) {
+      setReviews((prev) => [data.review, ...prev]); // 👈 instantly update UI
+      setNewReview({ rating: 0, comment: "" });
+    }
+    } catch (err) {
+      console.error("Error adding review:", err);
+    }
   };
 
   return (
@@ -325,16 +331,18 @@ const ProductModal = ({
           </form>
 
           {reviews.map((review) => (
-            <div key={review.id} className="space-y-1 border-b pb-2">
+            <div key={review?.id} className="space-y-1 border-b pb-2">
               <div className="flex justify-between items-center">
                 <div className="flex gap-2 items-center">
-                  <span className="font-medium">{review.user}</span>
+                  <span className="font-medium">
+                    {review?.username || "Anonymous"}
+                  </span>
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
                         className={`w-4 h-4 ${
-                          i < review.rating
+                          i < review?.rating
                             ? "fill-yellow-400 text-yellow-400"
                             : "text-gray-300 dark:text-[#9CA3AF]"
                         }`}
@@ -342,9 +350,11 @@ const ProductModal = ({
                     ))}
                   </div>
                 </div>
-                <span className="text-sm text-gray-500">{review.date}</span>
+                <span className="text-sm text-gray-500">
+                  {new Date(review?.createdAt).toLocaleDateString()}
+                </span>
               </div>
-              <p className="text-sm">{review.comment}</p>
+              <p className="text-sm">{review?.review}</p>
             </div>
           ))}
         </div>

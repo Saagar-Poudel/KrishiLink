@@ -18,6 +18,7 @@ import { useAuth } from "../../contexts/Authcontext";
 import { useCart } from "../../contexts/CartContex";
 import toast from "react-hot-toast";
 import axios from "axios";
+import DeliveryPartnerDialog from "./DeliveryPartnerDialog";
 
 export default function FarmerProfile() {
   const { user } = useAuth();
@@ -39,6 +40,9 @@ export default function FarmerProfile() {
 
   const [stats, setStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
+
+  const [deliveryDialogOpen, setDeliveryDialogOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const isFarmerOwner =
     user?.role === "farmer" && (!username || user?.username === username);
@@ -131,6 +135,36 @@ export default function FarmerProfile() {
 
   const [activeTab, setActiveTab] = useState("products");
   const [openMenu, setOpenMenu] = useState(null);
+
+  const handleOpenDeliveryDialog = (orderId) => {
+    setSelectedOrderId(orderId);
+    setDeliveryDialogOpen(true);
+  };
+
+  const handleConfirmDeliveryPartner = async (orderId, partner) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/orders/${orderId}/delivery`,
+        {
+          partner,
+        }
+      );
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId
+            ? { ...o, status: "shipping", deliveryPartner: partner }
+            : o
+        )
+      );
+      toast.success(`Order sent with ${partner} 🚚`);
+    } catch (err) {
+      console.error("Error setting delivery partner:", err);
+      toast.error("Failed to assign delivery partner.");
+    } finally {
+      setDeliveryDialogOpen(false);
+      setSelectedOrderId(null);
+    }
+  };
 
   const handleDelete = async (productId) => {
     try {
@@ -489,7 +523,7 @@ const filteredOrders = orders.filter((o) =>
                   </div>
 
                   <div className="flex gap-2">
-                    {o.status === "pending" && (
+                    {o.status === "paid" && (
                       <>
                         <button
                           onClick={() => handleAcceptOrder(o.id)}
@@ -506,14 +540,14 @@ const filteredOrders = orders.filter((o) =>
                       </>
                     )}
 
-                    {o.status === "packing" && (
+                    {o.status === "packing" || o.status === "accepted" ? (
                       <button
-                        onClick={() => handleShipOrder(o.id)}
+                        onClick={() => handleOpenDeliveryDialog(o.id)}
                         className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                       >
-                        Send to Shipping
+                        Choose Delivery Partner
                       </button>
-                    )}
+                    ) : null}
 
                     {o.status === "shipping" && (
                       <button
@@ -524,6 +558,13 @@ const filteredOrders = orders.filter((o) =>
                       </button>
                     )}
                   </div>
+                  {deliveryDialogOpen && (
+                    <DeliveryPartnerDialog
+                      orderId={selectedOrderId}
+                      onClose={() => setDeliveryDialogOpen(false)}
+                      onConfirm={handleConfirmDeliveryPartner}
+                    />
+                  )}
                 </div>
               ))
             )}

@@ -6,7 +6,7 @@ import {
   notifications,
   users,
 } from "../models/schema.js";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, or } from "drizzle-orm";
 import crypto from "crypto";
 import { sendNotification } from "../utils/notification.service.js";
 import { callKhalti } from "./khalti.controller.js";
@@ -258,6 +258,7 @@ export const getAllOrdersBySellerName = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { action } = req.body; // "accept", "decline", "ship", "deliver"
+  console.log(action);
 
   try {
     // Get order first
@@ -269,13 +270,13 @@ export const updateOrderStatus = async (req, res) => {
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
-
+    console.log(order.status);
     let newStatus;
     let notificationMessage;
 
     switch (action) {
       case "accept":
-        if (order.status !== "pending")
+        if (order.status !== "paid")
           return res
             .status(400)
             .json({ error: "Only pending orders can be accepted" });
@@ -395,4 +396,21 @@ export const createSignature = (message) => {
   // Get the digest in base64 format
   const hashInBase64 = hmac.digest("base64");
   return hashInBase64;
+};
+
+export const assignDeliveryPartner = async (req, res) => {
+  const { orderId } = req.params;
+  const { partner } = req.body;
+
+  try {
+    await db
+      .update(orders)
+      .set({ deliveryPartner: partner, status: "shipping" })
+      .where(eq(orders.id, orderId));
+
+    res.json({ success: true, message: "Delivery partner assigned" });
+  } catch (err) {
+    console.error("Error assigning delivery partner:", err);
+    res.status(500).json({ error: "Failed to assign delivery partner" });
+  }
 };

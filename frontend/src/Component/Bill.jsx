@@ -86,11 +86,11 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
       // console.log("Order:", response.data.order);
       // console.log("Esewa Form Data:", response.data.formData);
       if (paymentMethod === "esewa") {
-        // ✅ Now safe to call Esewa
-        esewaCall(response.formData);
+        // // ✅ Now safe to call Esewa
+        // esewaCall(response.formData);
       } else if (paymentMethod === "khalti") {
         khaltiCall(response.data.data);
-      } else {
+      } else if(paymentMethod === 'cod') {
         setTimeout(() => {
           setIsOrderPlaced(true);
            if (onOrderComplete) onOrderComplete();
@@ -353,15 +353,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
                 <input type="radio" id="cod" name="payment" defaultChecked />
                 <label htmlFor="cod">{t("Cash on Delivery (COD)")}</label>
               </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="esewa"
-                  name="payment"
-                  onChange={(e) => setPaymentMethod("esewa")}
-                />
-                <label htmlFor="esewa">{t("eSewa")}</label>
-              </div>
+              
               <div className="flex items-center space-x-2">
                 <input
                   type="radio"
