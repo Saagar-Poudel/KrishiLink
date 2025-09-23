@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import ProfileEdit from "./ProfileEdit";
+import ChangePassword from "./ChangePassword"; // import your ChangePassword component
 
 const AccountSettings = () => {
-  const handleChangePassword = () => {
-    alert("Redirecting to Change Password page...");
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isChangeOpen, setIsChangeOpen] = useState(false); // state for change password modal
+  const [userData, setUserData] = useState({
+    name: "John Doe",
+    pic: "https://via.placeholder.com/120",
+  });
+
+  const handleSaveProfile = (updatedData) => {
+    setUserData({
+      name: updatedData.name,
+      pic: updatedData.profilePic || userData.pic,
+    });
+    alert("Profile updated successfully!");
+  };
+
+  const handleSavePassword = (newPassword) => {
+    // you can handle password update logic here
+    alert("Password changed successfully!");
   };
 
   const handleTwoFactor = () => {
@@ -22,7 +40,11 @@ const AccountSettings = () => {
   };
 
   const handleDeleteAccount = () => {
-    if (window.confirm("Are you sure you want to delete your account? This cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This cannot be undone."
+      )
+    ) {
       alert("Your account has been deleted.");
     }
   };
@@ -31,11 +53,22 @@ const AccountSettings = () => {
     <div className="max-w-lg mx-auto mt-10 p-6 border rounded-lg shadow-sm bg-white">
       <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
 
+      {/* Profile */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Profile</h3>
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="w-full text-left px-4 py-2 mb-2 bg-gray-100 hover:bg-gray-200 rounded"
+        >
+          Edit Profile
+        </button>
+      </div>
+
       {/* Security */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Security</h3>
         <button
-          onClick={handleChangePassword}
+          onClick={() => setIsChangeOpen(true)}
           className="w-full text-left px-4 py-2 mb-2 bg-gray-100 hover:bg-gray-200 rounded"
         >
           Change Password
@@ -77,12 +110,28 @@ const AccountSettings = () => {
       </div>
 
       {/* Delete */}
-      <button
+      {/* <button
         onClick={handleDeleteAccount}
         className="w-full px-4 py-2 bg-red-600 text-white font-semibold rounded hover:bg-red-700"
       >
         Delete Account
-      </button>
+      </button> */}
+
+      {/* Profile Edit Modal */}
+      <ProfileEdit
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSave={handleSaveProfile}
+        currentName={userData.name}
+        currentPic={userData.pic}
+      />
+
+      {/* Change Password Modal */}
+      <ChangePassword
+        isOpen={isChangeOpen}
+        onClose={() => setIsChangeOpen(false)}
+        onSave={handleSavePassword}
+      />
     </div>
   );
 };

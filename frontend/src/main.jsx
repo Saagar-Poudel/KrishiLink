@@ -30,9 +30,10 @@ import RoleBasedProfile from "./Component/Profile/Profile";
 import RequiredAuth from "./Component/routes/RequiredAuth";
 import AddProduct from "./Component/Profile/Add";
 import EditProduct from "./Component/Profile/Edit";
-import AccountSettings from "./Component/AccountSetting";
+import AccountSettings from "./Component/AccountSetting/AccountSetting";
 import Success from "./Component/ESewa/Success";
 import Failure from "./Component/ESewa/Failure";
+// import ProfileEdit from "./Component/AccountSetting/ProfileEdit";
 
 
 const router = createBrowserRouter(
@@ -58,6 +59,7 @@ const router = createBrowserRouter(
         <Route path="/editproduct" element={<EditProduct />} />
 
         <Route path="/accountsetting" element={<AccountSettings />} />
+        {/* <Route path="/profileedit" element={<ProfileEdit />}  /> */}
            <Route
              path="/profile"
              element={
