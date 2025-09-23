@@ -42,7 +42,7 @@ export const getFarmerProfileStats = async (req, res) => {
       .where(
         and(
           eq(products.sellerName, farmer[0].username), // or sellerId if you add that
-          eq(orders.status, "complete")
+          eq(orders.status, "delivered")
         )
       );
 
@@ -128,7 +128,7 @@ export const getBuyerProfileStats = async (req, res) => {
 
     // 3. Total spent = sum of complete orders
     const totalSpent = buyerOrders
-      .filter((o) => o.status.toLowerCase() === "complete" || o.status.toLowerCase() === "delivered")
+      .filter((o) => o.status.toLowerCase() === "delivered")
       .reduce((sum, o) => sum + Number(o.totalAmount), 0);
 
     // 4. Count orders by status

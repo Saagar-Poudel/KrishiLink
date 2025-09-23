@@ -14,6 +14,7 @@ import { sendNotification } from "./utils/notification.service.js";
 import newsRouter from './routes/news.route.js';
 import profileRouter from './routes/profile.route.js'
 import wishlistRouter from './routes/wishlist.route.js'
+import reviewRouter from "./routes/review.route.js"
 
 dotenv.config();
 
@@ -40,7 +41,8 @@ app.use("/api/messages", messageRouter);
 app.use("/api/notifications", notificationRouter);
 app.use('/api/news', newsRouter);
 app.use("/api/profile", profileRouter);
-app.use('/api/wishlist', wishlistRouter)
+app.use('/api/wishlist', wishlistRouter);
+app.use('/api/reviews', reviewRouter);
 
 
 // Server

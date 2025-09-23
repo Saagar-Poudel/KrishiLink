@@ -21,9 +21,6 @@ const ProductCard = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useLanguage();
   const { user } = useAuth();
-  useEffect(() => {
-    console.log("id",user.id);
-  }, []);
 
   return (
     <div

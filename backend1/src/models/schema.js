@@ -73,6 +73,7 @@ export const orders = pgTable("orders", {
   email: text("email").notNull(),
   location: text("location").notNull(), // address or district
   notes: text("notes"), // optional delivery notes
+  deliveryPartner: text("delivery_partner"),
 
   // 💳 New column
   paymentMethod: varchar("payment_method", { length: 50 }), 
@@ -149,3 +150,28 @@ export const notifications = pgTable("notifications", {
   isRead: boolean("is_read").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  productId: integer("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  rating: integer("rating").notNull(), // 1–5
+  review: text("review"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// relations
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  user: one(users, {
+    fields: [reviews.userId],
+    references: [users.id],
+  }),
+  product: one(products, {
+    fields: [reviews.productId],
+    references: [products.id],
+  }),
+}));
