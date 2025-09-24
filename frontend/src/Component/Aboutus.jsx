@@ -68,7 +68,7 @@ const AnimatedSection = ({ children, className = '' }) => {
 const AboutUs = () => {
   const teamMembers = [
     { name: "Sagar Poudel", role: "Founder & CEO", image: "public/Images/Sagaru.jpg", bio: "Agriculture expert with 15+ years in agri-tech innovation." },
-    { name: "Ritik Joshi", role: "CTO", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80", bio: "Tech visionary specializing in scalable platform solutions." },
+    { name: "Ritik Joshi", role: "CTO", image: "public/Images/Ritik.jpg", bio: "Tech visionary specializing in scalable platform solutions." },
     { name: "Prakash Sapkota", role: "Head of Farmer Relations", image: "public/Images/prakash.jpg", bio: "Former farmer with deep understanding of agricultural challenges." }
   ];
 
