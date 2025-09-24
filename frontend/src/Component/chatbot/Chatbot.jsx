@@ -441,7 +441,7 @@ const Chatbot = () => {
                     <div className="text-sm text-gray-600">I found multiple related items — pick one:</div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {suggestions.map((s, i) => (
-                        <button key={i} onClick={() => handleSuggestionClick(s)} className="text-left p-2 rounded bg-yellow-100 hover:bg-yellow-200">
+                        <button key={i} onClick={() => handleSuggestionClick(s)} className="text-left p-2 rounded bg-white-100 hover:bg-yellow-200">
                           {s.question}
                         </button>
                       ))}
@@ -489,13 +489,13 @@ const Chatbot = () => {
 
           {/* Input area */}
           <div className="p-4 border-t">
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 border border-2-gray-300 text-black-700">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Ask a question... (e.g., 'What is agriculture' or 'agriculture in Nepal')"
-                className="flex-1 p-3 rounded border"
+                className="flex-1 p-3 rounded border border-black-300 focus:outline-none focus:ring-2 focus:ring-green-500 "
               />
               <button onClick={() => handleSend()} className="px-4 bg-green-600 text-white rounded">Send</button>
               <button onClick={saveChat} className="px-4 bg-blue-600 text-white rounded">Save</button>
