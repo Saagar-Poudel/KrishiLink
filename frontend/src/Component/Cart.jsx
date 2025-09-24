@@ -58,9 +58,7 @@ export const Cart = ({ onClose, isOpen }) => {
      onClick={onClose} 
     >
       {/* Drawer */}
-      <div className="w-full sm:max-w-lg h-full bg-white dark:bg-[#0B1A12] shadow-lg flex flex-col"
-      onClick={(e) => e.stopPropagation()}
-      >
+      <div className="w-full sm:max-w-lg h-full bg-white dark:bg-[#0B1A12] shadow-lg flex flex-col" onClick={(e) => e.stopPropagation()}>
         
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-[#1F2937]">

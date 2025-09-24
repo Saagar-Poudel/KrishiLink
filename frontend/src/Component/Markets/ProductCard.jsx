@@ -166,24 +166,20 @@ const ProductCard = ({
         <div className="w-full space-y-2">
           <button
             className={`w-full bg-green-600 dark:bg-[#34D399] text-white dark:text-[#0B1A12] px-4 py-2 rounded-md flex items-center justify-center transition ${
-              !product.isAvailable &&
+              (!product.isAvailable || product.quantity === 0) &&
               "bg-gray-400 dark:bg-[#374151] cursor-not-allowed text-[#9CA3AF]"
             }`}
             onClick={(e) => {
               e.stopPropagation();
               onAddToCart(product);
             }}
-            disabled={!product.isAvailable}
+            disabled={!product.isAvailable || product.quantity === 0}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            {product.isAvailable ? t("Add to Cart") : t("Out of Stock")}
+            {product.isAvailable && product.quantity > 0
+              ? t("Add to Cart")
+              : t("Out of Stock")}
           </button>
-
-          {/* {product.isBulkAvailable && (
-            <button className="w-full border rounded-md px-4 py-2 text-sm hover:bg-yellow-300 dark:hover:bg-[#F59E0B] transition-colors flex items-center justify-center cursor-pointer">
-              {t("Contact for Bulk Order")}
-            </button>
-          )} */}
         </div>
       </div>
     </div>

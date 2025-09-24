@@ -136,7 +136,6 @@ const AccountSettings = () => {
       <ChangePassword
         isOpen={isChangeOpen}
         onClose={() => setIsChangeOpen(false)}
-        onSave={handleSavePassword}
       />
     </div>
   );

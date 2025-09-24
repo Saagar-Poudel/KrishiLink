@@ -277,7 +277,7 @@ const Bill = ({ isOpen, onClose, cartItems, onOrderComplete }) => {
                   value={customerInfo.note}
                   onChange={(e) => handleInputChange("note", e.target.value)}
                   className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 dark:bg-[#12241A] dark:text-gray-100"
-                  placeholder="Enter your full name"
+                  placeholder="Enter a Note"
                 />
               </div>
             </div>
