@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   role: text("role").default("buyers"),
+  status: boolean("status").default(true),
   address: text("address"),
   image: text("image"),
   isActive: boolean("is_active").default(true),
@@ -191,3 +192,22 @@ export const savedFarmers = pgTable("saved_farmers", {
   uniqBuyerFarmer: uniqueIndex("uniq_buyer_farmer").on(t.buyerId, t.farmerId),
 }));
 
+export const deletedUsers = pgTable("deleted_users", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // Buyer / Seller
+  deletedDate: timestamp("deleted_date").defaultNow().notNull(),
+  reason: text("reason").notNull(),
+});
+
+// Reports Table
+export const reports = pgTable("reports", {
+  id: serial("id").primaryKey(),
+  reporter: text("reporter").notNull(), // reporter name or user reference
+  reported: text("reported").notNull(), // reported user or store
+  type: varchar("type", { length: 100 }).notNull(), // Product Issue, User Behavior, etc.
+  date: timestamp("date").defaultNow().notNull(),
+  status: varchar("status", { length: 50 }).default("Open"), // Open, Resolved, Under Review
+  priority: varchar("priority", { length: 50 }).default("Medium"), // Low, Medium, High
+});

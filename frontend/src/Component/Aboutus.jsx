@@ -74,7 +74,7 @@ const AboutUs = () => {
 
   const timelineEvents = [
     { year: '2024', title: 'Project Inception', description: 'Started with a vision to bridge the gap between farmers and technology' },
-    { year: '2024', title: 'Beta Launch', description: 'Launched beta version with 100+ farmers in rural Maharashtra' },
+    { year: '2024', title: 'Beta Launch', description: 'Launched beta version with 100+ farmers in rural Chitwan' },
     { year: '2025', title: 'Technology Integration', description: 'Integrated IoT sensors and mobile app for real-time crop monitoring' },
     { year: '2025', title: 'Market Expansion', description: 'Expanded to 5 states connecting 1000+ farmers with direct buyers' },
     { year: '2025', title: 'Present Day', description: 'Leading smart agriculture platform with comprehensive ecosystem' }
@@ -221,7 +221,7 @@ const AboutUs = () => {
       </AnimatedSection>
 
       {/* Stats */}
-      <AnimatedSection className="py-20 bg-gradient-to-r from-green-700 to-green-500 mx-6 md:mx-20 rounded-2xl">
+      <AnimatedSection className="py-20 bg-gradient-to-r from-green-700 to-green-500 mx-6 md:mx-20 rounded-2xl mb-7">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Impact</h2>
           <p className="text-xl text-green-100 mb-12">Numbers that reflect our commitment</p>

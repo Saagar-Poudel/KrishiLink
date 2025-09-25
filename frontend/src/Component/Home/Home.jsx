@@ -5,6 +5,7 @@ import WeatherAndPrices from '../Weatherandprice/WeatherAndPrices';
 import NewsSection from '../NewsSection';
 import Marketplace from './Marketplace';
 import Experts from './Expert';
+import ChatBot from '../chatbot/Chatbot'
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
       {/* <NewsSection /> */}
       <Experts />
       <ReviewSection />
+      <ChatBot />
     </div>
   );
 };

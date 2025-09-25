@@ -16,6 +16,7 @@ import profileRouter from './routes/profile.route.js'
 import wishlistRouter from './routes/wishlist.route.js'
 import reviewRouter from "./routes/review.route.js"
 import savedFarmersRouter from './routes/savedFarmers.route.js'
+import adminRouter from './routes/admin.route.js'
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/api/profile", profileRouter);
 app.use('/api/wishlist', wishlistRouter);
 app.use('/api/reviews', reviewRouter);
 app.use("/api/saved-farmers", savedFarmersRouter);
+app.use("/api/admin", adminRouter);
 
 
 // Server
@@ -74,7 +76,6 @@ io.on("connection", (socket) => {
 
   socket.on("send-notification", async (data) => {
     const { userId, type, title, message } = data;
-
     // Save + emit
     await sendNotification({ userId, type, title, message });
   });

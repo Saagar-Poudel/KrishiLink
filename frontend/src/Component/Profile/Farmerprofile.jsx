@@ -14,6 +14,12 @@ import {
   MessageCircle,
   ShoppingCart,
 } from "lucide-react";
+import { Flag } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@radix-ui/react-dialog"; // or your dialog lib
 import { useAuth } from "../../contexts/Authcontext";
 import { useCart } from "../../contexts/CartContex";
 import toast from "react-hot-toast";
@@ -44,6 +50,9 @@ export default function FarmerProfile() {
 
   const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [reportType, setReportType] = useState("Product Issue");
 
   const handleViewOrderDetails = (order) => {
     setSelectedOrder(order);
@@ -410,6 +419,12 @@ export default function FarmerProfile() {
                 >
                   <MessageCircle className="w-4 h-4" /> Chat with Farmer
                 </button>
+                <button
+                  onClick={() => setReportDialogOpen(true)}
+                  className="absolute top-4 right-16 p-2 rounded-full bg-red-600 text-white hover:bg-red-700"
+                >
+                  <Flag className="w-5 h-5" />
+                </button>
               </div>
             )}
           </div>
@@ -735,6 +750,59 @@ export default function FarmerProfile() {
           order={selectedOrder}
           onClose={() => setOrderDetailsOpen(false)}
         />
+      )}
+      {reportDialogOpen && (
+        <Dialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
+          <DialogContent className="bg-white p-6 rounded-lg shadow-lg">
+            <header>
+              <DialogTitle>Report {farmer?.username}</DialogTitle>
+            </header>
+
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Select report type
+              </label>
+              <select
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="Product Issue">Product Issue</option>
+                <option value="User Behavior">User Behavior</option>
+                <option value="Fraudulent Seller">Fraudulent Seller</option>
+                <option value="Product Quality">Product Quality</option>
+              </select>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setReportDialogOpen(false)}
+                className="px-4 py-2 rounded border hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await axios.post("http://localhost:3000/api/admin/reports", {
+                      reporter: user.username, // buyer id
+                      reported: farmer?.username, // farmer username
+                      type: reportType,
+                    });
+                    toast.success("Report submitted ✅");
+                    setReportDialogOpen(false);
+                  } catch (err) {
+                    console.error("Error submitting report:", err);
+                    toast.error("Failed to submit report");
+                  }
+                }}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                Submit Report
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

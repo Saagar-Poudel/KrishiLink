@@ -177,8 +177,7 @@
 
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
-import { Link, useLocation } from "react-router-dom"; 
-import Chatbot from "../Component/chatbot/Chatbot"; // ✅ adjust path if needed
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -337,9 +336,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
-      {/* ✅ Floating Chatbot only on Home Page */}
-      {isHomePage && <Chatbot />}
     </footer>
   );
 };

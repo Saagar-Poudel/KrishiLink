@@ -256,7 +256,6 @@ const AuthForm = () => {
                     className="flex items-center gap-1 text-green-600 hover:text-green-800 font-medium"
                   >
                     <ArrowLeft className="w-5 h-5" />
-                    Back
                   </button>
                 </div>
                 <div className="transition-all duration-500 ease-in-out">

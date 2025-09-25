@@ -105,7 +105,9 @@ export const createOrder = async (req, res) => {
         }
 
         createdOrders.push({ ...newOrder, sellerId });
-        const signature = createSignature(`total_amount=${newOrder.totalAmount},transaction_uuid=${newOrder.id},product_code=EPAYTEST`)
+        const signature = createSignature(
+          `total_amount=${newOrder.totalAmount},transaction_uuid=${newOrder.id},product_code=EPAYTEST`
+        );
         if (payment_method === "esewa") {
           const formData = {
             amount: newOrder.totalAmount,
