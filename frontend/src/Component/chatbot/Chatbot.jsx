@@ -438,10 +438,10 @@ const Chatbot = () => {
                 {/* Suggestions (below messages) */}
                 {suggestions.length > 0 && (
                   <div className="mt-2 space-y-2">
-                    <div className="text-sm text-gray-600">I found multiple related items — pick one:</div>
+                    <div className="text-sm text-black-600">I found multiple related items — pick one:</div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {suggestions.map((s, i) => (
-                        <button key={i} onClick={() => handleSuggestionClick(s)} className="text-left p-2 rounded bg-white-100 hover:bg-yellow-200">
+                        <button key={i} onClick={() => handleSuggestionClick(s)} className="text-left p-2 rounded bg-white-100">
                           {s.question}
                         </button>
                       ))}
