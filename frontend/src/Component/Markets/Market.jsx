@@ -5,7 +5,7 @@ import { useAuth } from "../../contexts/Authcontext";
 import Filters from "./Filters";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
-import FarmerChatBox from "../FarmerChatbox";
+// import FarmerChatBox from "../FarmerChatbox";
 import Chatbox from "../Chatbox";
 import { useToast } from "../../hooks/use-toast";
 import { useCart } from "../../contexts/CartContex";
@@ -26,8 +26,13 @@ const Market = () => {
 
   const { user } = useAuth();
 
-  const [farmerChatOpen, setFarmerChatOpen] = useState(false);
-  const [chatFarmer, setChatFarmer] = useState(null);
+  // const [farmerChatOpen, setFarmerChatOpen] = useState(false);
+  // const [chatFarmer, setChatFarmer] = useState(null);
+
+  const [chatOpen, setChatOpen] = useState(false);
+const [chatUser, setChatUser] = useState(null);
+
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -162,11 +167,18 @@ const Market = () => {
     });
   };
 
+  // const handleChatWithSeller = (farmerData) => {
+  //   setChatFarmer(farmerData); // set seller data
+  //   setFarmerChatOpen(true); // open FarmerChatBox
+  //   setTimeout(() => setSelectedProduct(null)); // close modal
+  // };
+
   const handleChatWithSeller = (farmerData) => {
-    setChatFarmer(farmerData); // set seller data
-    setFarmerChatOpen(true); // open FarmerChatBox
-    setTimeout(() => setSelectedProduct(null)); // close modal
-  };
+  setChatUser(farmerData);   // set seller (farmer)
+  setChatOpen(true);         // open chatbox
+  setSelectedProduct(null);  // close product modal
+};
+
 
   const stats = [
     { icon: Store, label: t("Active Sellers"), value: "2,500+" },
@@ -189,7 +201,13 @@ const Market = () => {
               />
             </div>
           </div>
-          <Chatbox currentUser={user} />
+
+          {/* <Chatbox currentUser={user} /> */}
+<Chatbox
+  currentUser={user}
+  initialChatUser={chatUser}
+  openChat={chatOpen}
+/>
 
           {/* Main Content */}
           <div className="lg:w-4/5">
@@ -263,14 +281,14 @@ const Market = () => {
           </div>
         </div>
       </div>
-      {farmerChatOpen && chatFarmer && (
+      {/* {farmerChatOpen && chatFarmer && (
         <FarmerChatBox
           currentUser={user} // buyer
           otherUser={chatFarmer} // farmer
           isOpen={farmerChatOpen}
           onClose={() => setFarmerChatOpen(false)}
         />
-      )}
+      )} */}
     </div>
   );
 };
